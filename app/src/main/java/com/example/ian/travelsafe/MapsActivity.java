@@ -45,7 +45,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     void test() {
-        int i, j;
+        int i = 0;
+        int k, j;
+
+        if(i == 1){
+            //test
+        }
     }
 
 }
