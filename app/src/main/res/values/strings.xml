@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">TravelSafe</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_app_load_screen">AppLoadScreen</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
