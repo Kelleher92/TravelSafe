@@ -42,17 +42,21 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
+            android:label="@string/title_activity_app_load_screen" >
+
+        </activity>
+
+        <activity
+            android:name=".AppLoadScreen"
+            android:label="@string/title_activity_app_load_screen" >
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".AppLoadScreen"
-            android:label="@string/title_activity_app_load_screen" >
-        </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
@@ -67,6 +71,7 @@
             android:name=".ParentHome"
             android:label="@string/title_activity_parent_home" >
         </activity>
+
     </application>
 
 </manifest>
