@@ -61,6 +61,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Test"
+            android:label="@string/title_activity_test" >
+        </activity>
     </application>
 
 </manifest>

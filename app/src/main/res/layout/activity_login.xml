@@ -5,7 +5,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.ian.travelsafe.LoginActivity">
+    tools:context="com.example.ian.travelsafe.LoginActivity"
+    android:background="#006699">
 
     <!-- Login progress -->
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
@@ -13,34 +14,27 @@
         android:layout_marginBottom="8dp" android:visibility="gone" />
 
     <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#006699">
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout android:id="@+id/plus_sign_out_buttons"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:visibility="gone" android:weightSum="2">
-
-                <Button android:id="@+id/plus_sign_out_button" style="?android:textAppearanceSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/plus_sign_out" />
-
-                <Button android:id="@+id/plus_disconnect_button"
-                    style="?android:textAppearanceSmall" android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:layout_weight="1"
-                    android:text="@string/plus_disconnect" />
-
-            </LinearLayout>
-
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:gravity="center">
+                android:layout_height="392dp"
+                android:gravity="center"
+                android:weightSum="1">
 
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Text"
+                    android:id="@+id/textView"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/logo" />
 
                 <AutoCompleteTextView android:id="@+id/email"
                     android:layout_width="285dp"
@@ -49,25 +43,31 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColor="#FFFFFF"
-                    android:layout_column="6" />
+                    android:textColor="#ffffff"
+                    android:layout_column="6"
+                    android:textColorHint="#d7d7d7" />
 
-                <EditText android:id="@+id/password" android:layout_width="285dp"
-                    android:layout_height="wrap_content" android:hint="@string/prompt_password"
+                <EditText android:id="@+id/password"
+                    android:layout_width="285dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_password"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified" android:inputType="textPassword"
-                    android:maxLines="1" android:singleLine="true"
-                    android:layout_column="6" />
-
-                <Button android:id="@+id/email_sign_in_button" style="?android:textAppearanceSmall"
-                    android:layout_width="285dp" android:layout_height="32dp"
-                    android:layout_marginTop="16dp" android:text="@string/action_sign_in"
-                    android:textStyle="bold"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"
                     android:layout_column="6"
-                    android:bor
-                    android:background="#006699"
-                    android:textColor="#ffffff" />
+                    android:textColorHint="#d7d7d7" />
+
+                <Button
+                    android:id="@+id/email_sign_in_button"
+                    android:layout_width="285dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="10dp"
+                    android:foregroundGravity="center"
+                    android:background="@drawable/button_blue"
+                    android:text="@string/action_submit_button" />
             </LinearLayout>
 
         </LinearLayout>
