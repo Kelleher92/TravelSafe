@@ -43,11 +43,9 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_app_load_screen" >
-
         </activity>
-
         <activity
-            android:name=".AppLoadScreen"
+            android:name=".AppSplashScreen"
             android:label="@string/title_activity_app_load_screen" >
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
@@ -56,7 +54,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
@@ -71,7 +68,8 @@
             android:name=".ParentHome"
             android:label="@string/title_activity_parent_home" >
         </activity>
-
+        <activity android:name=".RegisterParentActivity" >
+        </activity>
     </application>
 
 </manifest>

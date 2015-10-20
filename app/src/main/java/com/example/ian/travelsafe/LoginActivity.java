@@ -1,5 +1,6 @@
 package com.example.ian.travelsafe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,6 +16,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);     // Turn off action bar
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
@@ -41,5 +43,12 @@ public class LoginActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void LoadRegisterScreen(View view) {
+        // Load next activity
+        Intent i = new Intent(this, RegisterParentActivity.class);
+        startActivity(i);
+    }
+
 }
 

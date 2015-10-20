@@ -16,83 +16,85 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <ScrollView android:id="@+id/login_form" android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#006699">
+        android:background="#006699"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:weightSum="1">
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <ImageView
+            android:layout_width="313dp"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/logo"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="@string/Logo"
+            android:layout_weight="0.04" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="516dp"
-                android:gravity="center"
-                android:weightSum="1">
+        <Space
+            android:layout_width="109dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal" />
 
+        <AutoCompleteTextView android:id="@+id/email"
+            android:layout_width="285dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:layout_column="6"
+            android:textColorHint="#d7d7d7"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="center_horizontal" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New Text"
-                    android:id="@+id/textView"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/logo"
-                    android:layout_marginBottom="20dp" />
+        <EditText android:id="@+id/password"
+            android:layout_width="285dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_password"
+            android:imeActionId="@+id/login"
+            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_column="6"
+            android:textColorHint="#d7d7d7"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="center_horizontal" />
 
-                <AutoCompleteTextView android:id="@+id/email"
-                    android:layout_width="285dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="#ffffff"
-                    android:layout_column="6"
-                    android:textColorHint="#d7d7d7"
-                    android:layout_marginBottom="12dp" />
+        <Button
+            android:id="@+id/submitLoginDetails"
+            android:layout_width="285dp"
+            android:layout_height="32dp"
+            android:layout_margin="10dp"
+            android:foregroundGravity="center"
+            android:background="@drawable/button_blue"
+            android:text="@string/action_submit_button"
+            android:textColor="#ffffff"
+            android:layout_gravity="center_horizontal" />
 
-                <EditText android:id="@+id/password"
-                    android:layout_width="285dp"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:layout_column="6"
-                    android:textColorHint="#d7d7d7"
-                    android:layout_marginBottom="12dp" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:layout_gravity="center_horizontal" />
 
-                <Button
-                    android:id="@+id/email_sign_in_button"
-                    android:layout_width="285dp"
-                    android:layout_height="32dp"
-                    android:layout_margin="10dp"
-                    android:foregroundGravity="center"
-                    android:background="@drawable/button_blue"
-                    android:text="@string/action_submit_button"
-                    android:textColor="#ffffff" />
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center_horizontal" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New User? Register"
-                    android:id="@+id/textView2"
-                    android:layout_gravity="center_horizontal"
-                    android:textStyle="normal"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New User? Register"
+            android:id="@+id/registerNewUserButton"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="normal"
+            android:textColor="#ffffff"
+            android:onClick="LoadRegisterScreen"/>
+    </LinearLayout>
 
 </LinearLayout>
 
