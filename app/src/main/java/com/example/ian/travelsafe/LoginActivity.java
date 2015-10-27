@@ -18,7 +18,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);     // Turn off action bar
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
     }
 
@@ -36,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //This settings option is not needed anymore - can be removed.
         if (id == R.id.action_settings) {
             return true;
         }
@@ -50,5 +49,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void CheckLoginDetailsOnSubmit(View view) {
+        //Check Login details and login to parent or child home screen.
+        Intent i = new Intent(this, ParentHome.class);
+        startActivity(i);
+    }
 }
 

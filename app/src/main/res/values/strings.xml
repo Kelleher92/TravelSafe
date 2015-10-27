@@ -8,9 +8,8 @@
     <string name="title_activity_test">Test</string>
     <string name="title_activity_parent_home">ParentHome</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="ParentHomeTabTitleChildren">Children</string>
+    <string name="ParentHomeTabTitleAccount">Account</string>
     <string name="Logo">Logo</string>
     <string name="prompt_username">Username</string>
 </resources>

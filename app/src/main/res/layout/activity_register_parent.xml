@@ -96,6 +96,17 @@ android:background="#006699">
         android:textColor="#ffffff"
         android:layout_gravity="center_horizontal" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go Back"
+        android:id="@+id/GoBack"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="normal"
+        android:textColor="#ffffff"
+        android:onClick="ReturnToLoginActivity"
+        android:layout_weight="0.04" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="12dp"
