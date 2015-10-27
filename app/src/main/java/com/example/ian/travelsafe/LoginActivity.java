@@ -41,6 +41,18 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.email) {
+            EditText email = (EditText)this.findViewById(R.id.email);
+        }
+
+        if (id == R.id.password) {
+            EditText password = (EditText)this.findViewById(R.id.password);
+        }
+
+        if (id == R.id.submitLoginDetails) {
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

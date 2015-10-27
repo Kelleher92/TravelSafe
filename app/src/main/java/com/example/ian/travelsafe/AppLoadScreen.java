@@ -18,7 +18,7 @@ public class AppLoadScreen extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //set content view AFTER ABOVE sequence (to avoid crash)
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_app_load_screen);
+        this.setContentView(R.layout.activity_app_splash_screen);
     }
 
     @Override
