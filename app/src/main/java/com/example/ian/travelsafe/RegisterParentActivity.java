@@ -39,6 +39,10 @@ public class RegisterParentActivity extends AppCompatActivity {
             EditText password = (EditText)this.findViewById(R.id.password);
         }
 
+        if (id == R.id.email_sign_in_button) {
+            // send to server and wait for response
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

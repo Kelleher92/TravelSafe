@@ -50,7 +50,12 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (id == R.id.submitLoginDetails) {
+            // send to server and wait for response
+        }
 
+        if (id == R.id.registerNewUserButton) {
+            Intent i = new Intent(this, RegisterParentActivity.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
