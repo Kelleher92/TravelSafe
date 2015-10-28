@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 
 public class RegisterParentActivity extends AppCompatActivity {
 
@@ -23,6 +24,15 @@ public class RegisterParentActivity extends AppCompatActivity {
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
+        EditText email = (EditText)this.findViewById(R.id.email);
+        String user_email = email.getText().toString();
+
+        EditText username = (EditText)this.findViewById(R.id.username);
+        String user_username = username.getText().toString();
+
+        EditText password = (EditText)this.findViewById(R.id.password);
+        String user_password = password.getText().toString();
+
         Intent i = new Intent(this, ParentHome.class);
         startActivity(i);
     }
