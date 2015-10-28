@@ -3,6 +3,7 @@ package com.example.ian.travelsafe;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import com.google.android.gms.common.SignInButton;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,23 +43,6 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.email) {
-            EditText email = (EditText)this.findViewById(R.id.email);
-        }
-
-        if (id == R.id.password) {
-            EditText password = (EditText)this.findViewById(R.id.password);
-        }
-
-        if (id == R.id.submitLoginDetails) {
-            // send to server and wait for response
-        }
-
-        if (id == R.id.registerNewUserButton) {
-            Intent i = new Intent(this, RegisterParentActivity.class);
-            startActivity(i);
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -68,6 +54,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
+        EditText email = (EditText)this.findViewById(R.id.email);
+        String user_email = email.getText().toString();
+
+        EditText password = (EditText)this.findViewById(R.id.password);
+        String user_password = password.getText().toString();
+
         Intent i = new Intent(this, ParentHome.class);
         startActivity(i);
     }
