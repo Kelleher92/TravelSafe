@@ -20,7 +20,7 @@
             android:src="@drawable/logo"
             android:text="New Text"
             android:id="@+id/textView3"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="0.10" />
 
         <Space
