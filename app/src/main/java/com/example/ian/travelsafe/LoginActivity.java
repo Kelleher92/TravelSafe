@@ -35,9 +35,26 @@ public class LoginActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //This settings option is not needed anymore - can be removed.
+        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.email) {
+            EditText email = (EditText)this.findViewById(R.id.email);
+        }
+
+        if (id == R.id.password) {
+            EditText password = (EditText)this.findViewById(R.id.password);
+        }
+
+        if (id == R.id.submitLoginDetails) {
+            // send to server and wait for response
+        }
+
+        if (id == R.id.registerNewUserButton) {
+            Intent i = new Intent(this, RegisterParentActivity.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);

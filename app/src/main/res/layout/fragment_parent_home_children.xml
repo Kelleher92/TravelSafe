@@ -1,30 +1,45 @@
-<RelativeLayout
+<!--<RelativeLayout-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+    <!--tools:context="com.example.ian.travelsafe.FragmentParentHomeChildren">-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/TabChildren"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Children"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="54dp"/>-->
+
+    <!--<Button-->
+        <!--style="?android:attr/buttonStyleSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Click Here"-->
+        <!--android:id="@+id/buttonChildTab"-->
+        <!--android:layout_below="@+id/TabChildren"-->
+        <!--android:layout_centerHorizontal="true" />-->
+
+<!--</RelativeLayout>-->
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.ian.travelsafe.FragmentParentHomeChildren">
 
     <TextView
-        android:id="@+id/TabChildren"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Children"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"/>
+        android:layout_gravity="center"
+        android:text="Hello Fragment 1!" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Click Here"
-        android:id="@+id/buttonChildTab"
-        android:layout_below="@+id/TabChildren"
-        android:layout_centerHorizontal="true" />
-
-</RelativeLayout>
+</FrameLayout>

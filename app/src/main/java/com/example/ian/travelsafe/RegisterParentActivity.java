@@ -17,7 +17,13 @@ public class RegisterParentActivity extends AppCompatActivity {
 
     public void ReturnToLoginActivity(View view) {
         // Load next activity
-        Intent i = new Intent(this, RegisterParentActivity.class);
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
+    }
+
+    public void SubmitNewRegisteredUser(View view) {
+        // Load next activity
+        Intent i = new Intent(this, ParentHome.class);
         startActivity(i);
     }
 }
