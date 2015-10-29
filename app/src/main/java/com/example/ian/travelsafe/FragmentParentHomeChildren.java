@@ -1,6 +1,10 @@
 package com.example.ian.travelsafe;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +33,18 @@ public class FragmentParentHomeChildren extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_parent_home_children, container, false);
+        View view =inflater.inflate(R.layout.fragment_parent_home_children, container, false);
+        final Context context = view.getContext();
+        FloatingActionButton fabAddNewChild = (FloatingActionButton) view.findViewById(R.id.fabAddNewChild);
+        fabAddNewChild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Add new user with this button", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent i = new Intent(context, RegisterNewChild.class);
+                startActivity(i);
+            }
+        });
+        return view;
     }
 
 /*

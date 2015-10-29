@@ -16,7 +16,7 @@
             android:layout_height="50dp"
             android:id="@+id/setting_icon"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/mr_ic_settings_light"
+            android:src="@drawable/child_placeholder"
             android:layout_alignParentTop="true"
             android:layout_marginRight="16dp"
             android:contentDescription="ChildPicture" />
@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/person_name"
+            android:id="@+id/setting_title"
             android:paddingTop="10dp"
             android:text="Tom Moran"
             android:layout_alignParentTop="true"
