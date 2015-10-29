@@ -22,7 +22,7 @@
                 android:layout_height="50dp"
                 android:id="@+id/person_photo"
                 android:layout_alignParentLeft="true"
-                 android:src="@drawable/child_placeholder"
+
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="16dp"
                 android:contentDescription="ChildPicture" />

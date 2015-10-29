@@ -22,18 +22,61 @@ public class RegisterParentActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void SubmitNewRegisteredUser(View view) {
-        // Load next activity
-        EditText email = (EditText)this.findViewById(R.id.email);
-        String user_email = email.getText().toString();
+    public static boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
+    }
 
-        EditText username = (EditText)this.findViewById(R.id.username);
+    public static boolean isValidPassword(String s){
+        if (s == null)
+        return false;
+
+        if (s.length() < 7)
+        return false;
+
+        int counter = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (!Character.isLetterOrDigit(s.charAt(i)))
+                return false;
+            if (Character.isDigit(s.charAt(i)))
+                counter++;
+        }
+        if (counter >= 1)
+        return true;
+        else
+        return false;
+    }
+
+    public boolean verifyDetails() {
+        EditText email = (EditText) this.findViewById(R.id.email);
+        String user_email = email.getText().toString();
+        if (!isValidEmailAddress(user_email)) {
+            email.setError("invalid email address");
+            return false;
+        }
+
+        EditText username = (EditText) this.findViewById(R.id.username);
         String user_username = username.getText().toString();
 
-        EditText password = (EditText)this.findViewById(R.id.password);
+        EditText password = (EditText) this.findViewById(R.id.password);
         String user_password = password.getText().toString();
+        if (!isValidPassword(user_password)) {
+            password.setError("password must contain at least 6 characters and 1 number");
+            return false;
+        }
 
-        Intent i = new Intent(this, ParentHome.class);
-        startActivity(i);
+        return true;
+    }
+
+    public void SubmitNewRegisteredUser(View view) {
+        // Load next activity
+        if (verifyDetails()) {
+            Intent i = new Intent(this, ParentHome.class);
+            startActivity(i);
+        }
+        else {}
     }
 }
