@@ -1,6 +1,5 @@
 package com.example.ian.travelsafe;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +15,7 @@ import java.util.List;
 public class FragmentParentHomeAccount extends Fragment {
 
     private RecyclerView recyclerView;
-    private VivsAdapter adapter;
+//    private VivsAdapter adapter;
 
     public static FragmentParentHomeAccount newInstance() {
         return new FragmentParentHomeAccount();
@@ -30,7 +29,7 @@ public class FragmentParentHomeAccount extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
+/*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -45,18 +44,17 @@ public class FragmentParentHomeAccount extends Fragment {
 
     public static List<ParentAccountListDetails> getAccountListTypes() {
 
-        List<ParentAccountListDetails> accoountListTypes = new ArrayList<>();
+        List<ParentAccountListDetails> accountListTypes = new ArrayList<>();
         int[] icons = {R.drawable.ic_pause_light, R.drawable.ic_pause_light, R.drawable.ic_pause_light};
         String[] titles = {"Email Address", "Password", "Log out"};
 
-        for(int i=0; i<titles.length && i<icons.length; i++ )
-        {
+        for (int i = 0; i < titles.length && i < icons.length; i++) {
             ParentAccountListDetails listTypes = new ParentAccountListDetails();
             listTypes.iconId = icons[i];
             listTypes.title = titles[i];
-            accoountListTypes.add(listTypes);
+            accountListTypes.add(listTypes);
         }
 
-        return accoountListTypes;
-    }
+        return accountListTypes;
+    }*/
 }

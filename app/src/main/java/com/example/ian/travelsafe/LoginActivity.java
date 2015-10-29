@@ -52,16 +52,32 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public boolean verifyDetails() {
+        EditText username = (EditText) this.findViewById(R.id.username);
+        String user_username = username.getText().toString();
+        /*if (!isRegisteredUser(user_username)) {
+            username.setError("invalid username");
+            return false;
+        }*/
+
+        EditText password = (EditText) this.findViewById(R.id.password);
+        String user_password = password.getText().toString();
+        if (!RegisterParentActivity.isValidPassword(user_password)) {
+            password.setError("password must contain at least 6 characters and 1 number");
+            return false;
+        }
+
+        return true;
+    }
+
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
-        EditText email = (EditText)this.findViewById(R.id.email);
-        String user_email = email.getText().toString();
+        if (verifyDetails()) {
+            Intent i = new Intent(this, ParentHome.class);
+            startActivity(i);
+        }
+        else {}
 
-        EditText password = (EditText)this.findViewById(R.id.password);
-        String user_password = password.getText().toString();
-
-        Intent i = new Intent(this, ParentHome.class);
-        startActivity(i);
     }
 }
 
