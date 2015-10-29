@@ -65,8 +65,14 @@
             android:label="@string/title_activity_parent_home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".RegisterNewChild"
+            android:label="@string/title_activity_register_new_child"
+            android:theme="@style/AppTheme" >
         </activity>
     </application>
 

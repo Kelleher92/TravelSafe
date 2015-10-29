@@ -13,4 +13,5 @@
     <string name="Logo">Logo</string>
     <string name="prompt_username">Username</string>
     <string name="title_activity_register_new_child">RegisterNewChild</string>
+    <string name="action_register_button">Register</string>
 </resources>
