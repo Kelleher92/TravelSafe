@@ -12,4 +12,5 @@
     <string name="ParentHomeTabTitleAccount">Account</string>
     <string name="Logo">Logo</string>
     <string name="prompt_username">Username</string>
+    <string name="title_activity_register_new_child">RegisterNewChild</string>
 </resources>
