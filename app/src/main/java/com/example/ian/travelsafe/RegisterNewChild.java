@@ -1,5 +1,6 @@
 package com.example.ian.travelsafe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,4 +23,15 @@ public class RegisterNewChild extends AppCompatActivity {
         Toast.makeText(RegisterNewChild.this, "New Child Registered", Toast.LENGTH_SHORT).show();
     }
 
+    public void ReturnToParentHome(View view) {
+
+        Intent i = new Intent(this, ParentHome.class);
+        startActivity(i);
+        Toast.makeText(this, "Return To ParentHome", Toast.LENGTH_SHORT);
+    }
+
+    public void RegisterNewChild(View view) {
+
+        Toast.makeText(this, "Register New Child Here", Toast.LENGTH_SHORT);
+    }
 }

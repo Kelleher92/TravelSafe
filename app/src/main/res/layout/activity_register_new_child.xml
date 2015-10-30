@@ -86,7 +86,7 @@
             android:layout_width="285dp"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_password"
-            android:imeActionId="@+id/login"
+            android:imeActionId="@+id/registerNewChild"
             android:imeActionLabel="@string/action_sign_in_short"
             android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
@@ -98,7 +98,7 @@
             android:layout_gravity="center_horizontal" />
 
         <Button
-            android:id="@+id/email_sign_in_button"
+            android:id="@+id/regNewChild"
             android:layout_width="285dp"
             android:layout_height="32dp"
             android:layout_margin="10dp"
@@ -113,12 +113,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Go Back"
-            android:id="@+id/GoBack"
+            android:id="@+id/GoBackToParentHome"
             android:paddingTop="10dp"
             android:layout_gravity="center_horizontal"
             android:textStyle="normal"
             android:textColor="#626262"
-            android:onClick="ReturnToLoginActivity"
+            android:onClick="ReturnToParentHome"
             android:layout_weight="0.04" />
 
         <Space

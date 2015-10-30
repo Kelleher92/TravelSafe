@@ -12,8 +12,8 @@
         >
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="25sp"
+            android:layout_height="25dp"
             android:id="@+id/setting_icon"
             android:layout_alignParentLeft="true"
             android:src="@drawable/child_placeholder"
@@ -25,11 +25,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/setting_title"
-            android:paddingTop="10dp"
             android:text="Tom Moran"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
-            android:textSize="25sp"
+            android:textSize="20dp"
             android:layout_toRightOf="@+id/setting_icon"
             android:layout_below="@+id/setting_icon" />
 
