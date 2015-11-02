@@ -5,10 +5,11 @@ import android.media.Image;
 public class ChildDetails {
 
     String mName;
-    Image mProfileImage;
+    int mProfileImage;
     String mCurrentRoute;
 
-    public void ChildDetails(String name, Image profileImage, String currentRoute) {
+
+    public ChildDetails(String name, int profileImage, String currentRoute) {
         mName = name;
         mProfileImage = profileImage;
         mCurrentRoute = currentRoute;

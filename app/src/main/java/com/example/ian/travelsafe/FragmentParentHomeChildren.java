@@ -6,15 +6,30 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class FragmentParentHomeChildren extends Fragment {
 
+
+    private TextView mText;
+    private TextView mRoute;
+    private ImageView mProfileImage;
+    private List<ChildDetails> mData = new ArrayList<>();
 
     public static FragmentParentHomeChildren newInstance() {
         return new FragmentParentHomeChildren();
@@ -35,6 +50,8 @@ public class FragmentParentHomeChildren extends Fragment {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_parent_home_children, container, false);
         final Context context = view.getContext();
+
+        // Floating Action Button
         FloatingActionButton fabAddNewChild = (FloatingActionButton) view.findViewById(R.id.fabAddNewChild);
         fabAddNewChild.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,22 +61,52 @@ public class FragmentParentHomeChildren extends Fragment {
                 startActivity(i);
             }
         });
+
+        //List of Children
+        final List<ChildDetails> childList = getChildDetails();
+        ListAdapter childrenAdapter = new ChildListAdapter(this.getContext(), childList);
+        ListView childrenListView = (ListView) view.findViewById(R.id.listOfChildren);
+        childrenListView.setAdapter(childrenAdapter);
+
+        childrenListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        ChildDetails cd = (ChildDetails) parent.getItemAtPosition(position);
+                        String childName = cd.mName;
+                        String childRoute = cd.mCurrentRoute;
+
+                        Snackbar.make(view, "Do something with "+childName + ": "+childRoute, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                }
+        );
+
+
         return view;
+
     }
 
-/*
-    public HashMap<Integer, ChildDetails> GetChildInfo() {
+    // Called when add button is clicked.
+//    public void addItem(View view) {
+//
+//        // Add data locally to the list.
+//        ChildDetails dataToAdd = new ChildDetails("Thomas Moran", R.drawable.child_placeholder, "Route to School");
+//        mData.add(dataToAdd);
+//
+//        // Update adapter.
+//        mAdapter.addItem(mData.size() - 1, dataToAdd);
+//    }
 
-//        String selectedImagePath = "C:\Users\temp2015\AndroidStudioProjects\TravelSafe\app\src\main\res\drawable-mdpi\child_placeholder.png";
-//        ImageView img;
-//        img = (ImageView) findViewById(R.drawable.child_placeholder);
-//        Bitmap yourSelectedImage = BitmapFactory.decodeFile(selectedImagePath);
-//        img.setImageBitmap(yourSelectedImage);
+    private List<ChildDetails> getChildDetails() {
 
-        HashMap<Integer, ChildDetails> mapChildDetails = new HashMap();
-        //mapChildDetails.put(1, new ChildDetails("Thomas Moran", new Image(), "School Route 1"));
+        List<ChildDetails> list= new ArrayList<>();
+        list.add(new ChildDetails("Tom", R.drawable.child_placeholder, "School route 1"));
+        list.add(new ChildDetails("Ian", R.drawable.child_placeholder, "School route 1"));
+        list.add(new ChildDetails("Conor", R.drawable.child_placeholder, "School route 1"));
+        list.add(new ChildDetails("Jamie", R.drawable.child_placeholder, "School route 1"));
+        list.add(new ChildDetails("Brian", R.drawable.child_placeholder, "Grans House"));
 
-
-        return mapChildDetails;
-    }*/
+        return list;
+    }
 }
