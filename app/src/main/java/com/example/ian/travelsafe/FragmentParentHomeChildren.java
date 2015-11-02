@@ -6,20 +6,22 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.CardView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -67,7 +69,7 @@ public class FragmentParentHomeChildren extends Fragment {
         ListAdapter childrenAdapter = new ChildListAdapter(this.getContext(), childList);
         ListView childrenListView = (ListView) view.findViewById(R.id.listOfChildren);
         childrenListView.setAdapter(childrenAdapter);
-
+//
         childrenListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
 
@@ -86,17 +88,6 @@ public class FragmentParentHomeChildren extends Fragment {
         return view;
 
     }
-
-    // Called when add button is clicked.
-//    public void addItem(View view) {
-//
-//        // Add data locally to the list.
-//        ChildDetails dataToAdd = new ChildDetails("Thomas Moran", R.drawable.child_placeholder, "Route to School");
-//        mData.add(dataToAdd);
-//
-//        // Update adapter.
-//        mAdapter.addItem(mData.size() - 1, dataToAdd);
-//    }
 
     private List<ChildDetails> getChildDetails() {
 
