@@ -16,7 +16,14 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_scrollFlags="enterAlways"/>
 
-    <include layout="@layout/content_parent_home_children" />
+    <!--<include layout="@layout/content_parent_home_children" />-->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.tabstutorial.FragmentParentHomeChildren"
+        android:id="@+id/listOfChildren">
+    </ListView>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAddNewChild"
