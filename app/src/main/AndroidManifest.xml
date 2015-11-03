@@ -64,10 +64,8 @@
         <activity
             android:name=".ParentHome"
             android:label="@string/title_activity_parent_home" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            view.findViewById(R.id.space).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.deleteChild).setVisibility(View.VISIBLE);
         </activity>
         <activity
             android:name=".RegisterNewChild"

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/linearLayoutChildren">
+    android:id="@+id/linearLayoutChildren"
+    tools:context="com.example.tabstutorial.FragmentParentHomeChildren">
 
 
     <android.support.v7.widget.CardView
@@ -47,35 +48,39 @@
                 android:layout_toRightOf="@+id/child_photo"
                 android:layout_below="@+id/child_name" />
 
-            <ImageView
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/space"
+                android:layout_toRightOf="@+id/child_photo"
+                android:layout_below="@+id/child_route"
+                android:visibility="gone" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/menu"
-                android:src="@drawable/ic_cast_light"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:onClick=""/>
+                android:text="Change Route"
+                android:id="@+id/changeRoute"
+                android:layout_toRightOf="@+id/child_photo"
+                android:layout_below="@+id/space"
+                android:visibility="gone"
+                android:textColor="#006699"
+                android:textSize="16dp"
+                android:textIsSelectable="false"
+                android:textStyle="bold" />
 
-            <!--<Space-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="30dp"-->
-                <!--android:id="@+id/spaceForClick"-->
-                <!--android:layout_toRightOf="@+id/child_photo"-->
-                <!--android:layout_below="@+id/child_route"-->
-                <!--android:visibility="gone"/>-->
-
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/buttonChangeRoute"-->
-                <!--android:text="Change Route"-->
-                <!--android:layout_toRightOf="@+id/child_photo"-->
-                <!--android:layout_below="@+id/spaceForClick"-->
-                <!--android:textColor="#006699"-->
-                <!--android:textStyle="bold"-->
-                <!--android:textSize="16dp"-->
-                <!--android:visibility="gone"/>-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:id="@+id/deleteChild"
+                android:layout_toRightOf="@+id/child_photo"
+                android:layout_below="@+id/changeRoute"
+                android:visibility="gone"
+                android:paddingTop="5dp"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:textColor="#E24908" />
 
 
         </RelativeLayout>

@@ -48,7 +48,7 @@ public class FragmentParentHomeChildren extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_parent_home_children, container, false);
         final Context context = view.getContext();
@@ -69,6 +69,7 @@ public class FragmentParentHomeChildren extends Fragment {
         ListAdapter childrenAdapter = new ChildListAdapter(this.getContext(), childList);
         ListView childrenListView = (ListView) view.findViewById(R.id.listOfChildren);
         childrenListView.setAdapter(childrenAdapter);
+
 //
         childrenListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
@@ -76,12 +77,25 @@ public class FragmentParentHomeChildren extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         ChildDetails cd = (ChildDetails) parent.getItemAtPosition(position);
+
                         String childName = cd.mName;
                         String childRoute = cd.mCurrentRoute;
+                        Snackbar.make(view, "Do something with " + childName + ": " + childRoute, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-                        Snackbar.make(view, "Do something with "+childName + ": "+childRoute, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        if(view.findViewById(R.id.space).getVisibility() == View.GONE){
+                            view.findViewById(R.id.space).setVisibility(View.VISIBLE);
+                            view.findViewById(R.id.deleteChild).setVisibility(View.VISIBLE);
+                            view.findViewById(R.id.changeRoute).setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            view.findViewById(R.id.space).setVisibility(View.GONE);
+                            view.findViewById(R.id.deleteChild).setVisibility(View.GONE);
+                            view.findViewById(R.id.changeRoute).setVisibility(View.GONE);
+                        }
+
                     }
                 }
+
         );
 
 
@@ -100,4 +114,5 @@ public class FragmentParentHomeChildren extends Fragment {
 
         return list;
     }
+
 }

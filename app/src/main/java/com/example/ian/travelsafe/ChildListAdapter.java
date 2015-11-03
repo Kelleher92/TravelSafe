@@ -34,4 +34,5 @@ public class ChildListAdapter extends ArrayAdapter<ChildDetails> {
 
         return customView;
     }
+
 }
