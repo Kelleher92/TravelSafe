@@ -1,5 +1,7 @@
 package com.example.ian.travelsafe;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.CardView;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -83,14 +86,6 @@ public class FragmentParentHomeChildren extends Fragment {
                         String childRoute = cd.mCurrentRoute;
                         Snackbar.make(view, "Do something with " + childName + ": " + childRoute, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
-
-                        try {
-                            TextView tv = (TextView) parent.getItemAtPosition(position);
-                            System.out.println("SUCCESS");
-                        } catch (Exception e) {
-                            System.out.println("CATHCH");
-                        }
-
                         if(view.findViewById(R.id.space).getVisibility() == View.GONE){
                             view.findViewById(R.id.space).setVisibility(View.VISIBLE);
                             view.findViewById(R.id.deleteChild).setVisibility(View.VISIBLE);
@@ -124,15 +119,4 @@ public class FragmentParentHomeChildren extends Fragment {
 
         return list;
     }
-
-
-    public void ChangeRoute(View view) {
-        Toast.makeText(this.getContext(), "Change Route", Toast.LENGTH_SHORT);
-    }
-
-    public void DeleteChild(View view) {
-        Toast.makeText(this.getContext(), "Delete Child", Toast.LENGTH_SHORT);
-
-    }
-
 }

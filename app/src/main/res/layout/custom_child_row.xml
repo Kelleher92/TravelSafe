@@ -69,8 +69,9 @@
                 android:textSize="16dp"
                 android:textStyle="bold"
                 android:clickable="true"
-                android:focusableInTouchMode="false"
-                android:focusable="false" />
+                android:focusableInTouchMode="true"
+                android:focusable="false"
+                android:onClick="ChangeRoute" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +87,8 @@
                 android:textColor="#E24908"
                 android:clickable="true"
                 android:focusable="false"
-                android:focusableInTouchMode="false" />
+                android:onClick="DeleteChild"
+                android:focusableInTouchMode="true" />
 
 
         </RelativeLayout>
