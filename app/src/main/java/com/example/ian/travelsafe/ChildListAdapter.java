@@ -35,4 +35,16 @@ public class ChildListAdapter extends ArrayAdapter<ChildDetails> {
         return customView;
     }
 
+    @Override
+    public boolean areAllItemsEnabled()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled(int arg0)
+    {
+        return true;
+    }
+
 }

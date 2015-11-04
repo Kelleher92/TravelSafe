@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:id="@+id/relativeLayoutChild">
+            android:id="@+id/relativeLayoutChild"
+            android:descendantFocusability="blocksDescendants">
 
             <ImageView
                 android:layout_width="50dp"
@@ -66,8 +67,10 @@
                 android:visibility="gone"
                 android:textColor="#006699"
                 android:textSize="16dp"
-                android:textIsSelectable="false"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusableInTouchMode="false"
+                android:focusable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -80,7 +83,10 @@
                 android:paddingTop="5dp"
                 android:textStyle="bold"
                 android:textSize="14dp"
-                android:textColor="#E24908" />
+                android:textColor="#E24908"
+                android:clickable="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
 
         </RelativeLayout>

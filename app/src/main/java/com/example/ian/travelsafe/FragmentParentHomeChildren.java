@@ -2,6 +2,7 @@ package com.example.ian.travelsafe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +72,6 @@ public class FragmentParentHomeChildren extends Fragment {
         ListView childrenListView = (ListView) view.findViewById(R.id.listOfChildren);
         childrenListView.setAdapter(childrenAdapter);
 
-//
         childrenListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
 
@@ -82,6 +83,14 @@ public class FragmentParentHomeChildren extends Fragment {
                         String childRoute = cd.mCurrentRoute;
                         Snackbar.make(view, "Do something with " + childName + ": " + childRoute, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
+
+                        try {
+                            TextView tv = (TextView) parent.getItemAtPosition(position);
+                            System.out.println("SUCCESS");
+                        } catch (Exception e) {
+                            System.out.println("CATHCH");
+                        }
+
                         if(view.findViewById(R.id.space).getVisibility() == View.GONE){
                             view.findViewById(R.id.space).setVisibility(View.VISIBLE);
                             view.findViewById(R.id.deleteChild).setVisibility(View.VISIBLE);
@@ -92,11 +101,12 @@ public class FragmentParentHomeChildren extends Fragment {
                             view.findViewById(R.id.deleteChild).setVisibility(View.GONE);
                             view.findViewById(R.id.changeRoute).setVisibility(View.GONE);
                         }
-
                     }
                 }
 
         );
+
+        TextView tv = (TextView) view.findViewById(R.id.changeRoute);
 
 
         return view;
@@ -113,6 +123,16 @@ public class FragmentParentHomeChildren extends Fragment {
         list.add(new ChildDetails("Brian", R.drawable.child_placeholder, "Grans House"));
 
         return list;
+    }
+
+
+    public void ChangeRoute(View view) {
+        Toast.makeText(this.getContext(), "Change Route", Toast.LENGTH_SHORT);
+    }
+
+    public void DeleteChild(View view) {
+        Toast.makeText(this.getContext(), "Delete Child", Toast.LENGTH_SHORT);
+
     }
 
 }
