@@ -15,4 +15,6 @@
     <string name="title_activity_register_new_child">RegisterNewChild</string>
     <string name="action_register_button">Register</string>
     <string name="title_activity_test_button">TestButton</string>
+    <string name="title_activity_gps__location">gps_Location</string>
+    <string name="title_activity_child_home">ChildHome</string>
 </resources>
