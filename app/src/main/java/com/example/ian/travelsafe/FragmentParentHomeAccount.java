@@ -65,16 +65,11 @@ public class FragmentParentHomeAccount extends Fragment {
                         SettingDetails sd = (SettingDetails) parent.getItemAtPosition(position);
 
                         String settingTitle = sd.mSettingTitle;
-                        switch (settingTitle) {
-                            case "Email":
-                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            case "Password":
-                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            case "Notifications":
-//                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                createNotification();
-                            case "Log Out":
-                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        switch (position) {
+                            case 0: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            case 1: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            case 2: createNotification();
+                            case 3: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
                     }
                 }
