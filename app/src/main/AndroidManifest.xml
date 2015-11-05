@@ -69,6 +69,11 @@
         <activity
             android:name=".ParentHome"
             android:label="@string/title_activity_parent_home" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".RegisterNewChild"
@@ -78,6 +83,8 @@
         <activity
             android:name=".ChildHome"
             android:label="@string/title_activity_child_home" >
+        </activity>
+        <activity android:name=".Notifications" >
         </activity>
     </application>
 

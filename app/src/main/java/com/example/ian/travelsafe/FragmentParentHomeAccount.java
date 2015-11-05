@@ -1,10 +1,15 @@
 package com.example.ian.travelsafe;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +27,8 @@ import java.util.List;
 
 public class FragmentParentHomeAccount extends Fragment {
 
+    NotificationCompat.Builder notification;
+    private  static int uniqueID = 1;
 
     public static FragmentParentHomeAccount newInstance() {
         return new FragmentParentHomeAccount();
@@ -40,6 +47,10 @@ public class FragmentParentHomeAccount extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_parent_home_account, container, false);
+
+        // Initialise notifications
+        notification = new NotificationCompat.Builder(this.getContext());
+        notification.setAutoCancel(true);
 
         final List<SettingDetails> settingList = getSettingsDetails();
         ListAdapter settingsAdapter = new SettingsAdapter(this.getContext(), settingList);
@@ -60,7 +71,8 @@ public class FragmentParentHomeAccount extends Fragment {
                             case "Password":
                                 Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             case "Notifications":
-                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+//                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                createNotification();
                             case "Log Out":
                                 Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
@@ -81,6 +93,24 @@ public class FragmentParentHomeAccount extends Fragment {
         list.add(new SettingDetails("Log Out", R.drawable.ic_power_settings_new_black_24dp));
 
         return list;
+    }
+
+    public void createNotification() {
+        notification.setSmallIcon(R.drawable.child_cycle_blue);
+        notification.setTicker("New Route Update");
+        notification.setWhen(System.currentTimeMillis());
+        notification.setContentTitle("New Update");
+        notification.setContentText("Your child is making progress");
+
+        Intent intent = new Intent(this.getContext(), ParentHome.class);
+        PendingIntent pI = PendingIntent.getActivity(this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pI);
+
+        // Build notification and issue it.
+        NotificationManager nm = (NotificationManager) this.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(uniqueID, notification.build());
+        uniqueID++;
+
     }
 
 }
