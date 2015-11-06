@@ -27,6 +27,8 @@ import java.util.List;
 
 public class FragmentParentHomeAccount extends Fragment {
 
+    UserLocalStore userLocalStore;
+
     NotificationCompat.Builder notification;
     private  static int uniqueID = 1;
 
@@ -41,6 +43,7 @@ public class FragmentParentHomeAccount extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userLocalStore = new UserLocalStore(this.getContext());
     }
 
     @Override
@@ -66,10 +69,21 @@ public class FragmentParentHomeAccount extends Fragment {
 
                         String settingTitle = sd.mSettingTitle;
                         switch (position) {
+                            // Email
                             case 0: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                break;
+                            // Password
                             case 1: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                break;
+                            // Notifications
                             case 2: createNotification();
-                            case 3: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                break;
+                            // Log Out
+                            case 3:
+                                userLocalStore.clearUserData();
+                                userLocalStore.setUserLoggedIn(false);
+                                returnToLoginPage();
+                                break;
                         }
                     }
                 }
@@ -77,6 +91,11 @@ public class FragmentParentHomeAccount extends Fragment {
 
 
         return view;
+    }
+
+    public void returnToLoginPage() {
+        Intent i = new Intent(this.getContext(), LoginActivity.class);
+        startActivity(i);
     }
 
     private List<SettingDetails> getSettingsDetails() {

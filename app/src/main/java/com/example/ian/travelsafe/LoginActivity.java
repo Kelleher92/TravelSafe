@@ -1,5 +1,6 @@
 package com.example.ian.travelsafe;
 
+import android.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +16,40 @@ import com.google.android.gms.common.SignInButton;
 
 public class LoginActivity extends AppCompatActivity {
 
+    EditText username, password;
+    UserLocalStore userLocalStore;
+
     private static final String TAG = "";
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        if (authenticate()){
+            displayUserDetails();
+        }
+    }
+
+    private boolean authenticate(){
+        return userLocalStore.getUserLoggedIn();
+    }
+
+    private void displayUserDetails(){
+        Users user = userLocalStore.getLoggedInUser();
+
+        username.setText(user._username);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);     // Turn off action bar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        username = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
+
+        userLocalStore = new UserLocalStore(this);
     }
 
     @Override
@@ -53,19 +81,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public boolean verifyDetails() {
-        EditText username = (EditText) this.findViewById(R.id.username);
-        String user_username = username.getText().toString();
-        /*if (!isRegisteredUser(user_username)) {
-            username.setError("invalid username");
-            return false;
-        }*/
 
-        EditText password = (EditText) this.findViewById(R.id.password);
         String user_password = password.getText().toString();
         if (!RegisterParentActivity.isValidPassword(user_password)) {
             password.setError("password must contain at least 6 characters and 1 number");
             return false;
         }
+
+        Users user = new Users(null, null, null);
+        userLocalStore.storeUserData(user);
+        userLocalStore.setUserLoggedIn(true);
 
         return true;
     }
