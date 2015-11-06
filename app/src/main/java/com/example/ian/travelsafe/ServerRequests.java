@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
+import org.apache.*;
 
 /**
  * Created by ian on 06/11/2015.
