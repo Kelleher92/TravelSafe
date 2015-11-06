@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 public class LoginActivity extends AppCompatActivity {
 
+    boolean flag = false;
     EditText username, password;
     UserLocalStore userLocalStore;
 
@@ -91,7 +92,10 @@ public class LoginActivity extends AppCompatActivity {
 
         authenticate(user);
 
-        return true;
+        if (flag)
+            return true;
+        else
+            return false;
     }
 
     private void authenticate(Users user){
@@ -103,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                     showErrorMessage();
                 else {
                     logUserIn(returnedUser);
+                    flag = true;
                 }
             }
         });
@@ -123,13 +128,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
-        if (verifyDetails()){
+        //if (verifyDetails()){
             Intent i = new Intent(this, ParentHome.class);
             startActivity(i);
-        }
-        else {
+        //}
+        //else {
 
-        }
+        //}
 
     }
 }
