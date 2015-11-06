@@ -43,7 +43,10 @@ public class ServerRequests {
         @Override
         protected Void doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair());
+            dataToSend.add(new BasicNameValuePair("username", user._username));
+            dataToSend.add(new BasicNameValuePair("email address", user._emailAddress));
+            dataToSend.add(new BasicNameValuePair("password", user._password));
+
 
             return null;
         }
