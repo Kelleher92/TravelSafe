@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.EditText;
 
 public class RegisterParentActivity extends AppCompatActivity {
+    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,10 @@ public class RegisterParentActivity extends AppCompatActivity {
 
         registerUser(user);
 
-        return true;
+        if (flag)
+            return true;
+        else
+            return false;
     }
 
     private void registerUser(Users user){
@@ -81,17 +85,17 @@ public class RegisterParentActivity extends AppCompatActivity {
         serverRequests.storeUserDataInBackground(user, new GetUserCallback() {
             @Override
             public void done(Users returnedUser) {
-
+                flag = true;
             }
         });
     }
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
-        if (verifyDetails()) {
+        //if (verifyDetails()) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
-        }
-        else {}
+        //}
+        //else {}
     }
 }
