@@ -1,18 +1,15 @@
 package com.example.ian.travelsafe;
 
 import android.R;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-
-import com.google.android.gms.common.SignInButton;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,19 +19,19 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "";
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
 
-        if (authenticate()){
+        if (authenticate()) {
             displayUserDetails();
         }
     }
 
-    private boolean authenticate(){
+    private boolean authenticate() {
         return userLocalStore.getUserLoggedIn();
     }
 
-    private void displayUserDetails(){
+    private void displayUserDetails() {
         Users user = userLocalStore.getLoggedInUser();
 
         username.setText(user._username);
@@ -88,20 +85,52 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
 
-        Users user = new Users(null, null, null);
-        userLocalStore.storeUserData(user);
-        userLocalStore.setUserLoggedIn(true);
+        String _username = username.getText().toString();
+        String _password = password.getText().toString();
+
+        Users user = new Users(null, _username, _password);
+
+        authenticate(user);
 
         return true;
     }
 
+    private void authenticate(Users user){
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.fetchUserDataInBackground(user, new GetUserCallback() {
+            @Override
+            public void done(Users returnedUser) {
+                if (returnedUser == null)
+                    showErrorMessage();
+                else {
+                    logUserIn(returnedUser);
+                }
+            }
+        });
+
+    }
+
+    private void showErrorMessage(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+        dialogBuilder.setMessage("Incorrect user details");
+        dialogBuilder.setPositiveButton("OK", null);
+        dialogBuilder.show();
+    }
+
+    private void logUserIn(Users returnedUser){
+        userLocalStore.storeUserData(returnedUser);
+        userLocalStore.setUserLoggedIn(true);
+    }
+
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
-        if (verifyDetails()) {
+        if (verifyDetails()){
             Intent i = new Intent(this, ParentHome.class);
             startActivity(i);
         }
-        else {}
+        else {
+
+        }
 
     }
 }
