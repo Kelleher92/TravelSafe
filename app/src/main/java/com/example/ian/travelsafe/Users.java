@@ -14,6 +14,11 @@ public class Users {
         this._password = password;
     }
 
+    public Users (String username, String password){
+        this._username = username;
+        this._password = password;
+    }
+
     public void set_emailAddress(String _emailAddress) {
         this._emailAddress = _emailAddress;
     }

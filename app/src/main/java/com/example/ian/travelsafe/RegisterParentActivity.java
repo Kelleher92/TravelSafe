@@ -1,6 +1,7 @@
 package com.example.ian.travelsafe;
 
 import android.content.Intent;
+import android.hardware.usb.UsbRequest;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -70,15 +71,26 @@ public class RegisterParentActivity extends AppCompatActivity {
 
         Users user = new Users(user_email,user_username,user_password);
 
+        registerUser(user);
+
         return true;
+    }
+
+    private void registerUser(Users user){
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.storeUserDataInBackground(user, new GetUserCallback() {
+            @Override
+            public void done(Users returnedUser) {
+
+            }
+        });
     }
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
         if (verifyDetails()) {
-            Intent i = new Intent(this, ParentHome.class);
+            Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
-
         }
         else {}
     }
