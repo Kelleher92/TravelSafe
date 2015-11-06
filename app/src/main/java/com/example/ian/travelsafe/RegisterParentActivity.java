@@ -31,10 +31,10 @@ public class RegisterParentActivity extends AppCompatActivity {
 
     public static boolean isValidPassword(String s){
         if (s == null)
-        return false;
+            return false;
 
         if (s.length() < 7)
-        return false;
+            return false;
 
         int counter = 0;
 
@@ -45,9 +45,9 @@ public class RegisterParentActivity extends AppCompatActivity {
                 counter++;
         }
         if (counter >= 1)
-        return true;
+            return true;
         else
-        return false;
+            return false;
     }
 
     public boolean verifyDetails() {
@@ -68,6 +68,8 @@ public class RegisterParentActivity extends AppCompatActivity {
             return false;
         }
 
+        Users user = new Users(user_email,user_username,user_password);
+
         return true;
     }
 
@@ -76,6 +78,7 @@ public class RegisterParentActivity extends AppCompatActivity {
         if (verifyDetails()) {
             Intent i = new Intent(this, ParentHome.class);
             startActivity(i);
+
         }
         else {}
     }
