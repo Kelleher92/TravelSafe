@@ -27,11 +27,25 @@
         android:orientation="vertical"
         android:weightSum="1">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/IntroChild"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right">
+            android:background="#ffffff"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Child Account"
+                android:id="@+id/NewChildAccountTitle"
+                android:layout_gravity="left|center_vertical"
+                android:textColor="#006699"
+                android:textSize="20sp"
+                android:layout_centerVertical="true" />
+
 
             <ImageView
                 android:layout_width="50dp"
@@ -40,20 +54,26 @@
                 android:maxHeight="20dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/child_walk_blue"
-                android:id="@+id/imageView" />
-
+                android:id="@+id/NewChildAccountImage1"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/NewChildAccountImage2"
+                android:layout_toStartOf="@+id/NewChildAccountImage2" />
 
             <ImageView
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="50dp"
                 android:maxWidth="20dp"
                 android:maxHeight="20dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/child_jump_blue"
-                android:id="@+id/imageView4" />
+                android:src="@drawable/child_dance_blue"
+                android:paddingRight="5dp"
+                android:id="@+id/NewChildAccountImage2"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <View android:id="@+id/separator"
             android:background="@color/travelSafeBlue"
@@ -69,7 +89,7 @@
 
 
         <AutoCompleteTextView
-            android:id="@+id/username"
+            android:id="@+id/newChildUsername"
             android:layout_width="285dp"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_username"
@@ -82,7 +102,8 @@
             android:layout_marginBottom="12dp"
             android:layout_gravity="center_horizontal" />
 
-        <EditText android:id="@+id/password"
+        <EditText
+            android:id="@+id/newChildPassword"
             android:layout_width="285dp"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_password"
@@ -107,24 +128,19 @@
             android:text="@string/action_register_button"
             android:textColor="#006699"
             android:layout_gravity="center_horizontal"
-            android:onClick="RegisterNewChild"/>
+            android:onClick="CreateNewChild"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Go Back"
-            android:id="@+id/GoBackToParentHome"
+            android:id="@+id/GoBackNewChildReg"
             android:paddingTop="10dp"
             android:layout_gravity="center_horizontal"
             android:textStyle="normal"
             android:textColor="#626262"
             android:onClick="ReturnToParentHome"
             android:layout_weight="0.04" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp"
-            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 

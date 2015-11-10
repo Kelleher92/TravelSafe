@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterNewChild extends AppCompatActivity {
@@ -30,8 +31,21 @@ public class RegisterNewChild extends AppCompatActivity {
         Toast.makeText(this, "Return To ParentHome", Toast.LENGTH_SHORT);
     }
 
-    public void RegisterNewChild(View view) {
+    public void CreateNewChild(View view) {
 
-        Toast.makeText(this, "Register New Child Here", Toast.LENGTH_SHORT);
+        // Get new child details entered by user
+        TextView nU = (TextView) view.findViewById(R.id.newChildUsername);
+        TextView nP = (TextView) view.findViewById(R.id.newChildUsername);
+        String newUsername = (String) nU.getText();
+        String newPassword = (String) nP.getText();
+        System.out.println("newUsername....." + newUsername);
+        System.out.println("newPassword....." + newPassword);
+
+
+        // Add to user list
+
+        //Regenerate List
+
+//        Toast.makeText(this, "Register New Child Here", Toast.LENGTH_SHORT);
     }
 }
