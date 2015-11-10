@@ -97,8 +97,6 @@ public class ChildHome extends AppCompatActivity {
 
     }
 
-
-
     public void DisplayStartLocation(){
 
     }
