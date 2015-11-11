@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Change Route"
+                android:text="Assign Route"
                 android:id="@+id/changeRoute"
                 android:layout_toRightOf="@+id/child_photo"
                 android:layout_below="@+id/space"
@@ -71,7 +71,7 @@
                 android:clickable="true"
                 android:focusableInTouchMode="true"
                 android:focusable="false"
-                android:onClick="ChangeRoute" />
+                android:onClick="AssignRoute" />
 
             <TextView
                 android:layout_width="wrap_content"
