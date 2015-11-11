@@ -128,13 +128,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
-        //if (verifyDetails()){
+        if (verifyDetails()){
             Intent i = new Intent(this, ParentHome.class);
             startActivity(i);
-        //}
-        //else {
+        }
+        else {
 
-        //}
+        }
 
     }
 }

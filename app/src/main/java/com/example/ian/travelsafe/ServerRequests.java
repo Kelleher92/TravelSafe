@@ -25,7 +25,7 @@ public class ServerRequests {
     ProgressDialog progressDialog;
     public static final int CONNECTION_TIMEOUT = 1000 * 15;
 //************************************************************************************************
-    public static final String SERVER_ADDRESS = "31.170.165.139/";
+    public static final String SERVER_ADDRESS = "http://31.170.165.139/public_html/";
 //************************************************************************************************
 
     public ServerRequests(Context context){
