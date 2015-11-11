@@ -25,7 +25,7 @@ public class ServerRequests {
     ProgressDialog progressDialog;
     public static final int CONNECTION_TIMEOUT = 1000 * 15;
 //************************************************************************************************
-    public static final String SERVER_ADDRESS = "http://travelsafe.esy.es/";
+    public static final String SERVER_ADDRESS = "http://travelsafe.esy.es/"; //Woo
 //************************************************************************************************
 
     public ServerRequests(Context context){
