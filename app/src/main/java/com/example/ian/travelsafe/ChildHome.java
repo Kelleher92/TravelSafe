@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -76,12 +77,20 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onRefresh() {
 
+
+
                 myLocation = mMap.getMyLocation();
                 Locale loc = null;
                 myAddress = new Address(loc);
                 try {
                     myAddress = getAddressForLocation(ChildHome.this, myLocation);
                     currentLocation.setText(myAddress.getAddressLine(0) + ", " + myAddress.getAddressLine(1));
+                    // Focusing camera on current location.
+                    CameraUpdate center = CameraUpdateFactory
+                            .newLatLng(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+                    mMap.moveCamera(center);
+                    mMap.animateCamera(zoom);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -91,28 +100,28 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
 
 
         // New thread to get current locations.
-        handler = new Handler();
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    while(true) {
-                        sleep(10000);
-                        handler.post(this);
-                        try {
-                            currentLocation.setText(myAddress.getAddressLine(0) + ", " + myAddress.getAddressLine(1));
-                        }
-                        catch(Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.start();
+//        handler = new Handler();
+//        Thread thread = new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    while(true) {
+//                        sleep(10000);
+//                        handler.post(this);
+//                        try {
+//                            currentLocation.setText(myAddress.getAddressLine(0) + ", " + myAddress.getAddressLine(1));
+//                        }
+//                        catch(Exception e){
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        thread.start();
 
     }
 
@@ -143,7 +152,7 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
 
     }
 
-    public void DisplayCurrentLocation(){
+    public void DisplayCurrentLocation() {
 
     }
 
@@ -160,6 +169,7 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.setTrafficEnabled(true);
 
 //        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
 //            @Override
