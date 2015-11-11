@@ -1,6 +1,7 @@
 package com.example.ian.travelsafe;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbRequest;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class RegisterParentActivity extends AppCompatActivity {
     boolean flag = false;
@@ -91,11 +93,21 @@ public class RegisterParentActivity extends AppCompatActivity {
         });
     }
 
-    private void showRegistererdMessage(){
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
-        dialogBuilder.setMessage("You have successfully registered");
-        dialogBuilder.setPositiveButton("OK", null);
-        dialogBuilder.show();
+    private void showRegisteredMessage(){
+//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
+//        dialogBuilder.setMessage("You have successfully registered");
+//        dialogBuilder.setPositiveButton("OK", null);
+//        dialogBuilder.show();
+
+        new android.support.v7.app.AlertDialog.Builder(RegisterParentActivity.this)
+                .setMessage("You have successfully registered")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(RegisterParentActivity.this, LoginActivity.class);
+                        startActivity(i);
+                    }
+                })
+                .show();
     }
 
 
@@ -104,15 +116,14 @@ public class RegisterParentActivity extends AppCompatActivity {
         dialogBuilder.setMessage("Register was unsuccessful");
         dialogBuilder.setPositiveButton("OK", null);
         dialogBuilder.show();
+
     }
 
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
         if (verifyDetails()) {
-            showErrorMessage();
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivity(i);
+            showRegisteredMessage();
         }
         else {
             showErrorMessage();

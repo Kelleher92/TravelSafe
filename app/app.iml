@@ -154,7 +154,7 @@
     <orderEntry type="library" exported="" name="play-services-fitness-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-8.3.0" level="project" />
     <orderEntry type="module" module-name="httpcore-4.4.4" exported="" />
-    <orderEntry type="module" module-name="httpclient-4.5.1" exported="" />
     <orderEntry type="module" module-name="json-simple-1.1.1" exported="" />
+    <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
   </component>
 </module>
