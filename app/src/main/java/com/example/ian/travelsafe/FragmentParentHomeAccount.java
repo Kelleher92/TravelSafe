@@ -70,13 +70,18 @@ public class FragmentParentHomeAccount extends Fragment {
                         String settingTitle = sd.mSettingTitle;
                         switch (position) {
                             // Email
-                            case 0: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            case 0:
+                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                                 break;
                             // Password
-                            case 1: Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            case 1:
+                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                Intent i = new Intent(view.getContext(), ChildHome.class);
+                                startActivity(i);
                                 break;
                             // Notifications
-                            case 2: createNotification();
+                            case 2:
+                                createNotification();
                                 break;
                             // Log Out
                             case 3:

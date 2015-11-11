@@ -1,58 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_childHome"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.ian.travelsafe.ChildHome"
-    android:background="#ffffff">
-
+    android:layout_height="wrap_content"
+    tools:context=".ChildHome">
 
     <LinearLayout
-        android:id="@+id/IntroChild"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:layout_gravity="center_vertical"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:weightSum="1">
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".ChildHome"
+        android:background="#ffffff">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:id="@+id/IntroChild"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right">
+            android:background="#ffffff"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:weightSum="1">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="251dp"
-                android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hi "
+                android:id="@+id/Hi"
+                android:layout_gravity="left|center_vertical"
+                android:textColor="#006699"
+                android:textSize="20sp"
+                android:layout_centerVertical="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hi "
-                    android:id="@+id/Hi"
-                    android:layout_gravity="center_vertical|right"
-                    android:textColor="#006699"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Adam"
-                    android:id="@+id/ChildFirstName"
-                    android:layout_gravity="center_vertical|right"
-                    android:textColor="#006699"
-                    android:textSize="20dp" />
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adam"
+                android:id="@+id/ChildFirstName"
+                android:layout_gravity="left|center_vertical"
+                android:textColor="#006699"
+                android:textSize="20sp"
+                android:layout_toRightOf="@+id/Hi"
+                android:layout_centerVertical="true" />
 
             <ImageView
                 android:layout_width="50dp"
@@ -61,136 +59,137 @@
                 android:maxHeight="20dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/child_dance_blue"
-                android:id="@+id/image1" />
-
+                android:id="@+id/image1"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/image2"
+                android:layout_toStartOf="@+id/image2" />
 
             <ImageView
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="50dp"
                 android:maxWidth="20dp"
                 android:maxHeight="20dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/child_jump_blue"
-                android:id="@+id/image2" />
+                android:paddingRight="5dp"
+                android:id="@+id/image2"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="20px" />
+            <!--<View android:id="@+id/separatorChildHome"-->
+                <!--android:background="@color/travelSafeBlue"-->
+                <!--android:layout_width = "fill_parent"-->
+                <!--android:layout_height="1dip"-->
+                <!--android:layout_centerVertical ="true"-->
+                <!--android:layout_alignParentTop="true"/>-->
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <!--<View android:id="@+id/separatorChildHome"-->
-            <!--android:background="@color/travelSafeBlue"-->
-            <!--android:layout_width = "fill_parent"-->
-            <!--android:layout_height="1dip"-->
-            <!--android:layout_centerVertical ="true"-->
-            <!--android:layout_alignParentTop="true"/>-->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="373dp"
+            android:id="@+id/mapContainerChild"
+            android:background="@drawable/button_white"
+            >
 
+            <fragment
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:id="@+id/childMap"
+                android:layout_margin="2dp"
+                android:layout_weight="2.92" />
+
+        </FrameLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="5dp" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Location:"
+                    android:id="@+id/sL" />
+
+                <Space
+                    android:layout_width="20px"
+                    android:layout_height="20px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:id="@+id/startLocation"
+                    android:layout_column="11"
+                    android:textColor="#006699" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End Location:"
+                    android:id="@+id/eL" />
+
+                <Space
+                    android:layout_width="20px"
+                    android:layout_height="20px" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:id="@+id/endLocation"
+                    android:layout_column="11"
+                    android:textColor="#006699" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Location: "
+                    android:id="@+id/cL" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:id="@+id/currentLocation"
+                    android:layout_column="11"
+                    android:textColor="#006699" />
+            </TableRow>
+
+        </TableLayout>
+
+        <Button
+            android:id="@+id/ButtonStartJourney"
+            android:layout_width="285dp"
+            android:layout_height="32dp"
+            android:layout_margin="10dp"
+            android:foregroundGravity="center"
+            android:background="@drawable/button_white"
+            android:text="Start Journey"
+            android:textColor="#006699"
+            android:onClick="StartJourney" />
 
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="373dp"
-        android:id="@+id/mapContainerChild"
-        android:background="@drawable/button_white"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Place Image/Route Here"
-            android:id="@+id/textView10"
-            android:layout_gravity="center" />
-    </FrameLayout>
-    
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="5dp" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="64dp">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Start Location:"
-                android:id="@+id/sL" />
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-"
-                android:id="@+id/startLocation"
-                android:layout_column="11"
-                android:textColor="#006699" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="End Location:"
-                android:id="@+id/eL" />
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-"
-                android:id="@+id/endLocation"
-                android:layout_column="11"
-                android:textColor="#006699" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Current Location: "
-                android:id="@+id/cL" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="-"
-                android:id="@+id/currentLocation"
-                android:layout_column="11"
-                android:textColor="#006699" />
-        </TableRow>
-
-    </TableLayout>
-
-    <Button
-        android:id="@+id/ButtonStartJourney"
-        android:layout_width="285dp"
-        android:layout_height="32dp"
-        android:layout_margin="10dp"
-        android:foregroundGravity="center"
-        android:background="@drawable/button_white"
-        android:text="Start Journey"
-        android:textColor="#006699"
-        android:onClick="StartJourney" />
-
-</LinearLayout>
-
-
+</android.support.v4.widget.SwipeRefreshLayout>
