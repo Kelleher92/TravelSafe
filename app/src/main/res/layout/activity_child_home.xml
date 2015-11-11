@@ -41,16 +41,16 @@
                 android:textSize="20sp"
                 android:layout_centerVertical="true" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Adam"
-                android:id="@+id/ChildFirstName"
-                android:layout_gravity="left|center_vertical"
-                android:textColor="#006699"
-                android:textSize="20sp"
-                android:layout_toRightOf="@+id/Hi"
-                android:layout_centerVertical="true" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Adam"-->
+                <!--android:id="@+id/ChildFirstName"-->
+                <!--android:layout_gravity="left|center_vertical"-->
+                <!--android:textColor="#006699"-->
+                <!--android:textSize="20sp"-->
+                <!--android:layout_toRightOf="@+id/Hi"-->
+                <!--android:layout_centerVertical="true" />-->
 
             <ImageView
                 android:layout_width="50dp"

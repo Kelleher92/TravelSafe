@@ -1,15 +1,20 @@
 package com.example.ian.travelsafe;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.PopupMenuCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -80,12 +85,12 @@ public class ParentHome extends AppCompatActivity {
     }
 
     /**
-     * Method to call the set route activity
+     * Method to call the assign route activity
      * @param view
      */
-    public void ChangeRoute(View view) {
-        Toast toast = Toast.makeText(view.getContext(), "Change Route", Toast.LENGTH_SHORT);
-        toast.show();
+    public void AssignRoute(View view) {
+//        Snackbar.make(view, "Assign Route" , Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        startActivity(new Intent(ParentHome.this, Pop.class));
     }
 
     /**

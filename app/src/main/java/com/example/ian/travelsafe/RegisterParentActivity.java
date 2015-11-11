@@ -92,10 +92,10 @@ public class RegisterParentActivity extends AppCompatActivity {
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
-        //if (verifyDetails()) {
+        if (verifyDetails()) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
-        //}
-        //else {}
+        }
+        else {}
     }
 }
