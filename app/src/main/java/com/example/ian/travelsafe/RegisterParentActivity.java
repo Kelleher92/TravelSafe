@@ -75,22 +75,21 @@ public class RegisterParentActivity extends AppCompatActivity {
 
         Users user = new Users(user_email,user_username,user_password);
 
-        registerUser(user);
-
-        if (flag)
+        if (registerUser(user))
             return true;
         else
             return false;
     }
 
-    private void registerUser(Users user){
+    private boolean registerUser(Users user){
         ServerRequests serverRequests = new ServerRequests(this);
         serverRequests.storeUserDataInBackground(user, new GetUserCallback() {
             @Override
             public void done(Users returnedUser) {
-                flag = true;
             }
+
         });
+        return true;
     }
 
     private void showRegisteredMessage(){

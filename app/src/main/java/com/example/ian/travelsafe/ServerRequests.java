@@ -3,6 +3,8 @@ package com.example.ian.travelsafe;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -58,7 +60,7 @@ public class ServerRequests {
         protected Void doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("username", user._username));
-            dataToSend.add(new BasicNameValuePair("email address", user._emailAddress));
+            dataToSend.add(new BasicNameValuePair("emailaddress", user._emailAddress));
             dataToSend.add(new BasicNameValuePair("password", user._password));
 
             HttpParams httpRequestParams = new BasicHttpParams();
@@ -68,12 +70,34 @@ public class ServerRequests {
             HttpClient client = new DefaultHttpClient(httpRequestParams);
             HttpPost post = new HttpPost(SERVER_ADDRESS + "Register.php");
 
+            Log.i("MyActivity", "Sent to server");
+
             try{
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
-                client.execute(post);
+                HttpResponse httpResponse = client.execute(post);
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+                String response = "";
+
+                if(jObject.length() == 0)
+                    response = "No response";
+                else{
+                    response = jObject.getString("type");
+                }
+
+                Log.i("MyActivity", "response = '" + response + "'.");
+
             }catch (Exception e){
                 e.printStackTrace();
             }
+//            try{
+//                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+//                client.execute(post);
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
 
             return null;
         }
