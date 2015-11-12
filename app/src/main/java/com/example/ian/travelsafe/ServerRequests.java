@@ -143,8 +143,13 @@ public class ServerRequests {
                 String result = EntityUtils.toString(entity);
                 JSONObject jObject = new JSONObject(result);
 
-                if(jObject.length() == 0)
+                Log.i("MyActivity", "Sent to server");
+
+                if(jObject.length() == 0) {
                     returnedUser = null;
+                    Log.i("MyActivity", "Nothing returned");
+                }
+
                 else{
                     String id = jObject.getString("id");
                     String email = jObject.getString("emailaddress");
@@ -152,6 +157,9 @@ public class ServerRequests {
                     String password = jObject.getString("password");
 
                     returnedUser = new Users(email,user._username,user._password);
+
+                    Log.i("MyActivity", "User returned");
+
                 }
 
             }catch (Exception e){
