@@ -3,13 +3,11 @@ package com.example.ian.travelsafe;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.usb.UsbRequest;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class RegisterParentActivity extends AppCompatActivity {
     boolean flag = false;
@@ -93,10 +91,6 @@ public class RegisterParentActivity extends AppCompatActivity {
     }
 
     private void showRegisteredMessage(){
-//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
-//        dialogBuilder.setMessage("You have successfully registered");
-//        dialogBuilder.setPositiveButton("OK", null);
-//        dialogBuilder.show();
 
         new android.support.v7.app.AlertDialog.Builder(RegisterParentActivity.this)
                 .setMessage("You have successfully registered")
@@ -109,15 +103,12 @@ public class RegisterParentActivity extends AppCompatActivity {
                 .show();
     }
 
-
     private void showErrorMessage(){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
         dialogBuilder.setMessage("Register was unsuccessful");
         dialogBuilder.setPositiveButton("OK", null);
         dialogBuilder.show();
-
     }
-
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
@@ -128,4 +119,5 @@ public class RegisterParentActivity extends AppCompatActivity {
             showErrorMessage();
         }
     }
+
 }
