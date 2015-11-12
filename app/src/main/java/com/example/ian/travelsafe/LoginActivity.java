@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
         if(verifyDetails())
-            Log.i("MyActivity", "Details a verified OK");
+            Log.i("MyActivity", "Details verified OK");
         else
             Log.i("MyActivity", "Details not verified");
 
