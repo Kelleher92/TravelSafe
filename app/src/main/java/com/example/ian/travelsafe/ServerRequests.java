@@ -27,7 +27,7 @@ public class ServerRequests {
     ProgressDialog progressDialog;
     public static final int CONNECTION_TIMEOUT = 1000 * 15;
 //************************************************************************************************
-    public static final String SERVER_ADDRESS = "http://travelsafe.esy.es/"; //Woo
+    public static final String SERVER_ADDRESS = "http://travelsafe.esy.es/";
 //************************************************************************************************
 
     public ServerRequests(Context context){
@@ -92,12 +92,6 @@ public class ServerRequests {
             }catch (Exception e){
                 e.printStackTrace();
             }
-//            try{
-//                post.setEntity(new UrlEncodedFormEntity(dataToSend));
-//                client.execute(post);
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
 
             return null;
         }
@@ -134,39 +128,34 @@ public class ServerRequests {
             HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchUserData.php");
 
             Users returnedUser = null;
+            Log.i("MyActivity", "Fetch php");
 
             try{
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
+                Log.i("MyActivity", "Sent to server");
+
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
                 JSONObject jObject = new JSONObject(result);
 
-                Log.i("MyActivity", "Sent to server");
-
-                if(jObject.length() == 0) {
-                    returnedUser = null;
-                    Log.i("MyActivity", "Nothing returned");
-                }
-
+                if(jObject.length() == 0)
+                    Log.i("MyActivity", "No response");
                 else{
-                    String id = jObject.getString("id");
-                    String email = jObject.getString("emailaddress");
+                    String emailaddress = jObject.getString("emailaddress");
                     String username = jObject.getString("username");
                     String password = jObject.getString("password");
 
-                    returnedUser = new Users(email,user._username,user._password);
-
-                    Log.i("MyActivity", "User returned");
-
+                    returnedUser = new Users(emailaddress,username,password);
                 }
 
             }catch (Exception e){
                 e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
             }
 
-            return null;
+            return returnedUser;
         }
 
         @Override

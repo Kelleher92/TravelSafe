@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,28 +91,30 @@ public class LoginActivity extends AppCompatActivity {
 
         Users user = new Users(null, _username, _password);
 
-        authenticate(user);
-
-        if (flag)
+        if (authenticate(user))
             return true;
         else
             return false;
     }
 
-    private void authenticate(Users user){
+    private boolean authenticate(Users user){
         ServerRequests serverRequests = new ServerRequests(this);
         serverRequests.fetchUserDataInBackground(user, new GetUserCallback() {
             @Override
             public void done(Users returnedUser) {
-                if (returnedUser == null)
+                if (returnedUser == null) {
                     showErrorMessage();
+                    flag = false;
+                    Log.i("MyActivity", "Flag = false");
+                }
                 else {
                     logUserIn(returnedUser);
                     flag = true;
+                    Log.i("MyActivity", "Flag = true");
                 }
             }
         });
-
+        return flag;
     }
 
     private void showErrorMessage(){
@@ -124,17 +127,16 @@ public class LoginActivity extends AppCompatActivity {
     private void logUserIn(Users returnedUser){
         userLocalStore.storeUserData(returnedUser);
         userLocalStore.setUserLoggedIn(true);
+        Intent i = new Intent(this, ParentHome.class);
+        startActivity(i);
     }
 
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
-        if (verifyDetails()){
-            Intent i = new Intent(this, ParentHome.class);
-            startActivity(i);
-        }
-        else {
-
-        }
+        if(verifyDetails())
+            Log.i("MyActivity", "Details a verified OK");
+        else
+            Log.i("MyActivity", "Details not verified");
 
     }
 }
