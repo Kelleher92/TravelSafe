@@ -139,5 +139,6 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("MyActivity", "Details not verified");
 
     }
+
 }
 

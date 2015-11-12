@@ -26,9 +26,7 @@ public class ServerRequests {
 
     ProgressDialog progressDialog;
     public static final int CONNECTION_TIMEOUT = 1000 * 15;
-//************************************************************************************************
     public static final String SERVER_ADDRESS = "http://travelsafe.esy.es/";
-//************************************************************************************************
 
     public ServerRequests(Context context){
         progressDialog = new ProgressDialog(context);
@@ -92,10 +90,8 @@ public class ServerRequests {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
             return null;
         }
-
 
         @Override
         protected void onPostExecute(Void aVoid){
@@ -164,6 +160,6 @@ public class ServerRequests {
             userCallback.done(user);
             super.onPostExecute(user);
         }
-
     }
+
 }

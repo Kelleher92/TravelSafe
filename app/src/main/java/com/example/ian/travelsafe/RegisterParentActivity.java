@@ -91,10 +91,6 @@ public class RegisterParentActivity extends AppCompatActivity {
     }
 
     private void showRegisteredMessage(){
-//        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
-//        dialogBuilder.setMessage("You have successfully registered");
-//        dialogBuilder.setPositiveButton("OK", null);
-//        dialogBuilder.show();
 
         new android.support.v7.app.AlertDialog.Builder(RegisterParentActivity.this)
                 .setMessage("You have successfully registered")
@@ -107,15 +103,12 @@ public class RegisterParentActivity extends AppCompatActivity {
                 .show();
     }
 
-
     private void showErrorMessage(){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
         dialogBuilder.setMessage("Register was unsuccessful");
         dialogBuilder.setPositiveButton("OK", null);
         dialogBuilder.show();
-
     }
-
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
@@ -126,4 +119,5 @@ public class RegisterParentActivity extends AppCompatActivity {
             showErrorMessage();
         }
     }
+
 }
