@@ -44,7 +44,9 @@ public class RegisterNewChild extends AppCompatActivity {
 
         if(verifyDetails()){
             // Add to user list
-            ParentChildList.addToChildList(new ChildDetails(newChildUsername, R.drawable.child_placeholder, "No route selected"));
+            ParentChildList.addToChildList(new ChildDetails(newChildUsername));
+            //////////////////////////
+
             // Load parent home again.
             Intent i = new Intent(this, ParentHome.class);
             startActivity(i);

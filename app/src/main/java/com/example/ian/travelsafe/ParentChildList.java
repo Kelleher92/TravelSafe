@@ -1,5 +1,7 @@
 package com.example.ian.travelsafe;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class ParentChildList extends ArrayList<ChildDetails> {
     }
 
     public static List<ChildDetails> getCurrentChildList(){
+        Log.i("MyActivity", "returning list");
         return childList;
     }
 
@@ -23,6 +26,7 @@ public class ParentChildList extends ArrayList<ChildDetails> {
         }
         else {
             childList.add(cd);     // Add new Child to list
+            Log.i("MyActivity", "attempting to add to list");
         }
     }
 
@@ -32,7 +36,7 @@ public class ParentChildList extends ArrayList<ChildDetails> {
 
         // Remove from local list.
         for(ChildDetails cd : childList){
-            if(cd.mName == childUserName){
+            if(cd._name == childUserName){
                 childList.remove(cd);
             }
         }
