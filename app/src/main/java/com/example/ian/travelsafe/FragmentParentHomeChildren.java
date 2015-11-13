@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,13 @@ import java.util.List;
 
 public class FragmentParentHomeChildren extends Fragment {
 
-
+    ChildDetails child = new ChildDetails(null, null);
     private TextView mText;
     private TextView mRoute;
     private ImageView mProfileImage;
     public List<ChildDetails> childList = new ArrayList<>();
     static ListView childrenListView;
+    private View view;
 
     public static String childClickedUserName = "";
 
@@ -46,8 +48,17 @@ public class FragmentParentHomeChildren extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(this.getContext());
+        Users returnedUser = userLocalStore.getLoggedInUser();
+
+        Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id());
+
+        getChildren(returnedUser);
+
         // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_parent_home_children, container, false);
+        view =inflater.inflate(R.layout.fragment_parent_home_children, container, false);
         final Context context = view.getContext();
 
         // Floating Action Button
@@ -62,14 +73,7 @@ public class FragmentParentHomeChildren extends Fragment {
 
         childrenListView = (ListView) view.findViewById(R.id.listOfChildren);
         childList = ParentChildList.getCurrentChildList();
-        if(childList.isEmpty()) {
-            view.findViewById(R.id.listOfChildren).setVisibility(View.GONE);
-            view.findViewById(R.id.addChildMessage).setVisibility(View.VISIBLE);
-        }
-        else{
-            view.findViewById(R.id.listOfChildren).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.addChildMessage).setVisibility(View.GONE);
-        }
+        IsChildListEmpty();
         ListAdapter childrenAdapter = new ChildListAdapter(this.getContext(), childList);
 
         childrenListView.setAdapter(childrenAdapter);
@@ -81,14 +85,13 @@ public class FragmentParentHomeChildren extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         ChildDetails cd = (ChildDetails) parent.getItemAtPosition(position);
 
-                        childClickedUserName = cd.mName;
+                        childClickedUserName = cd._name;
 
-                        if(view.findViewById(R.id.space).getVisibility() == View.GONE){
+                        if (view.findViewById(R.id.space).getVisibility() == View.GONE) {
                             view.findViewById(R.id.space).setVisibility(View.VISIBLE);
                             view.findViewById(R.id.deleteChild).setVisibility(View.VISIBLE);
                             view.findViewById(R.id.changeRoute).setVisibility(View.VISIBLE);
-                        }
-                        else {
+                        } else {
                             view.findViewById(R.id.space).setVisibility(View.GONE);
                             view.findViewById(R.id.deleteChild).setVisibility(View.GONE);
                             view.findViewById(R.id.changeRoute).setVisibility(View.GONE);
@@ -100,8 +103,51 @@ public class FragmentParentHomeChildren extends Fragment {
 
         TextView tv = (TextView) view.findViewById(R.id.changeRoute);
 
-
         return view;
+    }
 
+    private void IsChildListEmpty() {
+        if(childList.isEmpty()) {
+            view.findViewById(R.id.listOfChildren).setVisibility(View.GONE);
+            view.findViewById(R.id.addChildMessage).setVisibility(View.VISIBLE);
+        }
+        else{
+            view.findViewById(R.id.listOfChildren).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.addChildMessage).setVisibility(View.GONE);
+        }
+
+    }
+
+
+    private void getChildren(Users user) {
+        ServerRequests serverRequests = new ServerRequests(this.getContext());
+        Log.i("MyActivity", "user id is = " + user.get_id());
+        serverRequests.fetchChildDataInBackground(user.get_id(), child, new GetChildCallback() {
+            @Override
+            public void done(ChildDetails returnedChild) {
+                if (returnedChild == null) {
+                    showErrorMessage();
+                    Log.i("MyActivity", "No child returned");
+                } else {
+                    child = returnedChild;
+                    Log.i("MyActivity", "child returned = " + child.get_id() + child.get_name() + child.get_username());
+
+                    Log.i("MyActivity", "Returned child is NOT null");
+                    /////////////////////////////////////////////////
+                    //perform action here to create table of linked children
+                    ParentChildList.addToChildList(child);
+                    FragmentParentHomeChildren.childrenListView.invalidateViews();
+                    IsChildListEmpty();
+
+                }
+            }
+        });
+    }
+
+    private void showErrorMessage() {
+        android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(this.getContext());
+        dialogBuilder.setMessage("No children found");
+        dialogBuilder.setPositiveButton("OK", null);
+        dialogBuilder.show();
     }
 }

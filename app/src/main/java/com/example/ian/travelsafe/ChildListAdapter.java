@@ -28,9 +28,9 @@ public class ChildListAdapter extends ArrayAdapter<ChildDetails> {
         TextView childRoute = (TextView) customView.findViewById(R.id.child_route);
         ImageView childImage = (ImageView) customView.findViewById(R.id.child_photo);
 
-        childName.setText(cd.mName);
-        childRoute.setText(cd.mCurrentRoute);
-        childImage.setImageResource(cd.mProfileImage);
+        childName.setText(cd._name);
+        childRoute.setText(null);
+        childImage.setImageResource(R.drawable.child_placeholder);
 
         return customView;
     }

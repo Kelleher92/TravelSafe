@@ -19,8 +19,6 @@ import java.util.Locale;
 
 public class ParentHome extends AppCompatActivity {
 
-    ChildDetails child = new ChildDetails(null, null);
-    boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,42 +41,6 @@ public class ParentHome extends AppCompatActivity {
         tabLayout.setTabsFromPagerAdapter(pagerAdapter);
         // This method ensures that tab selection events update the ViewPager and page changes update the selected tab.
         tabLayout.setupWithViewPager(viewPager);
-
-        UserLocalStore userLocalStore;
-        userLocalStore = new UserLocalStore(this);
-        Users returnedUser = userLocalStore.getLoggedInUser();
-
-        Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id());
-
-        getChildren(returnedUser);
-    }
-
-    private void getChildren(Users user) {
-        ServerRequests serverRequests = new ServerRequests(this);
-        Log.i("MyActivity", "user id is = " + user.get_id());
-        serverRequests.fetchChildDataInBackground(user.get_id(), child, new GetChildCallback() {
-            @Override
-            public void done(ChildDetails returnedChild) {
-                if (returnedChild == null) {
-                    showErrorMessage();
-                    Log.i("MyActivity", "No child returned");
-                } else {
-                    child = returnedChild;
-                    Log.i("MyActivity", "Returned child is NOT null");
-                    Log.i("MyActivity", "Returned child is NOT null");
-                    /////////////////////////////////////////////////
-                    //perform action here to create table of linked children
-
-                }
-            }
-        });
-    }
-
-    private void showErrorMessage() {
-        android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(ParentHome.this);
-        dialogBuilder.setMessage("No children found");
-        dialogBuilder.setPositiveButton("OK", null);
-        dialogBuilder.show();
     }
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
