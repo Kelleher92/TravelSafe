@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.Locale;
@@ -136,6 +137,7 @@ public class ParentHome extends AppCompatActivity {
      * Method to delete a child account.
      * @param view
      */
+
     public void DeleteChild(final View view) {
 
         new AlertDialog.Builder(view.getContext())
@@ -143,8 +145,9 @@ public class ParentHome extends AppCompatActivity {
                 .setMessage("Are you sure you want to delete this child account?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast toast = Toast.makeText(view.getContext(), "Delete Child", Toast.LENGTH_SHORT);
-                        toast.show();
+                        ParentChildList.removeFromChildList(FragmentParentHomeChildren.childClickedUserName);
+                        FragmentParentHomeChildren.childrenListView.invalidateViews();
+
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

@@ -70,11 +70,15 @@
             android:name=".ChildHome"
             android:label="@string/title_activity_child_home" >
         </activity>
-        <activity android:name=".Notifications" >
+        <activity
+            android:name=".Notifications" >
         </activity>
+
         <activity
             android:name=".Pop"
+            android:theme="@style/AppTheme.CustomTheme"
             android:label="@string/title_activity_assign_route_pop" >
+
         </activity>
     </application>
 
