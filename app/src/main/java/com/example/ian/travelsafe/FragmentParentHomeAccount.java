@@ -93,14 +93,13 @@ public class FragmentParentHomeAccount extends Fragment {
                     }
                 }
         );
-
-
         return view;
     }
 
     public void returnToLoginPage() {
-        Intent i = new Intent(this.getContext(), LoginActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(this.getContext(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
     private List<SettingDetails> getSettingsDetails() {
