@@ -5,7 +5,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -28,28 +30,33 @@ public class ServerRequests {
     public static final int CONNECTION_TIMEOUT = 1000 * 15;
     public static final String SERVER_ADDRESS = "http://travelsafe.esy.es/";
 
-    public ServerRequests(Context context){
+    public ServerRequests(Context context) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Processing");
         progressDialog.setMessage("Please wait...");
     }
 
-    public void storeUserDataInBackground(Users user, GetUserCallback userCallback){
+    public void storeUserDataInBackground(Users user, GetUserCallback userCallback) {
         progressDialog.show();
         new StoreUserDataAsyncTask(user, userCallback).execute();
     }
 
-    public void fetchUserDataInBackground(Users user, GetUserCallback userCallback){
+    public void fetchUserDataInBackground(Users user, GetUserCallback userCallback) {
         progressDialog.show();
-        new fetchUserDataAsyncTask(user,userCallback).execute();
+        new fetchUserDataAsyncTask(user, userCallback).execute();
     }
 
-    public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void>{
+    public void fetchChildDataInBackground(int id, ChildDetails child, GetChildCallback childCallback) {
+        progressDialog.show();
+        new fetchChildDataAsyncTask(id, child, childCallback).execute();
+    }
+
+    public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         GetUserCallback userCallback;
 
-        public StoreUserDataAsyncTask(Users user, GetUserCallback userCallback){
+        public StoreUserDataAsyncTask(Users user, GetUserCallback userCallback) {
             this.user = user;
             this.userCallback = userCallback;
         }
@@ -70,7 +77,7 @@ public class ServerRequests {
 
             Log.i("MyActivity", "Sent to server");
 
-            try{
+            try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
@@ -79,22 +86,22 @@ public class ServerRequests {
                 JSONObject jObject = new JSONObject(result);
                 String response = "";
 
-                if(jObject.length() == 0)
+                if (jObject.length() == 0)
                     response = "No response";
-                else{
+                else {
                     response = jObject.getString("type");
                 }
 
                 Log.i("MyActivity", "response = '" + response + "'.");
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid){
+        protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
             userCallback.done(null);
             super.onPostExecute(aVoid);
@@ -111,7 +118,7 @@ public class ServerRequests {
         }
 
         @Override
-        protected Users doInBackground(Void... params){
+        protected Users doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("username", user._username));
             dataToSend.add(new BasicNameValuePair("password", user._password));
@@ -126,7 +133,7 @@ public class ServerRequests {
             Users returnedUser = null;
             Log.i("MyActivity", "Fetch php");
 
-            try{
+            try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
@@ -136,17 +143,24 @@ public class ServerRequests {
                 String result = EntityUtils.toString(entity);
                 JSONObject jObject = new JSONObject(result);
 
-                if(jObject.length() == 0)
+                if (jObject.length() == 0)
                     Log.i("MyActivity", "No response");
-                else{
+                else {
+                    int parentid = jObject.getInt("id");
                     String emailaddress = jObject.getString("emailaddress");
                     String username = jObject.getString("username");
                     String password = jObject.getString("password");
+//                    String flag = jObject.getString("flag");
 
-                    returnedUser = new Users(emailaddress,username,password);
+//                    if (flag=="c")
+//                    returnedUser = new ChildDetails(1, parentid,emailaddress,username,password);
+//                    else if (flag=="p")
+                    returnedUser = new Users(parentid, emailaddress, username, password);
+//                    else
+//                        Log.i("MyActivity", "No response");
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 Log.i("MyActivity", "EXCEPTION");
             }
@@ -155,11 +169,74 @@ public class ServerRequests {
         }
 
         @Override
-        protected void onPostExecute(Users user){
+        protected void onPostExecute(Users user) {
             progressDialog.dismiss();
             userCallback.done(user);
             super.onPostExecute(user);
         }
     }
 
+    public class fetchChildDataAsyncTask extends AsyncTask<Void, Void, ChildDetails> {
+        ChildDetails child;
+        GetChildCallback childCallback;
+        int id;
+
+        public fetchChildDataAsyncTask(int id, ChildDetails child, GetChildCallback childCallback) {
+            this.child = child;
+            this.childCallback = childCallback;
+            this.id = id;
+        }
+
+        @Override
+        protected ChildDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", id + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchChildData.php");
+
+            ChildDetails returnedChild = null;
+            Log.i("MyActivity", "Fetch php");
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                Log.i("MyActivity", "Sent id " + id + " to server");
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+
+                if (jObject.length() == 0)
+                    Log.i("MyActivity", "No response");
+                else {
+                    int id = jObject.getInt("id");
+                    int parentid = jObject.getInt("parentid");
+                    String name = jObject.getString("name");
+                    String username = jObject.getString("username");
+                    String password = jObject.getString("password");
+
+                    returnedChild = new ChildDetails(id, parentid, name, username, password);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+
+            return returnedChild;
+        }
+
+        @Override
+        protected void onPostExecute(ChildDetails child) {
+            progressDialog.dismiss();
+            childCallback.done(child);
+            super.onPostExecute(child);
+        }
+    }
 }

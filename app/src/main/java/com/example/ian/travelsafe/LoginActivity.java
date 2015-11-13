@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             return false;
     }
 
-    private boolean authenticate(Users user){
+    private boolean authenticate(Users user) {
         ServerRequests serverRequests = new ServerRequests(this);
         serverRequests.fetchUserDataInBackground(user, new GetUserCallback() {
             @Override
@@ -106,8 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     showErrorMessage();
                     flag = false;
                     Log.i("MyActivity", "Flag = false");
-                }
-                else {
+                } else {
                     logUserIn(returnedUser);
                     flag = true;
                     Log.i("MyActivity", "Flag = true");
@@ -117,14 +116,14 @@ public class LoginActivity extends AppCompatActivity {
         return flag;
     }
 
-    private void showErrorMessage(){
+    private void showErrorMessage() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(LoginActivity.this);
         dialogBuilder.setMessage("Incorrect user details");
         dialogBuilder.setPositiveButton("OK", null);
         dialogBuilder.show();
     }
 
-    private void logUserIn(Users returnedUser){
+    private void logUserIn(Users returnedUser) {
         userLocalStore.storeUserData(returnedUser);
         userLocalStore.setUserLoggedIn(true);
         Intent i = new Intent(this, ParentHome.class);
@@ -134,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void CheckLoginDetailsOnSubmit(View view) {
         //Check Login details and login to parent or child home screen.
-        if(verifyDetails())
+        if (verifyDetails())
             Log.i("MyActivity", "Details verified OK");
         else
             Log.i("MyActivity", "Details not verified");

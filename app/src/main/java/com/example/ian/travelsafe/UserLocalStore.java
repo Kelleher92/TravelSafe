@@ -11,42 +11,44 @@ public class UserLocalStore {
     public static final String SP_NAME = "userDetails";
     SharedPreferences userLocalDatabase;
 
-    public UserLocalStore(Context context){
+    public UserLocalStore(Context context) {
         userLocalDatabase = context.getSharedPreferences(SP_NAME, 0);
     }
 
-    public void storeUserData(Users user){
+    public void storeUserData(Users user) {
         SharedPreferences.Editor spEditor = userLocalDatabase.edit();
         spEditor.putString("username", user._username);
-        spEditor.putString("email address", user._emailAddress);
+        spEditor.putString("emailaddress", user._emailAddress);
         spEditor.putString("password", user._password);
+        spEditor.putInt("id", user._id);
 
         spEditor.commit();
     }
 
-    public Users getLoggedInUser(){
+    public Users getLoggedInUser() {
+        int id = userLocalDatabase.getInt("id", -1);
         String username = userLocalDatabase.getString("username", "");
-        String emailAddress = userLocalDatabase.getString("email address", "");
+        String emailAddress = userLocalDatabase.getString("emailaddress", "");
         String password = userLocalDatabase.getString("password", "");
 
-        Users storedUser = new Users(emailAddress,username,password);
+        Users storedUser = new Users(id, emailAddress, username, password);
         return storedUser;
     }
 
-    public void setUserLoggedIn(boolean loggedIn){
+    public void setUserLoggedIn(boolean loggedIn) {
         SharedPreferences.Editor spEditor = userLocalDatabase.edit();
         spEditor.putBoolean("loggedIn", loggedIn);
         spEditor.commit();
     }
 
-    public boolean getUserLoggedIn(){
+    public boolean getUserLoggedIn() {
         if (userLocalDatabase.getBoolean("loggedIn", false) == true)
             return true;
         else
             return false;
     }
 
-    public void clearUserData(){
+    public void clearUserData() {
         SharedPreferences.Editor spEditor = userLocalDatabase.edit();
         spEditor.clear();
         spEditor.commit();
