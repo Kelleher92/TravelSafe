@@ -1,7 +1,5 @@
 package com.example.ian.travelsafe;
 
-import android.media.Image;
-
 public class ChildDetails {
 
     int _id, _parentid;
@@ -19,14 +17,14 @@ public class ChildDetails {
     }
 
 
-    public ChildDetails (int id, String name, String username, String password){
+    public ChildDetails(int id, String name, String username, String password) {
         this._id = id;
         this._name = name;
         this._username = username;
         this._password = password;
     }
 
-    public ChildDetails (int id, int _parentid, String name, String username, String password){
+    public ChildDetails(int id, int _parentid, String name, String username, String password) {
         this._id = id;
         this._parentid = _parentid;
         this._name = name;
@@ -34,13 +32,13 @@ public class ChildDetails {
         this._password = password;
     }
 
-    public ChildDetails (String name, String username, String password){
+    public ChildDetails(String name, String username, String password) {
         this._name = name;
         this._username = username;
         this._password = password;
     }
 
-    public ChildDetails (String username, String password){
+    public ChildDetails(String username, String password) {
         this._username = username;
         this._password = password;
     }

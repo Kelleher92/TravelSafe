@@ -3,8 +3,8 @@ package com.example.ian.travelsafe;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -32,7 +32,7 @@ public class RegisterParentActivity extends AppCompatActivity {
         return m.matches();
     }
 
-    public static boolean isValidPassword(String s){
+    public static boolean isValidPassword(String s) {
         if (s == null)
             return false;
 
@@ -71,7 +71,7 @@ public class RegisterParentActivity extends AppCompatActivity {
             return false;
         }
 
-        Users user = new Users(user_email,user_username,user_password);
+        Users user = new Users(user_email, user_username, user_password);
 
         if (registerUser(user))
             return true;
@@ -79,7 +79,7 @@ public class RegisterParentActivity extends AppCompatActivity {
             return false;
     }
 
-    private boolean registerUser(Users user){
+    private boolean registerUser(Users user) {
         ServerRequests serverRequests = new ServerRequests(this);
         serverRequests.storeUserDataInBackground(user, new GetUserCallback() {
             @Override
@@ -90,7 +90,7 @@ public class RegisterParentActivity extends AppCompatActivity {
         return true;
     }
 
-    private void showRegisteredMessage(){
+    private void showRegisteredMessage() {
 
         new android.support.v7.app.AlertDialog.Builder(RegisterParentActivity.this)
                 .setMessage("You have successfully registered")
@@ -104,7 +104,7 @@ public class RegisterParentActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showErrorMessage(){
+    private void showErrorMessage() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
         dialogBuilder.setMessage("Register was unsuccessful");
         dialogBuilder.setPositiveButton("OK", null);
@@ -115,8 +115,7 @@ public class RegisterParentActivity extends AppCompatActivity {
         // Load next activity
         if (verifyDetails()) {
             showRegisteredMessage();
-        }
-        else {
+        } else {
             showErrorMessage();
         }
     }
