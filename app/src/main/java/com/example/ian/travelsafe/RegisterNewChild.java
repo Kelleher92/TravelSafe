@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ public class RegisterNewChild extends AppCompatActivity {
 
 
     public void RegisterNewChild() {
-        Toast.makeText(RegisterNewChild.this, "New Child Registered", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(RegisterNewChild.this, "New Child Registered", Toast.LENGTH_SHORT).show();
     }
 
     public void ReturnToParentHome(View view) {
@@ -34,18 +35,40 @@ public class RegisterNewChild extends AppCompatActivity {
     public void CreateNewChild(View view) {
 
         // Get new child details entered by user
-        TextView nU = (TextView) view.findViewById(R.id.newChildUsername);
-        TextView nP = (TextView) view.findViewById(R.id.newChildUsername);
-        String newUsername = (String) nU.getText();
-        String newPassword = (String) nP.getText();
-        System.out.println("newUsername....." + newUsername);
-        System.out.println("newPassword....." + newPassword);
+        EditText email = (EditText) this.findViewById(R.id.newChildEmail);
+        String newChildEmail = email.getText().toString();
+        EditText username = (EditText) this.findViewById(R.id.newChildUsername);
+        String newChildUsername = username.getText().toString();
+        EditText password = (EditText) this.findViewById(R.id.newChildPassword);
+        String newChildPassword = password.getText().toString();
+
+        if(verifyDetails()){
+            // Add to user list
+            ParentChildList.addToChildList(new ChildDetails(newChildUsername, R.drawable.child_placeholder, "No route selected"));
+            // Load parent home again.
+            Intent i = new Intent(this, ParentHome.class);
+            startActivity(i);
+            finish();
+
+        }
+    }
 
 
-        // Add to user list
+    public boolean verifyDetails() {
+        // Get new child details entered by user
+        EditText email = (EditText) this.findViewById(R.id.newChildEmail);
+        String newChildEmail = email.getText().toString();
+        if (!RegisterParentActivity.isValidEmailAddress(newChildEmail)) {
+            email.setError("invalid email address");
+            return false;
+        }
 
-        //Regenerate List
-
-//        Toast.makeText(this, "Register New Child Here", Toast.LENGTH_SHORT);
+        EditText password = (EditText) this.findViewById(R.id.newChildPassword);
+        String newChildPassword = password.getText().toString();
+        if (!RegisterParentActivity.isValidPassword(newChildPassword)) {
+            password.setError("password must contain at least 6 characters and 1 number");
+            return false;
+        }
+        return true;
     }
 }

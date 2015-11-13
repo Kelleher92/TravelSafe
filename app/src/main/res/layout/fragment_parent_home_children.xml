@@ -16,12 +16,22 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_scrollFlags="enterAlways"/>
 
-    <!--<include layout="@layout/content_parent_home_children" />-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/addChildMessage"
+        android:text="No Children detected, please add a new child."
+        android:singleLine="true"
+        android:paddingTop="15dp"
+        android:paddingLeft="10dp"
+        android:visibility="gone"/>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.example.ian.travelsafe.FragmentParentHomeChildren"
-        android:id="@+id/listOfChildren">
+        android:id="@+id/listOfChildren"
+        android:visibility="visible">
     </ListView>
 
     <android.support.design.widget.FloatingActionButton

@@ -25,6 +25,7 @@ public class AppSplashScreen extends AppCompatActivity {
                 // Start your app main activity
                 Intent i = new Intent(AppSplashScreen.this, LoginActivity.class);
                 startActivity(i);
+                finish();
 
                 // close this activity
                 finish();
