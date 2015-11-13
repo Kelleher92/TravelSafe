@@ -8,6 +8,13 @@ public class Users {
     int _id;
     String _emailAddress, _username, _password;
 
+    public Users (int id, String emailAddress, String username, String password){
+        this._id = id;
+        this._emailAddress = emailAddress;
+        this._username = username;
+        this._password = password;
+    }
+
     public Users (String emailAddress, String username, String password){
         this._emailAddress = emailAddress;
         this._username = username;
