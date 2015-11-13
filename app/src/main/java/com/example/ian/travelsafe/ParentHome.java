@@ -98,6 +98,7 @@ public class ParentHome extends AppCompatActivity {
      * Method to delete a child account.
      * @param view
      */
+
     public void DeleteChild(final View view) {
 
         new AlertDialog.Builder(view.getContext())
