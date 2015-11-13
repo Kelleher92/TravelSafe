@@ -96,8 +96,9 @@ public class RegisterParentActivity extends AppCompatActivity {
                 .setMessage("You have successfully registered")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(RegisterParentActivity.this, LoginActivity.class);
+                        Intent i = new Intent(RegisterParentActivity.this, ParentHome.class);
                         startActivity(i);
+                        finish();
                     }
                 })
                 .show();

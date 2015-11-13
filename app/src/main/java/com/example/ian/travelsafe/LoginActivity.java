@@ -129,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         userLocalStore.setUserLoggedIn(true);
         Intent i = new Intent(this, ParentHome.class);
         startActivity(i);
+        finish();
     }
 
     public void CheckLoginDetailsOnSubmit(View view) {
