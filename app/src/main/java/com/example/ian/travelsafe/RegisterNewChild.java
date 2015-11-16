@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,18 +36,25 @@ public class RegisterNewChild extends AppCompatActivity {
     public void CreateNewChild(View view) {
 
         // Get new child details entered by user
-        EditText email = (EditText) this.findViewById(R.id.newChildEmail);
-        String newChildEmail = email.getText().toString();
+        EditText name = (EditText) this.findViewById(R.id.newChildName);
+        String newChildName = name.getText().toString();
         EditText username = (EditText) this.findViewById(R.id.newChildUsername);
         String newChildUsername = username.getText().toString();
         EditText password = (EditText) this.findViewById(R.id.newChildPassword);
         String newChildPassword = password.getText().toString();
 
         if(verifyDetails()){
-            // Add to user list
-            ParentChildList.addToChildList(new ChildDetails(newChildUsername));
-            //////////////////////////
+            int currentUserId = new UserLocalStore(this).getLoggedInUser().get_id();
+            String currentUserEmail = new UserLocalStore(this).getLoggedInUser().get_emailAddress();
+            ChildDetails child = new ChildDetails(currentUserId, newChildName,newChildUsername,newChildPassword);
 
+            Log.i("MyActivity", "1. user id = " + currentUserId);
+            Log.i("MyActivity", "1. user email = " + currentUserEmail);
+
+            // Add to user list
+            // ParentChildList.addToChildList(child);
+            //////////////////////////
+            registerChild(child);
             // Load parent home again.
             Intent i = new Intent(this, ParentHome.class);
             startActivity(i);
@@ -55,15 +63,19 @@ public class RegisterNewChild extends AppCompatActivity {
         }
     }
 
+    private boolean registerChild(ChildDetails child) {
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.storeChildDataInBackground(child, new GetChildCallback() {
+            @Override
+            public void done(ChildDetails returnedChild) {
+            }
+
+        });
+        return true;
+    }
 
     public boolean verifyDetails() {
         // Get new child details entered by user
-        EditText email = (EditText) this.findViewById(R.id.newChildEmail);
-        String newChildEmail = email.getText().toString();
-        if (!RegisterParentActivity.isValidEmailAddress(newChildEmail)) {
-            email.setError("invalid email address");
-            return false;
-        }
 
         EditText password = (EditText) this.findViewById(R.id.newChildPassword);
         String newChildPassword = password.getText().toString();

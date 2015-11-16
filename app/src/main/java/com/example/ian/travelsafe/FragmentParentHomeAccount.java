@@ -87,6 +87,7 @@ public class FragmentParentHomeAccount extends Fragment {
                             case 3:
                                 userLocalStore.clearUserData();
                                 userLocalStore.setUserLoggedIn(false);
+                                ParentChildList.clearChildList();
                                 returnToLoginPage();
                                 break;
                         }
