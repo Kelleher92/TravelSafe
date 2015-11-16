@@ -71,12 +71,25 @@ public class RegisterParentActivity extends AppCompatActivity {
             return false;
         }
 
+        UserLocalStore stale = new UserLocalStore(this);
+        stale.clearUserData();
         Users user = new Users(user_email, user_username, user_password);
 
-        if (registerUser(user))
+        if (registerUser(user)){
+            logUserIn(user);
             return true;
+        }
         else
             return false;
+    }
+
+    private void logUserIn(Users returnedUser) {
+        UserLocalStore userLocalStore = new UserLocalStore(this);
+        userLocalStore.storeUserData(returnedUser);
+        userLocalStore.setUserLoggedIn(true);
+        Intent i = new Intent(this, ParentHome.class);
+        startActivity(i);
+        finish();
     }
 
     private boolean registerUser(Users user) {
@@ -86,7 +99,7 @@ public class RegisterParentActivity extends AppCompatActivity {
             public void done(Users returnedUser) {
             }
 
-        });
+        }, this);
         return true;
     }
 

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,9 +38,14 @@ public class ServerRequests {
         progressDialog.setMessage("Please wait...");
     }
 
-    public void storeUserDataInBackground(Users user, GetUserCallback userCallback) {
+    public void storeUserDataInBackground(Users user, GetUserCallback userCallback, Context context) {
         progressDialog.show();
-        new StoreUserDataAsyncTask(user, userCallback).execute();
+        new StoreUserDataAsyncTask(user, userCallback, context).execute();
+    }
+
+    public void storeChildDataInBackground(ChildDetails child, GetChildCallback childCallback) {
+        progressDialog.show();
+        new StoreChildDataAsyncTask(child, childCallback).execute();
     }
 
     public void fetchUserDataInBackground(Users user, GetUserCallback userCallback) {
@@ -55,8 +61,10 @@ public class ServerRequests {
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         GetUserCallback userCallback;
+        private Context mContext;
 
-        public StoreUserDataAsyncTask(Users user, GetUserCallback userCallback) {
+        public StoreUserDataAsyncTask(Users user, GetUserCallback userCallback, Context context) {
+            mContext = context;
             this.user = user;
             this.userCallback = userCallback;
         }
@@ -74,6 +82,68 @@ public class ServerRequests {
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
             HttpPost post = new HttpPost(SERVER_ADDRESS + "Register.php");
+
+            Log.i("MyActivity", "Sent to server");
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                Log.i("MyActivity", "Sent to server");
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+
+                if (jObject.length() == 0)
+                    Log.i("MyActivity", "No response");
+                else {
+                    int parentid = jObject.getInt("id");
+                    Log.i("MyActivity", "parent id = " + parentid);
+                    user.set_id(parentid);
+                    UserLocalStore userLocalStore = new UserLocalStore(mContext);
+                    userLocalStore.storeUserData(user);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+            userCallback.done(null);
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    public class StoreChildDataAsyncTask extends AsyncTask<Void, Void, Void> {
+        ChildDetails child;
+        GetChildCallback childCallback;
+
+        public StoreChildDataAsyncTask(ChildDetails child, GetChildCallback childCallback) {
+            this.child = child;
+            this.childCallback = childCallback;
+            Log.i("MyActivity", "2. user id = " + child.get_parentid());
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", child._parentid + ""));
+            dataToSend.add(new BasicNameValuePair("name", child._name));
+            dataToSend.add(new BasicNameValuePair("username", child._username));
+            dataToSend.add(new BasicNameValuePair("password", child._password));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "RegisterChild.php");
 
             Log.i("MyActivity", "Sent to server");
 
@@ -103,7 +173,7 @@ public class ServerRequests {
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            userCallback.done(null);
+            childCallback.done(null);
             super.onPostExecute(aVoid);
         }
     }
@@ -150,14 +220,8 @@ public class ServerRequests {
                     String emailaddress = jObject.getString("emailaddress");
                     String username = jObject.getString("username");
                     String password = jObject.getString("password");
-//                    String flag = jObject.getString("flag");
 
-//                    if (flag=="c")
-//                    returnedUser = new ChildDetails(1, parentid,emailaddress,username,password);
-//                    else if (flag=="p")
                     returnedUser = new Users(parentid, emailaddress, username, password);
-//                    else
-//                        Log.i("MyActivity", "No response");
                 }
 
             } catch (Exception e) {
