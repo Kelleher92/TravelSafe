@@ -73,7 +73,6 @@
         <activity
             android:name=".Notifications" >
         </activity>
-
         <activity
             android:name=".Pop"
             android:theme="@style/AppTheme.CustomTheme"
