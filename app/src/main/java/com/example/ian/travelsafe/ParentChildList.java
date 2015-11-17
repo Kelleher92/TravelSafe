@@ -34,17 +34,9 @@ public class ParentChildList extends ArrayList<ChildDetails> {
         }
     }
 
-    public static void removeFromChildList(String childUserName) {
-
-        // Remove child from database
-
-        // Remove from local list.
-        for(ChildDetails cd : childList){
-            if(cd._name == childUserName){
-                childList.remove(cd);
-            }
-        }
-        childList.remove(childUserName);
+    public static void removeFromChildList(ChildDetails cd) {
+         // Remove from local list.
+        childList.remove(cd);
     }
 
 }

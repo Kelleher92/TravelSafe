@@ -25,6 +25,16 @@ public class UserLocalStore {
         spEditor.commit();
     }
 
+    public void storeUserData(ChildDetails child) {
+        SharedPreferences.Editor spEditor = userLocalDatabase.edit();
+        spEditor.putString("username", child._username);
+        spEditor.putString("emailaddress", child._name);
+        spEditor.putString("password", child._password);
+        spEditor.putInt("id", child._id);
+
+        spEditor.commit();
+    }
+
     public Users getLoggedInUser() {
         int id = userLocalDatabase.getInt("id", -1);
         String username = userLocalDatabase.getString("username", "");

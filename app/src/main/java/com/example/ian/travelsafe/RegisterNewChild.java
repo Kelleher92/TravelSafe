@@ -70,7 +70,7 @@ public class RegisterNewChild extends AppCompatActivity {
             public void done(ChildDetails returnedChild) {
             }
 
-        });
+        }, this);
         return true;
     }
 

@@ -104,7 +104,11 @@ public class ParentHome extends AppCompatActivity {
                 .setMessage("Are you sure you want to delete this child account?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        ParentChildList.removeFromChildList(FragmentParentHomeChildren.childClickedUserName);
+                        ParentChildList.removeFromChildList(FragmentParentHomeChildren.childClicked);
+                        // Remove child from database
+                        FragmentParentHomeChildren.deRegisterChild(FragmentParentHomeChildren.childClicked);
+                        Log.i("MyActivity", "sending to deRegister - " + FragmentParentHomeChildren.childClicked.get_id());
+
                         FragmentParentHomeChildren.childrenListView.invalidateViews();
 
                     }
