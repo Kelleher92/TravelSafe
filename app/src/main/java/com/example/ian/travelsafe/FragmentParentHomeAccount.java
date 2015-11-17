@@ -130,7 +130,5 @@ public class FragmentParentHomeAccount extends Fragment {
         NotificationManager nm = (NotificationManager) this.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         nm.notify(uniqueID, notification.build());
         uniqueID++;
-
     }
-
 }
