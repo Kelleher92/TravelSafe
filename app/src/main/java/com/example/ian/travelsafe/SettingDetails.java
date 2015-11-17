@@ -12,4 +12,11 @@ public class SettingDetails {
         mSettingImage = settingImage;
     }
 
+    public String getmSettingTitle() {
+        return mSettingTitle;
+    }
+
+    public int getmSettingImage() {
+        return mSettingImage;
+    }
 }

@@ -53,12 +53,12 @@ public class FragmentParentHomeChildren extends Fragment {
         userLocalStore = new UserLocalStore(this.getContext());
         Users returnedUser = userLocalStore.getLoggedInUser();
 
-        Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id());
+        Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id() + " email is " + returnedUser.get_emailAddress());
 
         getChildren(returnedUser);
 
         // Inflate the layout for this fragment
-        view =inflater.inflate(R.layout.fragment_parent_home_children, container, false);
+        view = inflater.inflate(R.layout.fragment_parent_home_children, container, false);
         final Context context = view.getContext();
 
         // Floating Action Button

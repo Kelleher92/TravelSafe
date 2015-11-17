@@ -89,6 +89,8 @@ public class LoginActivity extends AppCompatActivity {
         String _username = username.getText().toString();
         String _password = password.getText().toString();
 
+        UserLocalStore stale = new UserLocalStore(this);
+        stale.clearUserData();
         Users user = new Users(null, _username, _password);
 
         if (authenticate(user))

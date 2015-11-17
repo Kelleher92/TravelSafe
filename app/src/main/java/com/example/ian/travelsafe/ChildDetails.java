@@ -10,8 +10,8 @@ public class ChildDetails {
         this._route = null;
     }
 
-    public ChildDetails(int id, String name, String username, String password) {
-        this._id = id;
+    public ChildDetails(int parentid, String name, String username, String password) {
+        this._parentid = parentid;
         this._name = name;
         this._username = username;
         this._password = password;

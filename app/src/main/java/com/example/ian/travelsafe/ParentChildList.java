@@ -20,6 +20,10 @@ public class ParentChildList extends ArrayList<ChildDetails> {
         return childList;
     }
 
+    public static void clearChildList(){
+        childList.clear();
+    }
+
     public static void addToChildList(ChildDetails cd){
 
         if(cd == null) {

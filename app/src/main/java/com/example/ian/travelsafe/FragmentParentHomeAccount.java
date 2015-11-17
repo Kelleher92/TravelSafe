@@ -69,25 +69,27 @@ public class FragmentParentHomeAccount extends Fragment {
 
                         String settingTitle = sd.mSettingTitle;
                         switch (position) {
-                            // Email
+                            // New Route
                             case 0:
-                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                break;
-                            // Password
-                            case 1:
-                                Snackbar.make(view, "Do something with " + settingTitle, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                Intent i = new Intent(view.getContext(), ChildHome.class);
-                                startActivity(i);
-                                break;
-                            // Notifications
-                            case 2:
-                                createNotification();
+//                                Intent i = new Intent(view.getContext(), RouteChoose.class);
+//                                startActivity(i);
                                 break;
                             // Log Out
-                            case 3:
+                            case 1:
                                 userLocalStore.clearUserData();
                                 userLocalStore.setUserLoggedIn(false);
+                                ParentChildList.clearChildList();
                                 returnToLoginPage();
+                                break;
+                            // Test child home
+                            case 2:
+                                Intent in = new Intent(view.getContext(), ChildHome.class);
+                                startActivity(in);
+                                break;
+                            // Test notifications
+                            case 3:
+                                startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
+//                                createNotification();
                                 break;
                         }
                     }
@@ -105,10 +107,10 @@ public class FragmentParentHomeAccount extends Fragment {
     private List<SettingDetails> getSettingsDetails() {
 
         List<SettingDetails> list= new ArrayList<>();
-        list.add(new SettingDetails("Email", R.drawable.ic_email_black_24dp));
-        list.add(new SettingDetails("Password", R.drawable.ic_error_black_24dp));
-        list.add(new SettingDetails("Notifications", R.drawable.ic_notifications_black_24dp));
+        list.add(new SettingDetails("Create new route", R.drawable.ic_place_black_24dp));
         list.add(new SettingDetails("Log Out", R.drawable.ic_power_settings_new_black_24dp));
+        list.add(new SettingDetails("View ChildHome", R.drawable.child_placeholder));
+        list.add(new SettingDetails("Test notifications", R.drawable.ic_notifications_black_24dp));
 
         return list;
     }
