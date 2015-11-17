@@ -323,10 +323,12 @@ public class ServerRequests {
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
             HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
 
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
             HttpPost post = new HttpPost(SERVER_ADDRESS + "DeregisterChild.php");
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
 
                 Log.i("MyActivity", "Sent id " + child.get_id() + " to server to remove it");
 
