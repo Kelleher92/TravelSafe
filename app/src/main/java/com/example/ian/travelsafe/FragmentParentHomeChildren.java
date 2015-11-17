@@ -30,7 +30,7 @@ public class FragmentParentHomeChildren extends Fragment {
     static ListView childrenListView;
     private View view;
 
-    public static String childClickedUserName = "";
+    public static ChildDetails childClicked = new ChildDetails(null);
 
     public static FragmentParentHomeChildren newInstance() {
         return new FragmentParentHomeChildren();
@@ -85,7 +85,7 @@ public class FragmentParentHomeChildren extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         ChildDetails cd = (ChildDetails) parent.getItemAtPosition(position);
 
-                        childClickedUserName = cd._name;
+                        childClicked = cd;
 
                         if (view.findViewById(R.id.space).getVisibility() == View.GONE) {
                             view.findViewById(R.id.space).setVisibility(View.VISIBLE);
@@ -115,9 +115,7 @@ public class FragmentParentHomeChildren extends Fragment {
             view.findViewById(R.id.listOfChildren).setVisibility(View.VISIBLE);
             view.findViewById(R.id.addChildMessage).setVisibility(View.GONE);
         }
-
     }
-
 
     private void getChildren(Users user) {
         ServerRequests serverRequests = new ServerRequests(this.getContext());
@@ -132,13 +130,9 @@ public class FragmentParentHomeChildren extends Fragment {
                     child = returnedChild;
                     Log.i("MyActivity", "child returned = " + child.get_id() + child.get_name() + child.get_username());
 
-                    Log.i("MyActivity", "Returned child is NOT null");
-                    /////////////////////////////////////////////////
-                    //perform action here to create table of linked children
                     ParentChildList.addToChildList(child);
                     FragmentParentHomeChildren.childrenListView.invalidateViews();
                     IsChildListEmpty();
-
                 }
             }
         });
@@ -149,5 +143,10 @@ public class FragmentParentHomeChildren extends Fragment {
         dialogBuilder.setMessage("No children found");
         dialogBuilder.setPositiveButton("OK", null);
         dialogBuilder.show();
+    }
+
+    public static void deRegisterChild(ChildDetails child) {
+        ServerRequests serverRequests = new ServerRequests(FragmentParentHomeChildren.childrenListView.getContext());
+        serverRequests.removeChildInBackground(child);
     }
 }

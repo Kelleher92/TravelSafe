@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -43,9 +41,9 @@ public class ServerRequests {
         new StoreUserDataAsyncTask(user, userCallback, context).execute();
     }
 
-    public void storeChildDataInBackground(ChildDetails child, GetChildCallback childCallback) {
+    public void storeChildDataInBackground(ChildDetails child, GetChildCallback childCallback, Context context) {
         progressDialog.show();
-        new StoreChildDataAsyncTask(child, childCallback).execute();
+        new StoreChildDataAsyncTask(child, childCallback, context).execute();
     }
 
     public void fetchUserDataInBackground(Users user, GetUserCallback userCallback) {
@@ -56,6 +54,10 @@ public class ServerRequests {
     public void fetchChildDataInBackground(int id, ChildDetails child, GetChildCallback childCallback) {
         progressDialog.show();
         new fetchChildDataAsyncTask(id, child, childCallback).execute();
+    }
+
+    public void removeChildInBackground(ChildDetails child) {
+        new removeChildAsyncTask(child).execute();
     }
 
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -122,12 +124,12 @@ public class ServerRequests {
     public class StoreChildDataAsyncTask extends AsyncTask<Void, Void, Void> {
         ChildDetails child;
         GetChildCallback childCallback;
+        private Context mContext;
 
-        public StoreChildDataAsyncTask(ChildDetails child, GetChildCallback childCallback) {
+        public StoreChildDataAsyncTask(ChildDetails child, GetChildCallback childCallback, Context context) {
             this.child = child;
             this.childCallback = childCallback;
-            Log.i("MyActivity", "2. user id = " + child.get_parentid());
-
+            mContext = context;
         }
 
         @Override
@@ -154,15 +156,16 @@ public class ServerRequests {
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
                 JSONObject jObject = new JSONObject(result);
-                String response = "";
 
                 if (jObject.length() == 0)
-                    response = "No response";
+                    Log.i("MyActivity", "No response");
                 else {
-                    response = jObject.getString("type");
+                    int childId = jObject.getInt("id");
+                    Log.i("MyActivity", "parent id = " + childId);
+                    child.set_id(childId);
+                    UserLocalStore userLocalStore = new UserLocalStore(mContext);
+                    userLocalStore.storeUserData(child);
                 }
-
-                Log.i("MyActivity", "response = '" + response + "'.");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -300,6 +303,43 @@ public class ServerRequests {
         protected void onPostExecute(ChildDetails child) {
             progressDialog.dismiss();
             childCallback.done(child);
+            super.onPostExecute(child);
+        }
+    }
+
+    public class removeChildAsyncTask extends AsyncTask<Void, Void, ChildDetails> {
+        ChildDetails child;
+
+        public removeChildAsyncTask(ChildDetails child) {
+            this.child = child;
+        }
+
+        @Override
+        protected ChildDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("id", child.get_id() + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "DeregisterChild.php");
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+
+                Log.i("MyActivity", "Sent id " + child.get_id() + " to server to remove it");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ChildDetails child) {
+            progressDialog.dismiss();
             super.onPostExecute(child);
         }
     }
