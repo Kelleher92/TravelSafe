@@ -9,17 +9,17 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="#0e2d2d2d">
+    android:padding="16dp">
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="4dp"
         android:id="@+id/checkboxSelectRoute"
-        android:buttonTint="@color/background_material_dark" />
+        android:buttonTint="@color/background_material_dark"
+        android:onClick="SelectRouteClick"/>
 
     <Space
         android:layout_width="20px"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/route_details_arrow"
         android:text="  to  "
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:layout_toRightOf="@+id/space_route"
         android:layout_toEndOf="@+id/route_details_Start"
         android:layout_below="@+id/route_title"/>
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/route_details_End"
         android:text="St.Ultans School"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:layout_toRightOf="@+id/space_route"
         android:layout_toEndOf="@+id/route_details_arrow"
         android:layout_below="@+id/route_title"/>
