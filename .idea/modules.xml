@@ -3,11 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TravelSafe.iml" filepath="$PROJECT_DIR$/TravelSafe.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/httpclient-4.5.1/httpclient-4.5.1.iml" filepath="$PROJECT_DIR$/httpclient-4.5.1/httpclient-4.5.1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/httpcore-4.4.4/httpcore-4.4.4.iml" filepath="$PROJECT_DIR$/httpcore-4.4.4/httpcore-4.4.4.iml" />
-      <module fileurl="file://$PROJECT_DIR$/json-simple-1.1.1/json-simple-1.1.1.iml" filepath="$PROJECT_DIR$/json-simple-1.1.1/json-simple-1.1.1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/org.apache.commons.httpclient/org.apache.commons.httpclient.iml" filepath="$PROJECT_DIR$/org.apache.commons.httpclient/org.apache.commons.httpclient.iml" />
     </modules>
   </component>
 </project>

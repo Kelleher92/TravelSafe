@@ -20,12 +20,25 @@
 	/* Close Statement */
 	$stmt->close();	
 	
-	$response = array();
-	$response[id] = 00;
-	$response[type] = TRUE;
+        $stmt2 = $mysqli->prepare("SELECT id FROM user WHERE username = ? AND password = ?");
+        $stmt2->bind_param("ss", $username, $password);
 
-	echo json_encode($response);
+        /* Execute the statement */
+        $stmt2->execute();
+    
+        mysqli_stmt_store_result($stmt2);
+        mysqli_stmt_bind_result($stmt2, $id);
 	
-	/* Close Connection */
-	$mysqli->close();
-?>			
+        while(mysqli_stmt_fetch($stmt2)){
+            $user["id"] = $id;
+        }
+    
+        /* Close Statement */
+        $stmt2->close();
+	
+        echo json_encode($user);
+    
+        /* Close Connection */
+        $mysqli->close();
+
+?>										
