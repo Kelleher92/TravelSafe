@@ -1,12 +1,16 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -75,7 +79,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
 
         MapsInitializer.initialize(this);
-
         polylines = new ArrayList<>();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -275,6 +278,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
             @Override
             public void onTextChanged(CharSequence s, int startNum, int before, int count) {
+                findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
                 if (start != null) {
                     start = null;
                 }
@@ -294,7 +298,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
 
                 if(end!=null)
                 {
@@ -308,11 +312,25 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             }
         });
 
+        // Floating Action Button
+        FloatingActionButton fabAddNewChild = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
+        fabAddNewChild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
+                Pop.routeListView.invalidateViews();
+//                Toast.makeText(DirectionsActivity.this,"Save Route to Parent",Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @OnClick(R.id.send)
     public void sendRequest()
     {
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
         if(Util.Operations.isOnline(this))
         {
             route();
@@ -370,6 +388,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         // The Routing request failed
         progressDialog.dismiss();
         Toast.makeText(this,"Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
     }
 
     @Override
@@ -415,6 +434,8 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         options.position(end);
         options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
         map.addMarker(options);
+
+        findViewById(R.id.fabSaveRoute).setVisibility(View.VISIBLE);
 
     }
 

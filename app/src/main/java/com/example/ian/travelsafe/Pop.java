@@ -25,6 +25,8 @@ import java.util.List;
 public class Pop extends Activity {
 
     ListAdapter routeListAdapter;
+    public static List<RouteDetails> routeList = new ArrayList<>();
+    public static ListView routeListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,27 +41,26 @@ public class Pop extends Activity {
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
 
-
-        final List<RouteDetails> routeList = getRouteDetails();
+        routeList = ParentRouteList.getCurrentRouteList();
         routeListAdapter = new RouteListAdapter(this, routeList);
-        ListView routeListView = (ListView) findViewById(R.id.listViewRoutes);
+        routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);
     }
 
 
-    private List<RouteDetails> getRouteDetails() {
-
-        List<RouteDetails> list = new ArrayList<>();
-        list.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 2", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 3", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 4", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 5", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 6", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 7", "UCD", "Rathmines"));
-
-        return list;
-    }
+//    private List<RouteDetails> getRouteDetails() {
+//
+//        List<RouteDetails> list = new ArrayList<>();
+//        list.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
+//        list.add(new RouteDetails("Route 2", "UCD", "Rathmines"));
+//        list.add(new RouteDetails("Route 3", "UCD", "Rathmines"));
+//        list.add(new RouteDetails("Route 4", "UCD", "Rathmines"));
+//        list.add(new RouteDetails("Route 5", "UCD", "Rathmines"));
+//        list.add(new RouteDetails("Route 6", "UCD", "Rathmines"));
+//        list.add(new RouteDetails("Route 7", "UCD", "Rathmines"));
+//
+//        return list;
+//    }
 
 
 }
