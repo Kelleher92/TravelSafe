@@ -71,8 +71,8 @@ public class FragmentParentHomeAccount extends Fragment {
                         switch (position) {
                             // New Route
                             case 0:
-//                                Intent i = new Intent(view.getContext(), RouteChoose.class);
-//                                startActivity(i);
+                               Intent i = new Intent(view.getContext(), DirectionsActivity.class);
+                                startActivity(i);
                                 break;
                             // Log Out
                             case 1:
@@ -89,7 +89,7 @@ public class FragmentParentHomeAccount extends Fragment {
                             // Test notifications
                             case 3:
                                 startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
-//                                createNotification();
+                                //createNotification();
                                 break;
                         }
                     }
