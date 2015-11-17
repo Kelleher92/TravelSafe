@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,29 +44,22 @@ public class Pop extends Activity {
         routeListAdapter = new RouteListAdapter(this, routeList);
         ListView routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);
-
-        CheckBox cbx = (CheckBox) findViewById(R.id.checkboxSelectRoute);
-
-        cbx.setOnClickListener(
-                new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                }
-        );
     }
 
 
     private List<RouteDetails> getRouteDetails() {
 
-        List<RouteDetails> list= new ArrayList<>();
+        List<RouteDetails> list = new ArrayList<>();
         list.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
         list.add(new RouteDetails("Route 2", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
-        list.add(new RouteDetails("Route 2", "UCD", "Rathmines"));
+        list.add(new RouteDetails("Route 3", "UCD", "Rathmines"));
+        list.add(new RouteDetails("Route 4", "UCD", "Rathmines"));
+        list.add(new RouteDetails("Route 5", "UCD", "Rathmines"));
+        list.add(new RouteDetails("Route 6", "UCD", "Rathmines"));
+        list.add(new RouteDetails("Route 7", "UCD", "Rathmines"));
 
         return list;
     }
+
+
 }
