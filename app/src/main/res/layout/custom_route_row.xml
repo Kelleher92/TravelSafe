@@ -6,68 +6,68 @@
     android:layout_height="match_parent"
     tools:context=".Pop">
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
-
-    <CheckBox
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="4dp"
-        android:id="@+id/checkboxSelectRoute"
-        android:buttonTint="@color/background_material_dark"
-        android:onClick="SelectRouteClick"/>
+        android:padding="16dp"
+        android:background="#0e2d2d2d">
 
-    <Space
-        android:layout_width="20px"
-        android:layout_height="20px"
-        android:id="@+id/space_route"
-        android:layout_toRightOf="@+id/checkboxSelectRoute"
-        android:layout_toEndOf="@+id/checkboxSelectRoute" />
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="2dp"
+            android:id="@+id/checkboxSelectRoute"
+            android:buttonTint="@color/background_material_dark" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/route_title"
-        android:text="RouteToSchool"
-        android:textSize="18sp"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/space_route"
-        android:layout_toEndOf="@+id/space_route" />
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"
+            android:id="@+id/space_route"
+            android:layout_toRightOf="@+id/checkboxSelectRoute"
+            android:layout_toEndOf="@+id/checkboxSelectRoute" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/route_details_Start"
-        android:text="24 Bird Ave."
-        android:textSize="12sp"
-        android:layout_toRightOf="@+id/space_route"
-        android:layout_toEndOf="@+id/space_route"
-        android:layout_below="@+id/route_title"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/route_title"
+            android:text="RouteToSchool"
+            android:textSize="18sp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/space_route"
+            android:layout_toEndOf="@+id/space_route" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/route_details_arrow"
-        android:text="  to  "
-        android:textSize="14sp"
-        android:layout_toRightOf="@+id/space_route"
-        android:layout_toEndOf="@+id/route_details_Start"
-        android:layout_below="@+id/route_title"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/route_details_Start"
+            android:text="24 Bird Ave."
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/space_route"
+            android:layout_toEndOf="@+id/space_route"
+            android:layout_below="@+id/route_title"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/route_details_End"
-        android:text="St.Ultans School"
-        android:textSize="14sp"
-        android:layout_toRightOf="@+id/space_route"
-        android:layout_toEndOf="@+id/route_details_arrow"
-        android:layout_below="@+id/route_title"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/route_details_arrow"
+            android:text="  to  "
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/space_route"
+            android:layout_toEndOf="@+id/route_details_Start"
+            android:layout_below="@+id/route_title"/>
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/route_details_End"
+            android:text="St.Ultans School"
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/space_route"
+            android:layout_toEndOf="@+id/route_details_arrow"
+            android:layout_below="@+id/route_title"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
