@@ -107,7 +107,7 @@ public class FragmentParentHomeAccount extends Fragment {
     private List<SettingDetails> getSettingsDetails() {
 
         List<SettingDetails> list= new ArrayList<>();
-  //      list.add(new SettingDetails("Create new route", R.drawable.ic_place_ack_24dp));
+        list.add(new SettingDetails("Create new route", R.drawable.ic_media_play));
         list.add(new SettingDetails("Log Out", R.drawable.ic_power_settings_new_black_24dp));
         list.add(new SettingDetails("View ChildHome", R.drawable.child_placeholder));
         list.add(new SettingDetails("Test notifications", R.drawable.ic_notifications_black_24dp));
