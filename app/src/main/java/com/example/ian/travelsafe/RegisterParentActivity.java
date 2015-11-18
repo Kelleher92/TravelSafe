@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class RegisterParentActivity extends AppCompatActivity {
     boolean flag = false;
 
@@ -65,11 +68,12 @@ public class RegisterParentActivity extends AppCompatActivity {
         String user_username = username.getText().toString();
 
         EditText password = (EditText) this.findViewById(R.id.password);
-        String user_password = password.getText().toString();
-        if (!isValidPassword(user_password)) {
+        String pass = password.getText().toString();
+        if (!isValidPassword(pass)) {
             password.setError("password must contain at least 6 characters and 1 number");
             return false;
         }
+        String user_password = computeMD5Hash(pass);
 
         UserLocalStore stale = new UserLocalStore(this);
         stale.clearUserData();
@@ -101,6 +105,31 @@ public class RegisterParentActivity extends AppCompatActivity {
 
         }, this);
         return true;
+    }
+
+    public static String computeMD5Hash(String password)
+    {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(password.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            StringBuffer MD5Hash = new StringBuffer();
+            for (int i = 0; i < messageDigest.length; i++)
+            {
+                String h = Integer.toHexString(0xFF & messageDigest[i]);
+                while (h.length() < 2)
+                    h = "0" + h;
+                MD5Hash.append(h);
+            }
+            return MD5Hash.toString();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void showRegisteredMessage() {

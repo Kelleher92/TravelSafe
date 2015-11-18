@@ -41,7 +41,9 @@ public class RegisterNewChild extends AppCompatActivity {
         EditText username = (EditText) this.findViewById(R.id.newChildUsername);
         String newChildUsername = username.getText().toString();
         EditText password = (EditText) this.findViewById(R.id.newChildPassword);
-        String newChildPassword = password.getText().toString();
+        String pass = password.getText().toString();
+        String newChildPassword = RegisterParentActivity.computeMD5Hash(pass);
+
 
         if(verifyDetails()){
             int currentUserId = new UserLocalStore(this).getLoggedInUser().get_id();
@@ -52,7 +54,7 @@ public class RegisterNewChild extends AppCompatActivity {
             Log.i("MyActivity", "1. user email = " + currentUserEmail);
 
             // Add to user list
-            // ParentChildList.addToChildList(child);
+            ParentChildList.addToChildList(child);
             //////////////////////////
             registerChild(child);
             // Load parent home again.
