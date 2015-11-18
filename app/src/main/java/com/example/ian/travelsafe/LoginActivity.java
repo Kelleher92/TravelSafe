@@ -87,11 +87,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         String _username = username.getText().toString();
-        String _password = password.getText().toString();
+        String pass = password.getText().toString();
+
+        String _password = RegisterParentActivity.computeMD5Hash(pass);
 
         UserLocalStore stale = new UserLocalStore(this);
         stale.clearUserData();
         Users user = new Users(null, _username, _password);
+        String UserType = "";
 
         if (authenticate(user))
             return true;
@@ -111,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     logUserIn(returnedUser);
                     flag = true;
-                    Log.i("MyActivity", "Flag = true");
+                    Log.i("MyActivity", "Flag = true , UserType = " + returnedUser.get_flag());
                 }
             }
         });
@@ -128,9 +131,19 @@ public class LoginActivity extends AppCompatActivity {
     private void logUserIn(Users returnedUser) {
         userLocalStore.storeUserData(returnedUser);
         userLocalStore.setUserLoggedIn(true);
-        Intent i = new Intent(this, ParentHome.class);
-        startActivity(i);
-        finish();
+        Log.i("MyActivity", "User flag = " + returnedUser.get_flag());
+        if (returnedUser.get_flag().equals("C")) {
+            Log.i("MyActivity", "Child user");
+            Intent i = new Intent(this, ChildHome.class);
+            startActivity(i);
+            finish();
+        }
+        else{
+            Log.i("MyActivity", "Parent user");
+            Intent i = new Intent(this, ParentHome.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     public void CheckLoginDetailsOnSubmit(View view) {

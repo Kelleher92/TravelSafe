@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ian on 06/11/2015.
@@ -210,7 +211,7 @@ public class ServerRequests {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
-                Log.i("MyActivity", "Sent to server");
+                Log.i("MyActivity", "Sent to server - " + dataToSend + "    " + post);
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
@@ -219,12 +220,14 @@ public class ServerRequests {
                 if (jObject.length() == 0)
                     Log.i("MyActivity", "No response");
                 else {
-                    int parentid = jObject.getInt("id");
+                    int id = jObject.getInt("id");
                     String emailaddress = jObject.getString("emailaddress");
                     String username = jObject.getString("username");
                     String password = jObject.getString("password");
+                    String flag = jObject.getString("flag");
+                    Log.i("MyActivity", id + emailaddress + username + password + flag);
 
-                    returnedUser = new Users(parentid, emailaddress, username, password);
+                    returnedUser = new Users(id, emailaddress, username, password, flag);
                 }
 
             } catch (Exception e) {
@@ -287,6 +290,7 @@ public class ServerRequests {
                     String name = jObject.getString("name");
                     String username = jObject.getString("username");
                     String password = jObject.getString("password");
+                    String flag = jObject.getString("flag");
 
                     returnedChild = new ChildDetails(id, parentid, name, username, password);
                 }
