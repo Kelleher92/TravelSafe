@@ -221,8 +221,6 @@ public class ServerRequests {
                     Log.i("MyActivity", "No response");
                 else {
                     int id = jObject.getInt("id");
-                    //int parentid = jObject.getInt("parentid");
-                    //String name = jObject.getString("name");
                     String emailaddress = jObject.getString("emailaddress");
                     String username = jObject.getString("username");
                     String password = jObject.getString("password");
