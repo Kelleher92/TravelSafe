@@ -37,6 +37,7 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
 
     TextView startLocation;
+    TextView childName;
     TextView endLocation;
     TextView currentLocation;
     Button  btnShowLoc;
@@ -56,7 +57,13 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
         currentLocation = (TextView) findViewById(R.id.currentLocation);
         currentLocation = (TextView) findViewById(R.id.currentLocation);
         btnShowLoc = (Button) findViewById(R.id.ButtonStartJourney);
+        childName = (TextView) findViewById(R.id.ChildFirstName);
 
+
+        UserLocalStore current = new UserLocalStore(this);
+        Users currentUser = current.getLoggedInUser();
+
+        childName.setText(currentUser.get_emailAddress());
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.childMap);
@@ -99,29 +106,6 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
         });
 
 
-        // New thread to get current locations.
-//        handler = new Handler();
-//        Thread thread = new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    while(true) {
-//                        sleep(10000);
-//                        handler.post(this);
-//                        try {
-//                            currentLocation.setText(myAddress.getAddressLine(0) + ", " + myAddress.getAddressLine(1));
-//                        }
-//                        catch(Exception e){
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        thread.start();
 
     }
 
