@@ -88,8 +88,8 @@ public class FragmentParentHomeAccount extends Fragment {
                                 break;
                             // Test notifications
                             case 3:
-                                startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
-                                //createNotification();
+//                                startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
+                                createNotification();
                                 break;
                         }
                     }

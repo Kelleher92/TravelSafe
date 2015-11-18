@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabSaveRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_save_white_24dp"
+        app:layout_scrollFlags="enterAlways"
+        android:visibility="gone"
+        android:adjustViewBounds="false"
+        android:scrollIndicators="none" />
 
     <fragment
         android:id="@+id/map"
@@ -32,7 +45,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="15dp"
+                android:layout_toLeftOf="@+id/send"
+                android:layout_toStartOf="@+id/send">
 
                 <AutoCompleteTextView
                     android:id="@+id/start"
@@ -40,7 +55,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:background="@android:color/transparent"
-                    android:hint="Choose a starting point..." />
+                    android:hint="Choose a starting point..."
+                    android:textSize="16sp"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -52,15 +68,16 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/destination"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:hint="Choose a destination..." />
+                    android:hint="Choose a destination..."
+                    android:textSize="16sp" />
             </LinearLayout>
             <ImageView
                 android:id="@+id/send"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="10dp"
                 android:layout_alignParentRight="true"
                 android:layout_width="36dp"
                 android:src="@drawable/ic_send_grey600_48dp"

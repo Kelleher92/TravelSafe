@@ -2,10 +2,12 @@ package com.example.ian.travelsafe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +18,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class FragmentParentHomeChildren extends Fragment {
@@ -51,7 +59,7 @@ public class FragmentParentHomeChildren extends Fragment {
 
         UserLocalStore userLocalStore;
         userLocalStore = new UserLocalStore(this.getContext());
-        Users returnedUser = userLocalStore.getLoggedInUser();
+        final Users returnedUser = userLocalStore.getLoggedInUser();
 
         Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id() + " email is " + returnedUser.get_emailAddress());
 
@@ -102,6 +110,16 @@ public class FragmentParentHomeChildren extends Fragment {
         );
 
         TextView tv = (TextView) view.findViewById(R.id.changeRoute);
+
+        // Setup refresh listener which triggers new data loading
+//        final SwipeRefreshLayout swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_parent_children);
+//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                getChildren(returnedUser);
+////                swipeContainer.setRefreshing(false);
+//            }
+//        });
 
         return view;
     }

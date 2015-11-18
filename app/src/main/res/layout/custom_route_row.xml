@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="#0e2d2d2d">
+        android:background="#102d2d2d">
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/route_title"
             android:text="RouteToSchool"
+            android:textColor="#535353"
             android:textSize="18sp"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/space_route"
@@ -44,6 +45,7 @@
             android:id="@+id/route_details_Start"
             android:text="24 Bird Ave."
             android:textSize="12sp"
+            android:textColor="#535353"
             android:layout_toRightOf="@+id/space_route"
             android:layout_toEndOf="@+id/space_route"
             android:layout_below="@+id/route_title"/>
@@ -54,6 +56,7 @@
             android:id="@+id/route_details_arrow"
             android:text="  to  "
             android:textSize="12sp"
+            android:textColor="#535353"
             android:layout_toRightOf="@+id/space_route"
             android:layout_toEndOf="@+id/route_details_Start"
             android:layout_below="@+id/route_title"/>
@@ -62,6 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/route_details_End"
+            android:textColor="#535353"
             android:text="St.Ultans School"
             android:textSize="12sp"
             android:layout_toRightOf="@+id/space_route"
