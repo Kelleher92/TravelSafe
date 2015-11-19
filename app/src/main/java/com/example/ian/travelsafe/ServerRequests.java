@@ -66,6 +66,10 @@ public class ServerRequests {
         new removeChildAsyncTask(child).execute();
     }
 
+    public void saveRouteInBackground(int userid, RouteDetails route) {
+        new saveRouteAsyncTask(userid,route).execute();
+    }
+
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         GetUserCallback userCallback;
@@ -363,4 +367,56 @@ public class ServerRequests {
             super.onPostExecute(child);
         }
     }
+
+    public class saveRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
+        int userid;
+        RouteDetails route;
+
+        public saveRouteAsyncTask(int userid, RouteDetails route) {
+            this.userid = userid;
+            this.route = route;
+        }
+
+        @Override
+        protected RouteDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", userid + ""));
+            dataToSend.add(new BasicNameValuePair("childid", 0 + ""));
+            dataToSend.add(new BasicNameValuePair("route_name", route.getmRouteName() + ""));
+            dataToSend.add(new BasicNameValuePair("start_lat", route.getStart().latitude + ""));
+            dataToSend.add(new BasicNameValuePair("start_long", route.getStart().longitude + ""));
+            dataToSend.add(new BasicNameValuePair("end_lat", route.getEnd().latitude + ""));
+            dataToSend.add(new BasicNameValuePair("end_long", route.getEnd().longitude + ""));
+            dataToSend.add(new BasicNameValuePair("travel_mode", route.getModeTransport() + ""));
+            dataToSend.add(new BasicNameValuePair("index", route.getIndex() + ""));
+            dataToSend.add(new BasicNameValuePair("flag", 0 + ""));
+
+            Log.i("MyActivity", "dataToSend (1) = " + dataToSend);
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "StoreRoute.php");
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+                Log.i("MyActivity", "dataToSend (2) = " + dataToSend);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(RouteDetails route) {
+            progressDialog.dismiss();
+            super.onPostExecute(route);
+        }
+    }
+
 }

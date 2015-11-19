@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -386,16 +387,16 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         });
 
         // Floating Action Button
-        FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
+       // FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
 
-        saveRoute.setOnClickListener(new View.OnClickListener() {
-                @Override
-               public void onClick(View view) {
-              Pop.routeListView.invalidateViews();
-                    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
-                   Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
-            }
-          });
+        //saveRoute.setOnClickListener(new View.OnClickListener() {
+            //    @Override
+          //     public void onClick(View view) {
+              //Pop.routeListView.invalidateViews();
+                //    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
+                  // Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
+            //}
+          //});
 
         //       }
         //   })
@@ -413,9 +414,14 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     public void SaveRoute(View view){
         Log.i("MyActivity", "SaveRoute called");
-        ServerRequests serverRequests = new ServerRequests(this);
         RouteDetails route = new RouteDetails(start,end,"MyRoute", modeTransport, routeNo);
-        //serverRequests.saveRouteInBackground(route);
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(this);
+        Users returnedUser = userLocalStore.getLoggedInUser();
+        Log.i("MyActivity", "User id = " + returnedUser.get_id());
+        Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
+        ServerRequests serverRequests = new ServerRequests(this);
+        serverRequests.saveRouteInBackground(returnedUser.get_id(), route);
     }
 
 
