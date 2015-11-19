@@ -533,7 +533,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
         Log.v(LOG_TAG,connectionResult.toString());
     }
 
