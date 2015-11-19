@@ -96,8 +96,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         }
         map = mapFragment.getMap();
 
-
-
         mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
                 mGoogleApiClient, BOUNDS_UCD, null);
 
@@ -328,6 +326,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     @OnClick(R.id.send)
     public void sendRequest()
     {
+        // Hiding keyboard so route can be seen.
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 

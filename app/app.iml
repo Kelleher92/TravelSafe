@@ -156,5 +156,6 @@
     <orderEntry type="library" exported="" name="play-services-plus-8.1.0" level="project" />
     <orderEntry type="module" module-name="httpcore-4.4.4" exported="" />
     <orderEntry type="module" module-name="json-simple-1.1.1" exported="" />
+    <orderEntry type="library" name="httpclient-4.5.1.httpclient-4.5.1" level="project" />
   </component>
 </module>
