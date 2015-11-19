@@ -3,6 +3,8 @@ package com.example.ian.travelsafe;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.view.View.OnClickListener;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -29,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.internal.IMapFragmentDelegate;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -49,6 +53,11 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     protected GoogleMap map;
     protected LatLng start;
     protected LatLng end;
+    protected AbstractRouting.TravelMode modeTransport;
+    protected MarkerOptions startOptions = new MarkerOptions();
+    protected MarkerOptions endOptions = new MarkerOptions();
+    protected Route chosenRoute;
+    protected int routeNo;
 
     @InjectView(R.id.start)
     AutoCompleteTextView starting;
@@ -56,13 +65,16 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     AutoCompleteTextView destination;
     @InjectView(R.id.send)
     ImageView send;
+
+    //protected AutoCompleteTextView starting; //= new AutoCompleteTextView();
+    //protected AutoCompleteTextView destination;// = new AutoCompleteTextView();
+    // ImageView send;// = new ImageView();
+
     private String LOG_TAG = "DirectionsActivity";
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutoCompleteAdapter mAdapter;
     private ProgressDialog progressDialog;
-    private ArrayList<Polyline> polylines;
-    private int[] colors = new int[]{R.color.colorPrimary,R.color.colorPrimaryLighter,R.color.colorPrimaryLightest,R.color.colorAccentBlue,R.color.primary_dark_material_light};
-
+    private ArrayList<Route> routes;
 
     private static final LatLngBounds BOUNDS_UCD= new LatLngBounds(new LatLng(53.298158, -6.246800),
             new LatLng(53.316057, -6.205602));
@@ -79,12 +91,16 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
 
         MapsInitializer.initialize(this);
-        polylines = new ArrayList<>();
+        routes = new ArrayList<>();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        //AutoCompleteTextView starting = (AutoCompleteTextView) findViewById(R.id.start);
+        //AutoCompleteTextView destination = (AutoCompleteTextView) findViewById(R.id.destination);
+        //ImageView send = (ImageView) findViewById(R.id.send);
 
         mGoogleApiClient.connect();
 
@@ -95,7 +111,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             getSupportFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
         }
         map = mapFragment.getMap();
-
 
 
         mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
@@ -225,12 +240,13 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                         // Get the Place object from the buffer.
                         final Place place = places.get(0);
 
-                        start=place.getLatLng();
+                        start = place.getLatLng();
                     }
                 });
 
             }
         });
+
         destination.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -257,13 +273,71 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                         // Get the Place object from the buffer.
                         final Place place = places.get(0);
 
-                        end=place.getLatLng();
+                        end = place.getLatLng();
                     }
                 });
 
             }
         });
 
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if (!routes.isEmpty()) {
+                    for (Route iroute : routes) {
+                        for (LatLng routeCoords : iroute.getPoints()) {
+                            float[] results = new float[1];
+                            Location.distanceBetween(latLng.latitude, latLng.longitude,
+                                    routeCoords.latitude, routeCoords.longitude, results);
+
+                            if (results[0] < 100) {
+                                map.clear();
+                                map.addMarker(startOptions);
+                                map.addMarker(endOptions);
+
+                                for (Route r : routes) {
+                                    if (r != iroute) {
+                                        map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(r.getPoints()).width(20));
+                                    } else {
+                                        chosenRoute = r;
+                                        routeNo = routes.indexOf(r) + 1;
+                                    }
+                                }
+
+                                map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
+                            }
+
+                        }
+
+                    }
+
+
+                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + routeNo, Toast.LENGTH_LONG).show();
+                    Log.e("PolyLine ", routes.toString());
+                }
+            }
+
+        });
+
+
+        //send.setOnClickListener(new ImageView.OnClickListener() {
+        //  @Override
+        //  public void onClick(View v) {
+        //    InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //     inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+        //if (Util.Operations.isOnline(DirectionsActivity.this)){
+        //        route();//}
+        //  else {
+        // Toast.makeText(DirectionsActivity.this, "No internet connectivity", Toast.LENGTH_SHORT).show();
+        //       }
+        //}
+        //});
+        //@Override
+        //  public void onClick(View view) {
+        //  Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
+        //  Pop.routeListView.invalidateViews();
+        //    Toast.makeText(DirectionsActivity.this,"Save Route to Parent",Toast.LENGTH_SHORT).show();
         /*
         These text watchers set the start and end points to null because once there's
         * a change after a value has been selected from the dropdown
@@ -300,9 +374,8 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
 
-                if(end!=null)
-                {
-                    end=null;
+                if (end != null) {
+                    end = null;
                 }
             }
 
@@ -313,24 +386,50 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         });
 
         // Floating Action Button
-        FloatingActionButton fabAddNewChild = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
-        fabAddNewChild.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
-                Pop.routeListView.invalidateViews();
-//                Toast.makeText(DirectionsActivity.this,"Save Route to Parent",Toast.LENGTH_SHORT).show();
-            }
-        });
+        FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
 
+        saveRoute.setOnClickListener(new View.OnClickListener() {
+                @Override
+               public void onClick(View view) {
+              Pop.routeListView.invalidateViews();
+                    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
+            }
+          });
+
+        //       }
+        //   })
     }
+    public void onRadioButtonClicked(View view) {
+        switch (view.getId()) {
+            case R.id.button_walk:
+                modeTransport = AbstractRouting.TravelMode.WALKING;
+                break;
+            case R.id.button_cycle:
+                modeTransport = AbstractRouting.TravelMode.BIKING;
+                break;
+        }
+    }
+
+    public void SaveRoute(View view){
+        Log.i("MyActivity", "SaveRoute called");
+        ServerRequests serverRequests = new ServerRequests(this);
+        RouteDetails route = new RouteDetails(start,end,"MyRoute", modeTransport, routeNo);
+        //serverRequests.saveRouteInBackground(route);
+    }
+
+
+
+    //send.setOnClickListener(new View.OnClickListener() {
+        //   @Override
+        //    public void onClick(View view) {
+        //   Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
+        //      Pop.routeListView.invalidateViews();
+//                Toast.makeText(DirectionsActivity.this,"Save Route to Parent",Toast.LENGTH_SHORT).show();
 
     @OnClick(R.id.send)
     public void sendRequest()
     {
-        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
         if(Util.Operations.isOnline(this))
         {
             route();
@@ -341,47 +440,38 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         }
     }
 
-    public void route()
-    {
-        if(start==null || end==null)
-        {
-            if(start==null)
-            {
-                if(starting.getText().length()>0)
-                {
+    public void route() {
+        if (start == null || end == null || modeTransport == null) {
+            if (start == null) {
+                if (starting.getText().length() > 0) {
                     starting.setError("Choose location from dropdown.");
-                }
-                else
-                {
-                    Toast.makeText(this,"Please choose a starting point.",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Please choose a starting point.", Toast.LENGTH_SHORT).show();
                 }
             }
-            if(end==null)
-            {
-                if(destination.getText().length()>0)
-                {
+            if (end == null) {
+                if (destination.getText().length() > 0) {
                     destination.setError("Choose location from dropdown.");
-                }
-                else
-                {
-                    Toast.makeText(this,"Please choose a destination.",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Please choose a destination.", Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-        else
-        {
-            progressDialog = ProgressDialog.show(this, "Please wait.",
-                    "Fetching route information.", true);
-            Routing routing = new Routing.Builder()
-                    .travelMode(AbstractRouting.TravelMode.WALKING)
-                    .withListener(this)
-                    .alternativeRoutes(true)
-                    .waypoints(start, end)
-                    .build();
-            routing.execute();
-        }
-    }
+            if (modeTransport == null) {
+                Toast.makeText(this, "Please choose a mode of transport.", Toast.LENGTH_SHORT).show();
+            }} else {
+                progressDialog = ProgressDialog.show(this, "Please wait.",
+                        "Fetching route information.", true);
 
+                Log.e("Route ", routes.toString());
+                Routing routing = new Routing.Builder()
+                        .travelMode(modeTransport)
+                        .withListener(this)
+                        .alternativeRoutes(true)
+                        .waypoints(start, end)
+                        .build();
+                routing.execute();
+            }
+        }
 
     @Override
     public void onRoutingFailure() {
@@ -405,35 +495,32 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
         map.moveCamera(center);
 
+        routes = route;
 
-        polylines = new ArrayList<>();
-        //add route(s) to the map.
         for (int i = 0; i <route.size(); i++) {
-
-            //In case of more than 5 alternative routes
-            int colorIndex = i % colors.length;
-
-            PolylineOptions polyOptions = new PolylineOptions();
-            polyOptions.color(getResources().getColor(colors[colorIndex]));
-            polyOptions.width(10 + i * 3);
-            polyOptions.addAll(route.get(i).getPoints());
-            Polyline polyline = map.addPolyline(polyOptions);
-            polylines.add(polyline);
-
-            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_LONG).show();
+            if (i != 0) {
+                map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(route.get(i).getPoints()).width(20));
+            } else {
+                chosenRoute = route.get(i);
+                routeNo = i+1;
+            }
+            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(),Toast.LENGTH_LONG).show();
         }
 
+        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ routeNo,Toast.LENGTH_LONG).show();
+        map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
+
         // Start marker
-        MarkerOptions options = new MarkerOptions();
-        options.position(start);
-        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
-        map.addMarker(options);
+        startOptions = new MarkerOptions();
+        startOptions.position(start);
+        startOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
+        map.addMarker(startOptions);
 
         // End marker
-        options = new MarkerOptions();
-        options.position(end);
-        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
-        map.addMarker(options);
+        endOptions = new MarkerOptions();
+        endOptions.position(end);
+        endOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
+        map.addMarker(endOptions);
 
         findViewById(R.id.fabSaveRoute).setVisibility(View.VISIBLE);
 
@@ -446,7 +533,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
         Log.v(LOG_TAG,connectionResult.toString());
     }
 

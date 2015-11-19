@@ -1,28 +1,23 @@
 package com.example.ian.travelsafe;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class RouteDetails {
 
-    String mRouteTitle;
-    String mRouteStart;
-    String mRouteEnd;
+    LatLng start;
+    LatLng end;
+    String mRouteName;
+    AbstractRouting.TravelMode modeTransport;
+    int index;
 
-    public RouteDetails(String routeTitle, String routeStart, String routeEnd) {
 
-        mRouteTitle = routeTitle;
-        mRouteStart = routeStart;
-        mRouteEnd = routeEnd;
+    public RouteDetails(LatLng rstart, LatLng rend, String RouteName, AbstractRouting.TravelMode RmodeTransport, int Rindex) {
+
+        start = rstart;
+        end = rend;
+        mRouteName = RouteName;
+        modeTransport = RmodeTransport;
+        index = Rindex;
     }
 
-
-    public String getmSettingTitle() {
-        return mRouteTitle;
-    }
-
-    public String getRouteStart() {
-        return mRouteStart;
-    }
-
-    public String getmRouteEnd() {
-        return mRouteEnd;
-    }
 }

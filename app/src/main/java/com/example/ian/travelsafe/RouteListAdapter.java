@@ -35,9 +35,9 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         TextView tvRStart = (TextView) customView.findViewById(R.id.route_details_Start);
         TextView tvREnd = (TextView) customView.findViewById(R.id.route_details_End);
 
-        tvRTitle.setText(rd.mRouteTitle);
-        tvRStart.setText(rd.mRouteStart);
-        tvREnd.setText(rd.mRouteEnd);
+        //tvRTitle.setText(rd.mRouteTitle);
+        //tvRStart.setText(rd.mRouteStart);
+        //tvREnd.setText(rd.mRouteEnd);
 
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);
 
