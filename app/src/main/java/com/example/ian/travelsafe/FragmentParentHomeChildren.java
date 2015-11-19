@@ -30,7 +30,7 @@ import java.util.Locale;
 
 public class FragmentParentHomeChildren extends Fragment {
 
-    ChildDetails child = new ChildDetails(null, null);
+    List<ChildDetails> children = new ArrayList<>();
     private TextView mText;
     private TextView mRoute;
     private ImageView mProfileImage;
@@ -138,17 +138,18 @@ public class FragmentParentHomeChildren extends Fragment {
     private void getChildren(Users user) {
         ServerRequests serverRequests = new ServerRequests(this.getContext());
         Log.i("MyActivity", "user id is = " + user.get_id());
-        serverRequests.fetchChildDataInBackground(user.get_id(), child, new GetChildCallback() {
+        serverRequests.fetchChildDataInBackground(user.get_id(), children, new GetChildrenCallback() {
             @Override
-            public void done(ChildDetails returnedChild) {
-                if (returnedChild == null) {
+            public void done(List<ChildDetails> returnedChildren) {
+                if (returnedChildren == null) {
                     showErrorMessage();
                     Log.i("MyActivity", "No child returned");
                 } else {
-                    child = returnedChild;
-                    Log.i("MyActivity", "child returned = " + child.get_id() + child.get_name() + child.get_username());
+                    children = returnedChildren;
 
-                    ParentChildList.addToChildList(child);
+                    for (int x = 0; x<returnedChildren.size(); x++) {
+                        ParentChildList.addToChildList(returnedChildren.get(x));
+                    }
                     FragmentParentHomeChildren.childrenListView.invalidateViews();
                     IsChildListEmpty();
                 }
