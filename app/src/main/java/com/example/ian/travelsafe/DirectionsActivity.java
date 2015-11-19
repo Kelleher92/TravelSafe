@@ -473,7 +473,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             }
         }
 
-
     @Override
     public void onRoutingFailure() {
         // The Routing request failed
