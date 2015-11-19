@@ -2,12 +2,13 @@
 <resources>
     <color name="colorPrimary">#006699</color>
     <color name="colorPrimaryDark">#006699</color>
+    <color name="colorInactiveRoute">#B0B0B0</color>
     <!--<color name="colorAccent">#FF4081</color>-->
     <!--<color name="colorAccent">#FFDC1C</color>-->
     <color name="colorAccent">#F74C3A</color>
     <color name="travelSafeBlue">#006699</color>
 
-    <color name="colorPrimaryLighter">#2E8ECA</color>
+    <color name="colorPrimaryLighter">#6EF31C</color>
     <color name="colorPrimaryLightest">#80CDFC</color>
     <!--<color name="colorAccent">#FFDC1C</color>-->
     <color name="colorAccentBlue">#006699</color>

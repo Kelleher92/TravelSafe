@@ -49,6 +49,42 @@
                 android:layout_toLeftOf="@+id/send"
                 android:layout_toStartOf="@+id/send">
 
+                <RadioGroup
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:id="@+id/travel_mode"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Walk"
+                        android:id="@+id/button_walk"
+                        android:onClick="onRadioButtonClicked"
+                        android:textColor="@color/divider"
+                        android:buttonTint="@color/divider"
+                        android:checked="false" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cycle"
+                        android:id="@+id/button_cycle"
+                        android:onClick="onRadioButtonClicked"
+                        android:textColor="@color/divider"
+                        android:buttonTint="@color/divider"
+                        android:layout_marginLeft="20dp" />
+                </RadioGroup>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/dotted" />
+
                 <AutoCompleteTextView
                     android:id="@+id/start"
                     android:layout_width="fill_parent"
@@ -56,7 +92,9 @@
                     android:layout_marginBottom="10dp"
                     android:background="@android:color/transparent"
                     android:hint="Choose a starting point..."
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
+                    //android:onClick="onItemClick"
+
 
                 <View
                     android:layout_width="match_parent"
@@ -73,6 +111,8 @@
                     android:background="@android:color/transparent"
                     android:hint="Choose a destination..."
                     android:textSize="16sp" />
+                    //android:onClick="onItemClick"
+
             </LinearLayout>
             <ImageView
                 android:id="@+id/send"
@@ -82,8 +122,10 @@
                 android:layout_width="36dp"
                 android:src="@drawable/ic_send_grey600_48dp"
                 android:layout_height="36dp" />
+                //android:onClick="onClick" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>
+
 </FrameLayout>
 

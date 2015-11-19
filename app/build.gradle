@@ -11,7 +11,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+       // multiDexEnabled true
     }
     buildTypes {
         release {
@@ -38,5 +38,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.1.0'
     compile project(':httpcore-4.4.4')
     compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.android.support:multidex:1.0.1'
+    //compile 'com.android.support:multidex:1.0.1'
 }
