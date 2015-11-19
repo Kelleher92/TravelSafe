@@ -29,9 +29,9 @@ import java.util.Locale;
 
 public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
 
-    private TextView mLocationView;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
+//    private TextView mLocationView;
+//    private GoogleApiClient mGoogleApiClient;
+//    private LocationRequest mLocationRequest;
     GetAddress getAdd = new GetAddress();
 
     private GoogleMap mMap;
@@ -42,7 +42,6 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
     TextView currentLocation;
     Button  btnShowLoc;
     private SwipeRefreshLayout swipeContainer;
-    Handler handler;
     Location myLocation;
     Address myAddress;
 
