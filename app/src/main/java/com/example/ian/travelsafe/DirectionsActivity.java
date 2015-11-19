@@ -391,7 +391,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         saveRoute.setOnClickListener(new View.OnClickListener() {
                 @Override
                public void onClick(View view) {
-          Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
               Pop.routeListView.invalidateViews();
                     Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
                    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
@@ -411,6 +410,15 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                 break;
         }
     }
+
+    public void SaveRoute(View view){
+        Log.i("MyActivity", "SaveRoute called");
+        ServerRequests serverRequests = new ServerRequests(this);
+        RouteDetails route = new RouteDetails(start,end,"MyRoute", modeTransport, routeNo);
+        serverRequests.saveRouteInBackground(route);
+    }
+
+
 
     //send.setOnClickListener(new View.OnClickListener() {
         //   @Override

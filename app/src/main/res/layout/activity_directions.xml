@@ -16,7 +16,8 @@
         app:layout_scrollFlags="enterAlways"
         android:visibility="gone"
         android:adjustViewBounds="false"
-        android:scrollIndicators="none" />
+        android:scrollIndicators="none"
+        android:onClick="SaveRoute"/>
 
     <fragment
         android:id="@+id/map"
