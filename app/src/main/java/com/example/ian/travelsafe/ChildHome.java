@@ -134,8 +134,8 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
         }
         mMap = mapFragment.getMap();
 
-        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS_UCD, null);
+//        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
+//                mGoogleApiClient, BOUNDS_UCD, null);
 
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
