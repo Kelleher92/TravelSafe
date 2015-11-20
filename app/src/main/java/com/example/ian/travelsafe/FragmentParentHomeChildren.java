@@ -71,6 +71,7 @@ public class FragmentParentHomeChildren extends Fragment {
         fabAddNewChild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                childList.clear();
                 Intent i = new Intent(context, RegisterNewChild.class);
                 startActivity(i);
             }
@@ -132,6 +133,7 @@ public class FragmentParentHomeChildren extends Fragment {
     }
 
     private void getChildren(Users user) {
+        childList.clear();
         ServerRequests serverRequests = new ServerRequests(this.getContext());
         Log.i("MyActivity", "user id is = " + user.get_id());
         serverRequests.fetchChildDataInBackground(user.get_id(), children, new GetChildrenCallback() {
@@ -166,6 +168,7 @@ public class FragmentParentHomeChildren extends Fragment {
     }
 
     public void getCurrentRouteList(Context context) {
+        routeList.clear();
         Log.i("MyActivity", "retrieving list");
         UserLocalStore userLocalStore;
         userLocalStore = new UserLocalStore(context);
@@ -180,11 +183,9 @@ public class FragmentParentHomeChildren extends Fragment {
                     routes = null;
                 } else {
                     routes = returnedRoutes;
-
                     for (int x = 0; x < returnedRoutes.size(); x++) {
                         routeList.add(returnedRoutes.get(x));
                     }
-
                 }
             }
         });

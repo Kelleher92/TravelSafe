@@ -44,7 +44,6 @@ import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 public class ChildHome extends AppCompatActivity implements RoutingListener, OnConnectionFailedListener, ConnectionCallbacks {
 
     private GoogleApiClient mGoogleApiClient;
-    GetAddress getAdd = new GetAddress();
 
     private GoogleMap map;
 //    protected LatLng start;
@@ -65,7 +64,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     AbstractRouting.TravelMode travelMode;
 
     // Information for graphing route.
-    RouteDetails route = new RouteDetails(null, null, null, null, 0);
+    RouteDetails route = new RouteDetails(null, null, null, null, 0, 0);
     private int[] colors = new int[]{R.color.colorPrimaryLighter, R.color.primary_dark_material_light};
     private ProgressDialog progressDialog;
     private PlaceAutoCompleteAdapter mAdapter;
