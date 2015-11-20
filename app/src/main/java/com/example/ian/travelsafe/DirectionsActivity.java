@@ -1,26 +1,19 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.view.View.OnClickListener;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -32,13 +25,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.internal.IMapFragmentDelegate;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -47,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static com.google.android.gms.maps.CameraUpdateFactory.*;
+import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 
 public class DirectionsActivity extends AppCompatActivity implements RoutingListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     protected GoogleMap map;
@@ -76,7 +67,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     private ProgressDialog progressDialog;
     private ArrayList<Route> routes;
 
-    private static final LatLngBounds BOUNDS_UCD= new LatLngBounds(new LatLng(53.298158, -6.246800),
+    private static final LatLngBounds BOUNDS_UCD = new LatLngBounds(new LatLng(53.298158, -6.246800),
             new LatLng(53.316057, -6.205602));
 
     /**
@@ -386,20 +377,21 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         });
 
         // Floating Action Button
-        FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
+        // FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
 
-        saveRoute.setOnClickListener(new View.OnClickListener() {
-                @Override
-               public void onClick(View view) {
-              Pop.routeListView.invalidateViews();
-                    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
-                   Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
-            }
-          });
+        //saveRoute.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //     public void onClick(View view) {
+        //Pop.routeListView.invalidateViews();
+        //    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
+        //}
+        //});
 
         //       }
         //   })
     }
+
     public void onRadioButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.button_walk:
@@ -411,32 +403,32 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         }
     }
 
-    public void SaveRoute(View view){
+    public void SaveRoute(View view) {
         Log.i("MyActivity", "SaveRoute called");
+        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo);
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(this);
+        Users returnedUser = userLocalStore.getLoggedInUser();
+        Log.i("MyActivity", "User id = " + returnedUser.get_id());
+        Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
         ServerRequests serverRequests = new ServerRequests(this);
-        RouteDetails route = new RouteDetails(start,end,"MyRoute", modeTransport, routeNo);
-        //serverRequests.saveRouteInBackground(route);
+        serverRequests.saveRouteInBackground(returnedUser.get_id(), route);
     }
 
 
-
     //send.setOnClickListener(new View.OnClickListener() {
-        //   @Override
-        //    public void onClick(View view) {
-        //   Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
-        //      Pop.routeListView.invalidateViews();
+    //   @Override
+    //    public void onClick(View view) {
+    //   Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
+    //      Pop.routeListView.invalidateViews();
 //                Toast.makeText(DirectionsActivity.this,"Save Route to Parent",Toast.LENGTH_SHORT).show();
 
     @OnClick(R.id.send)
-    public void sendRequest()
-    {
-        if(Util.Operations.isOnline(this))
-        {
+    public void sendRequest() {
+        if (Util.Operations.isOnline(this)) {
             route();
-        }
-        else
-        {
-            Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -458,26 +450,27 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             }
             if (modeTransport == null) {
                 Toast.makeText(this, "Please choose a mode of transport.", Toast.LENGTH_SHORT).show();
-            }} else {
-                progressDialog = ProgressDialog.show(this, "Please wait.",
-                        "Fetching route information.", true);
-
-                Log.e("Route ", routes.toString());
-                Routing routing = new Routing.Builder()
-                        .travelMode(modeTransport)
-                        .withListener(this)
-                        .alternativeRoutes(true)
-                        .waypoints(start, end)
-                        .build();
-                routing.execute();
             }
+        } else {
+            progressDialog = ProgressDialog.show(this, "Please wait.",
+                    "Fetching route information.", true);
+
+            Log.e("Route ", routes.toString());
+            Routing routing = new Routing.Builder()
+                    .travelMode(modeTransport)
+                    .withListener(this)
+                    .alternativeRoutes(true)
+                    .waypoints(start, end)
+                    .build();
+            routing.execute();
         }
+    }
 
     @Override
     public void onRoutingFailure() {
         // The Routing request failed
         progressDialog.dismiss();
-        Toast.makeText(this,"Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
     }
 
@@ -487,8 +480,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     }
 
     @Override
-    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex)
-    {
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
         map.clear();
         progressDialog.dismiss();
 
@@ -497,17 +489,17 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
         routes = route;
 
-        for (int i = 0; i <route.size(); i++) {
+        for (int i = 0; i < route.size(); i++) {
             if (i != 0) {
                 map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(route.get(i).getPoints()).width(20));
             } else {
                 chosenRoute = route.get(i);
-                routeNo = i+1;
+                routeNo = i + 1;
             }
-            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
         }
 
-        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ routeNo,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + routeNo, Toast.LENGTH_LONG).show();
         map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
 
         // Start marker
@@ -533,7 +525,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.v(LOG_TAG,connectionResult.toString());
+        Log.v(LOG_TAG, connectionResult.toString());
     }
 
     @Override
