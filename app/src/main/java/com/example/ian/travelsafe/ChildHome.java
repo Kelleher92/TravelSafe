@@ -98,13 +98,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         // Server request for child route information.
         ServerRequests serverRequests = new ServerRequests(this);
         Log.i("FetchChildRoute", "id......" + currentUser.get_id());
-        RouteDetails assignedRoute = serverRequests.fetchChildAttachedRoute(currentUser.get_id(), new GetRouteCallback() {
+        serverRequests.fetchChildAttachedRoute(currentUser.get_id(), new GetRouteCallback() {
             @Override
             public void done(RouteDetails returnedRoute) {
                 if (returnedRoute == null) {
                     Log.i("ChildHome", "No route returned");
                 } else {
-                    Log.i("ChildHome", "!!!!..." + route.getStart().toString());
+//                    Log.i("ChildHome", "!!!!..." + route.getStart().toString());
                     route = returnedRoute;
                     startExample = route.getStart();         // Getting actual assigned location start.
                     destinationExample = route.getEnd();             // Getting actual start location end.
@@ -132,14 +132,14 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         }
         map = mapFragment.getMap();
 
-        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS_UCD, null);
+//        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
+//                mGoogleApiClient, BOUNDS_UCD, null);
 
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
+//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
 
-        map.moveCamera(center);
-        map.animateCamera(zoom);
+//        map.moveCamera(center);
+//        map.animateCamera(zoom);
 
                 /*
         * Updates the bounds being used by the auto complete adapter based on the position of the
@@ -161,6 +161,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         if(Util.Operations.isOnline(this)) {
             route();
+
         }
         else {
             Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();

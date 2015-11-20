@@ -217,7 +217,7 @@ public class ServerRequests {
         @Override
         protected RouteDetails doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair("parentid", id + ""));
+            dataToSend.add(new BasicNameValuePair("childid", id + ""));
 
             HttpParams httpRequestParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
@@ -237,16 +237,16 @@ public class ServerRequests {
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                Log.i("","");
+//                JSONArray jArray = new JSONArray(result);
                 JSONObject jObject = new JSONObject(result);
 
                 if (jObject.length() == 0)
                     Log.i("FetchChildRoute", "No response");
                 else {
+//                    JSONObject jObject = jArray.getJSONObject(0);
+                    Log.i("FetchChildRoute","inside");
                     LatLng start = new LatLng(jObject.getDouble("start_lat"), jObject.getDouble("start_long"));
                     LatLng end = new LatLng(jObject.getDouble("end_lat"), jObject.getDouble("end_long"));
-                    int id = jObject.getInt("childid");
-                    int parentid = jObject.getInt("parentid");
                     String routeName = jObject.getString("route_name");
                     int routeID = jObject.getInt("routeid");
                     int index = jObject.getInt("index");
