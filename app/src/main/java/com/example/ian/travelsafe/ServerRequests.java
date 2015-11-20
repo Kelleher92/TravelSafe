@@ -79,6 +79,11 @@ public class ServerRequests {
         return null;
     }
 
+    public RouteDetails attachRoute(int parentid, int childid, int routeID, GetRouteCallback routeCallback) {
+        new attachRouteAsyncTask(parentid, childid, routeID, routeCallback).execute();
+        return null;
+    }
+
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         GetUserCallback userCallback;
@@ -255,8 +260,70 @@ public class ServerRequests {
                             break;
                     }
 
-                    returnedRoute = new RouteDetails(start, end, routeName, mode, index);
+                    returnedRoute = new RouteDetails(start, end, routeName, mode, index, routeID);
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+
+            return returnedRoute;
+        }
+
+        @Override
+        protected void onPostExecute(RouteDetails route) {
+            progressDialog.dismiss();
+            routeCallback.done(route);
+            super.onPostExecute(route);
+        }
+    }
+
+    public class attachRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
+        GetRouteCallback routeCallback;
+        int parentid;
+        int childid;
+        int routeID;
+
+        public attachRouteAsyncTask(int parentid, int childid, int routeID, GetRouteCallback routeCallback) {
+            this.routeCallback = routeCallback;
+            this.childid = childid;
+            this.parentid = parentid;
+            this.routeID = routeID;
+        }
+
+        @Override
+        protected RouteDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", parentid + ""));
+            dataToSend.add(new BasicNameValuePair("childid", childid + ""));
+            dataToSend.add(new BasicNameValuePair("routetid", routeID + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "PushRoute.php");
+
+            RouteDetails returnedRoute = null;
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                Log.i("MyActivity", "Sent " + parentid + childid + routeID + " to server");
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+
+                if (jObject.length() == 0)
+                    Log.i("MyActivity", "No response");
+                else {
+
+                    }
+                    returnedRoute = new RouteDetails(null, null, null, null, 0, 0);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -401,7 +468,7 @@ public class ServerRequests {
 
                         Log.i("MyActivity", "Returned route " + x + " = " + routeid + parentid + childid + index + push + route_name + travel_mode + start + end);
 
-                        returnedRoutes.add(new RouteDetails(start, end, route_name, mode, index));
+                        returnedRoutes.add(new RouteDetails(start, end, route_name, mode, index, 0));
 
                     }
                     Log.i("MyActivity", "returnedRoutes size = " + returnedRoutes.size());
@@ -572,8 +639,18 @@ public class ServerRequests {
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
-                Log.i("MyActivity", "dataToSend (2) = " + dataToSend);
 
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+
+                if (jObject.length() == 0)
+                    Log.i("MyActivity", "No response");
+                else {
+                    int routeid = jObject.getInt("routeid");
+                    route.setRouteID(routeid);
+                    Log.i("MyActivity", "Route ID = " + routeid);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

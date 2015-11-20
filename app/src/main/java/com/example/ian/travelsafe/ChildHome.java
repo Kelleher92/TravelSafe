@@ -39,7 +39,6 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 //    private TextView mLocationView;
 //    private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
-    GetAddress getAdd = new GetAddress();
 
     private GoogleMap mMap;
     protected LatLng start;
@@ -59,7 +58,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
     Address endAddress;
 
     // Information for graphing route.
-    RouteDetails route = new RouteDetails(null, null, null, null, 0);
+    RouteDetails route = new RouteDetails(null, null, null, null, 0, 0);
     private int[] colors = new int[]{R.color.colorPrimaryLighter, R.color.primary_dark_material_light};
     private ProgressDialog progressDialog;
     private PlaceAutoCompleteAdapter mAdapter;

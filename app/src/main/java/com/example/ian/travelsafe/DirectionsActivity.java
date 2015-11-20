@@ -405,7 +405,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     public void SaveRoute(View view) {
         Log.i("MyActivity", "SaveRoute called");
-        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo);
+        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo, 0);
         UserLocalStore userLocalStore;
         userLocalStore = new UserLocalStore(this);
         Users returnedUser = userLocalStore.getLoggedInUser();
@@ -413,6 +413,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
         ServerRequests serverRequests = new ServerRequests(this);
         serverRequests.saveRouteInBackground(returnedUser.get_id(), route);
+        Log.i("MyActivity", "route ID = " + route.getRouteID());
     }
 
 
