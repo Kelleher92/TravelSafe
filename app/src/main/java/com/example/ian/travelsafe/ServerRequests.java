@@ -74,6 +74,11 @@ public class ServerRequests {
         new saveRouteAsyncTask(userid, route).execute();
     }
 
+    public RouteDetails fetchChildAttachedRoute(int childID, GetRouteCallback routeCallback) {
+        new fetchChildAttachedRouteAsyncTask(childID, routeCallback).execute();
+        return null;
+    }
+
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         GetUserCallback userCallback;
@@ -192,6 +197,80 @@ public class ServerRequests {
             progressDialog.dismiss();
             childCallback.done(null);
             super.onPostExecute(aVoid);
+        }
+    }
+
+    public class fetchChildAttachedRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
+        GetRouteCallback routeCallback;
+        int id;
+
+        public fetchChildAttachedRouteAsyncTask(int id, GetRouteCallback routeCallback) {
+            this.routeCallback = routeCallback;
+            this.id = id;
+        }
+
+        @Override
+        protected RouteDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", id + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchRoute.php");
+
+            RouteDetails returnedRoute = null;
+            Log.i("MyActivity", "Fetch php");
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                Log.i("MyActivity", "Sent id " + id + " to server");
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+
+                if (jObject.length() == 0)
+                    Log.i("MyActivity", "No response");
+                else {
+                    LatLng start = new LatLng(jObject.getDouble("start_lat"), jObject.getDouble("start_long"));
+                    LatLng end = new LatLng(jObject.getDouble("end_lat"), jObject.getDouble("end_long"));
+                    int id = jObject.getInt("childid");
+                    int parentid = jObject.getInt("parentid");
+                    String routeName = jObject.getString("route_name");
+                    int routeID = jObject.getInt("routeid");
+                    int index = jObject.getInt("index");
+                    String mod = jObject.getString("mode");
+                    AbstractRouting.TravelMode mode;
+                    switch(mod){
+                        case "BIKING": mode = AbstractRouting.TravelMode.BIKING;
+                            break;
+                        case "WALKING": mode = AbstractRouting.TravelMode.WALKING;
+                            break;
+                        default: mode = AbstractRouting.TravelMode.WALKING;
+                            break;
+                    }
+
+                    returnedRoute = new RouteDetails(start, end, routeName, mode, index);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+
+            return returnedRoute;
+        }
+
+        @Override
+        protected void onPostExecute(RouteDetails route) {
+            progressDialog.dismiss();
+            routeCallback.done(route);
+            super.onPostExecute(route);
         }
     }
 
