@@ -8,7 +8,7 @@ public class RouteDetails {
     LatLng end;
     String mRouteName;
     AbstractRouting.TravelMode modeTransport;
-    int index, routeID;
+    int index, routeid;
 
 
     public RouteDetails(LatLng rstart, LatLng rend, String RouteName, AbstractRouting.TravelMode RmodeTransport, int Rindex, int routeID) {
@@ -17,15 +17,15 @@ public class RouteDetails {
         mRouteName = RouteName;
         modeTransport = RmodeTransport;
         index = Rindex;
-        routeID = routeID;
+        routeid = routeID;
     }
 
     public int getRouteID() {
-        return routeID;
+        return routeid;
     }
 
     public void setRouteID(int routeID) {
-        this.routeID = routeID;
+        this.routeid = routeID;
     }
 
     public int getIndex() {

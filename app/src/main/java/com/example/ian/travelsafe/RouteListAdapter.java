@@ -74,7 +74,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                 Users currentUser = current.getLoggedInUser();
 
                 ServerRequests serverRequests = new ServerRequests(contextPopUp);
-                serverRequests.attachRoute(currentUser.get_id(), FragmentParentHomeChildren.childClicked.get_id(), rd.getRouteID(), new GetRouteCallback() {
+                serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), rd.getRouteID(), new GetRouteCallback() {
                     @Override
                     public void done(RouteDetails returnedRoute) {
                         if (returnedRoute == null) {

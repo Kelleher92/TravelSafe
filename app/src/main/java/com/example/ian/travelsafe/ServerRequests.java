@@ -70,8 +70,8 @@ public class ServerRequests {
         new removeChildAsyncTask(child).execute();
     }
 
-    public void saveRouteInBackground(int userid, RouteDetails route) {
-        new saveRouteAsyncTask(userid, route).execute();
+    public void saveRouteInBackground(int userid, RouteDetails route, GetRouteCallback routeCallback) {
+        new saveRouteAsyncTask(userid, route, routeCallback).execute();
     }
 
     public RouteDetails fetchChildAttachedRoute(int childID, GetRouteCallback routeCallback) {
@@ -79,8 +79,8 @@ public class ServerRequests {
         return null;
     }
 
-    public RouteDetails attachRoute(int parentid, int childid, int routeID, GetRouteCallback routeCallback) {
-        new attachRouteAsyncTask(parentid, childid, routeID, routeCallback).execute();
+    public RouteDetails attachRoute(int childid, int routeID, GetRouteCallback routeCallback) {
+        new attachRouteAsyncTask(childid, routeID, routeCallback).execute();
         return null;
     }
 
@@ -281,30 +281,27 @@ public class ServerRequests {
 
     public class attachRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
         GetRouteCallback routeCallback;
-        int parentid;
         int childid;
         int routeID;
 
-        public attachRouteAsyncTask(int parentid, int childid, int routeID, GetRouteCallback routeCallback) {
+        public attachRouteAsyncTask(int childid, int routeID, GetRouteCallback routeCallback) {
             this.routeCallback = routeCallback;
             this.childid = childid;
-            this.parentid = parentid;
             this.routeID = routeID;
         }
 
         @Override
         protected RouteDetails doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair("parentid", parentid + ""));
             dataToSend.add(new BasicNameValuePair("childid", childid + ""));
-            dataToSend.add(new BasicNameValuePair("routetid", routeID + ""));
+            dataToSend.add(new BasicNameValuePair("routeid", routeID + ""));
 
             HttpParams httpRequestParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
             HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
-            HttpPost post = new HttpPost(SERVER_ADDRESS + "PushRoute.php");
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "AssignRoute.php");
 
             RouteDetails returnedRoute = null;
 
@@ -312,18 +309,7 @@ public class ServerRequests {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
-                Log.i("MyActivity", "Sent " + parentid + childid + routeID + " to server");
-
-                HttpEntity entity = httpResponse.getEntity();
-                String result = EntityUtils.toString(entity);
-                JSONObject jObject = new JSONObject(result);
-
-                if (jObject.length() == 0)
-                    Log.i("MyActivity", "No response");
-                else {
-
-                    }
-                    returnedRoute = new RouteDetails(null, null, null, null, 0, 0);
+                Log.i("MyActivity", "Sent " + childid + " " + routeID + " to server");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -448,9 +434,7 @@ public class ServerRequests {
                     for (int x = 0; x < jArray.length(); x++) {
                         int routeid = jArray.getJSONObject(x).getInt("routeid");
                         int parentid = jArray.getJSONObject(x).getInt("parentid");
-                        int childid = jArray.getJSONObject(x).getInt("childid");
                         int index = jArray.getJSONObject(x).getInt("route_index");
-                        int push = jArray.getJSONObject(x).getInt("pushtochild");
                         String route_name = jArray.getJSONObject(x).getString("route_name");
                         String travel_mode = jArray.getJSONObject(x).getString("travel_mode");
                         LatLng start = new LatLng(jArray.getJSONObject(x).getDouble("start_lat"), jArray.getJSONObject(x).getDouble("start_long"));
@@ -466,9 +450,9 @@ public class ServerRequests {
 
                         }
 
-                        Log.i("MyActivity", "Returned route " + x + " = " + routeid + parentid + childid + index + push + route_name + travel_mode + start + end);
+                        Log.i("MyActivity", "Returned route " + x + " = " + routeid + parentid + index + route_name + travel_mode + start + end);
 
-                        returnedRoutes.add(new RouteDetails(start, end, route_name, mode, index, 0));
+                        returnedRoutes.add(new RouteDetails(start, end, route_name, mode, index, routeid));
 
                     }
                     Log.i("MyActivity", "returnedRoutes size = " + returnedRoutes.size());
@@ -607,17 +591,18 @@ public class ServerRequests {
     public class saveRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
         int userid;
         RouteDetails route;
+        GetRouteCallback routeCallback;
 
-        public saveRouteAsyncTask(int userid, RouteDetails route) {
+        public saveRouteAsyncTask(int userid, RouteDetails route, GetRouteCallback routeCallback) {
             this.userid = userid;
             this.route = route;
+            this.routeCallback = routeCallback;
         }
 
         @Override
         protected RouteDetails doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("parentid", userid + ""));
-            dataToSend.add(new BasicNameValuePair("childid", 0 + ""));
             dataToSend.add(new BasicNameValuePair("route_name", route.getmRouteName() + ""));
             dataToSend.add(new BasicNameValuePair("start_lat", route.getStart().latitude + ""));
             dataToSend.add(new BasicNameValuePair("start_long", route.getStart().longitude + ""));
@@ -625,7 +610,6 @@ public class ServerRequests {
             dataToSend.add(new BasicNameValuePair("end_long", route.getEnd().longitude + ""));
             dataToSend.add(new BasicNameValuePair("travel_mode", route.getModeTransport() + ""));
             dataToSend.add(new BasicNameValuePair("index", route.getIndex() + ""));
-            dataToSend.add(new BasicNameValuePair("flag", 0 + ""));
 
             Log.i("MyActivity", "dataToSend (1) = " + dataToSend);
 
@@ -635,6 +619,7 @@ public class ServerRequests {
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
             HttpPost post = new HttpPost(SERVER_ADDRESS + "StoreRoute.php");
+            RouteDetails returnedRoute = new RouteDetails(null, null, null, null, 0 ,0);
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
@@ -650,18 +635,20 @@ public class ServerRequests {
                     int routeid = jObject.getInt("routeid");
                     route.setRouteID(routeid);
                     Log.i("MyActivity", "Route ID = " + routeid);
+                    returnedRoute = new RouteDetails(route.getStart(),route.getEnd(),route.getmRouteName(), route.getModeTransport(), route.getIndex(), routeid);
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.i("MyActivity", "EXCEPTION");
             }
-            return null;
+            return returnedRoute;
         }
 
         @Override
         protected void onPostExecute(RouteDetails route) {
             progressDialog.dismiss();
+            routeCallback.done(route);
             super.onPostExecute(route);
         }
     }

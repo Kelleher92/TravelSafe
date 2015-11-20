@@ -412,10 +412,15 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         Log.i("MyActivity", "User id = " + returnedUser.get_id());
         Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
         ServerRequests serverRequests = new ServerRequests(this);
-        serverRequests.saveRouteInBackground(returnedUser.get_id(), route);
-        Log.i("MyActivity", "route ID = " + route.getRouteID());
-    }
 
+        serverRequests.saveRouteInBackground(returnedUser.get_id(), route, new GetRouteCallback() {
+            @Override
+            public void done(RouteDetails returnedRoute) {
+                FragmentParentHomeChildren.routeList.add(returnedRoute);
+                Log.i("MyActivity", "************* route ID = " + returnedRoute.getRouteID());
+            }
+        });
+    }
 
     //send.setOnClickListener(new View.OnClickListener() {
     //   @Override
