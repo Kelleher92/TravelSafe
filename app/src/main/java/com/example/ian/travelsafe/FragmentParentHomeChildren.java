@@ -28,6 +28,9 @@ public class FragmentParentHomeChildren extends Fragment {
     public List<ChildDetails> childList = new ArrayList<>();
     static ListView childrenListView;
     private View view;
+    List<RouteDetails> routes = new ArrayList<>();
+    public static List<RouteDetails> routeList = new ArrayList<>();
+
 
     public static ChildDetails childClicked = new ChildDetails(null);
 
@@ -55,6 +58,9 @@ public class FragmentParentHomeChildren extends Fragment {
         Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id() + " email is " + returnedUser.get_emailAddress());
 
         getChildren(returnedUser);
+        getCurrentRouteList(this.getContext());
+        Log.i("MyActivity", "***** returned list is = " + routeList);
+
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_parent_home_children, container, false);
@@ -157,5 +163,30 @@ public class FragmentParentHomeChildren extends Fragment {
     public static void deRegisterChild(ChildDetails child) {
         ServerRequests serverRequests = new ServerRequests(FragmentParentHomeChildren.childrenListView.getContext());
         serverRequests.removeChildInBackground(child);
+    }
+
+    public void getCurrentRouteList(Context context) {
+        Log.i("MyActivity", "retrieving list");
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(context);
+        final Users returnedUser = userLocalStore.getLoggedInUser();
+        ServerRequests serverRequests = new ServerRequests(context);
+        Log.i("MyActivity", "user id is = " + returnedUser.get_id());
+        serverRequests.fetchRouteDataInBackground(returnedUser.get_id(), routes, new GetRoutesCallback() {
+            @Override
+            public void done(List<RouteDetails> returnedRoutes) {
+                if (returnedRoutes == null) {
+                    Log.i("MyActivity", "No child returned");
+                    routes = null;
+                } else {
+                    routes = returnedRoutes;
+
+                    for (int x = 0; x < returnedRoutes.size(); x++) {
+                        routeList.add(returnedRoutes.get(x));
+                    }
+
+                }
+            }
+        });
     }
 }

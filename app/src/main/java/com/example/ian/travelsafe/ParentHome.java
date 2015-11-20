@@ -88,7 +88,7 @@ public class ParentHome extends AppCompatActivity {
      */
     public void AssignRoute(View view) {
 //        Snackbar.make(view, "Assign Route" , Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        if(ParentRouteList.getCurrentRouteList().isEmpty()) {
+        if(FragmentParentHomeChildren.routeList.isEmpty()) {
             Toast.makeText(view.getContext(), "No routes have been created.", Toast.LENGTH_SHORT).show();
         }
         else {
