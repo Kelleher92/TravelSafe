@@ -2,14 +2,10 @@ package com.example.ian.travelsafe;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterNewChild extends AppCompatActivity {
@@ -45,10 +41,10 @@ public class RegisterNewChild extends AppCompatActivity {
         String newChildPassword = RegisterParentActivity.computeMD5Hash(pass);
 
 
-        if(verifyDetails()){
+        if (verifyDetails()) {
             int currentUserId = new UserLocalStore(this).getLoggedInUser().get_id();
             String currentUserEmail = new UserLocalStore(this).getLoggedInUser().get_emailAddress();
-            ChildDetails child = new ChildDetails(currentUserId, newChildName,newChildUsername,newChildPassword);
+            ChildDetails child = new ChildDetails(currentUserId, newChildName, newChildUsername, newChildPassword);
 
             Log.i("MyActivity", "1. user id = " + currentUserId);
             Log.i("MyActivity", "1. user email = " + currentUserEmail);

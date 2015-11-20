@@ -2,12 +2,9 @@ package com.example.ian.travelsafe;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +15,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class FragmentParentHomeChildren extends Fragment {
@@ -125,11 +116,10 @@ public class FragmentParentHomeChildren extends Fragment {
     }
 
     private void IsChildListEmpty() {
-        if(childList.isEmpty()) {
+        if (childList.isEmpty()) {
             view.findViewById(R.id.listOfChildren).setVisibility(View.GONE);
             view.findViewById(R.id.addChildMessage).setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             view.findViewById(R.id.listOfChildren).setVisibility(View.VISIBLE);
             view.findViewById(R.id.addChildMessage).setVisibility(View.GONE);
         }
@@ -147,7 +137,7 @@ public class FragmentParentHomeChildren extends Fragment {
                 } else {
                     children = returnedChildren;
 
-                    for (int x = 0; x<returnedChildren.size(); x++) {
+                    for (int x = 0; x < returnedChildren.size(); x++) {
                         ParentChildList.addToChildList(returnedChildren.get(x));
                     }
                     FragmentParentHomeChildren.childrenListView.invalidateViews();

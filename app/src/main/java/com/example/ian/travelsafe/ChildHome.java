@@ -40,7 +40,7 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
     TextView childName;
     TextView endLocation;
     TextView currentLocation;
-    Button  btnShowLoc;
+    Button btnShowLoc;
     private SwipeRefreshLayout swipeContainer;
     Handler handler;
     Location myLocation;
@@ -85,7 +85,6 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
             public void onRefresh() {
 
 
-
                 myLocation = mMap.getMyLocation();
                 Locale loc = null;
                 myAddress = new Address(loc);
@@ -95,7 +94,7 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
                     // Focusing camera on current location.
                     CameraUpdate center = CameraUpdateFactory
                             .newLatLng(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+                    CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
                     mMap.moveCamera(center);
                     mMap.animateCamera(zoom);
                 } catch (IOException e) {
@@ -104,7 +103,6 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
                 swipeContainer.setRefreshing(false);
             }
         });
-
 
 
     }
@@ -128,11 +126,11 @@ public class ChildHome extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    public void DisplayStartLocation(){
+    public void DisplayStartLocation() {
 
     }
 
-    public void DisplayEndLocation(){
+    public void DisplayEndLocation() {
 
     }
 

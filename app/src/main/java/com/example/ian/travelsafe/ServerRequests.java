@@ -3,8 +3,8 @@ package com.example.ian.travelsafe;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,10 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by ian on 06/11/2015.
@@ -67,7 +64,7 @@ public class ServerRequests {
     }
 
     public void saveRouteInBackground(int userid, RouteDetails route) {
-        new saveRouteAsyncTask(userid,route).execute();
+        new saveRouteAsyncTask(userid, route).execute();
     }
 
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -296,7 +293,7 @@ public class ServerRequests {
                 else {
                     Log.i("MyActivity", "jObject length = " + jArray.length());
 
-                    for (int x = 0; x<jArray.length(); x++) {
+                    for (int x = 0; x < jArray.length(); x++) {
                         int id = jArray.getJSONObject(x).getInt("id");
                         int parentid = jArray.getJSONObject(x).getInt("parentid");
                         String name = jArray.getJSONObject(x).getString("name");
@@ -412,6 +409,7 @@ public class ServerRequests {
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(RouteDetails route) {
             progressDialog.dismiss();
