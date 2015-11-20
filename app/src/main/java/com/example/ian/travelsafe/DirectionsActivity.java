@@ -3,9 +3,16 @@ package com.example.ian.travelsafe;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -33,15 +40,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.internal.IMapFragmentDelegate;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -56,6 +69,11 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     protected AbstractRouting.TravelMode modeTransport;
     protected MarkerOptions startOptions = new MarkerOptions();
     protected MarkerOptions endOptions = new MarkerOptions();
+    protected double routeDistance;
+    //protected MarkerOptions routeOptions = new MarkerOptions();
+    //protected MarkerOptions routeOptions;
+    //protected Marker routeMarker[];
+
     protected Route chosenRoute;
     protected int routeNo;
 
@@ -75,6 +93,8 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     private PlaceAutoCompleteAdapter mAdapter;
     private ProgressDialog progressDialog;
     private ArrayList<Route> routes;
+    private ArrayList<MarkerOptions> routeOptionsList;
+    private Marker lastOpened = null;
 
     private static final LatLngBounds BOUNDS_UCD= new LatLngBounds(new LatLng(53.298158, -6.246800),
             new LatLng(53.316057, -6.205602));
@@ -88,7 +108,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         setContentView(R.layout.activity_directions);
         ButterKnife.inject(this);
         //this.getSupportActionBar().setDisplayShowHomeEnabled(true);
-
 
         MapsInitializer.initialize(this);
         routes = new ArrayList<>();
@@ -111,7 +130,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             getSupportFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
         }
         map = mapFragment.getMap();
-
 
         mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
                 mGoogleApiClient, BOUNDS_UCD, null);
@@ -280,6 +298,32 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             }
         });
 
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            public boolean onMarkerClick(Marker marker) {
+                // Check if there is an open info window
+                if (lastOpened != null) {
+                    // Close the info window
+                    lastOpened.hideInfoWindow();
+
+                    // Is the marker the same marker that was already open
+                    if (lastOpened.equals(marker)) {
+                        // Nullify the lastOpened object
+                        lastOpened = null;
+                        // Return so that the info window isn't opened again
+                        return true;
+                    }
+                }
+
+                // Open the info window for the marker
+                marker.showInfoWindow();
+                // Re-assign the last opened such that we can close it later
+                lastOpened = marker;
+
+                // Event was handled by our code do not launch default behaviour.
+                return true;
+            }
+        });
+
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -290,21 +334,32 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                             Location.distanceBetween(latLng.latitude, latLng.longitude,
                                     routeCoords.latitude, routeCoords.longitude, results);
 
-                            if (results[0] < 100) {
+                            if (results[0] < (routeDistance*50)) {
                                 map.clear();
                                 map.addMarker(startOptions);
                                 map.addMarker(endOptions);
+                                //routeOptions.position(iroute.getPoints().get(iroute.getPoints().size()/ 2));
+                                //routeOptions.title("Route " + routes.indexOf(iroute));
+                               // map.addMarker(routeOptions).showInfoWindow();
+
 
                                 for (Route r : routes) {
+                                    //routeOptions(routes.indexOf(r)).position(r.getPoints().get(r.getPoints().size() / 2));
+                                    //routeOptions.title("Route " + routes.indexOf(r));
+                                    //map.addMarker(routeOptionsList.get(routes.indexOf(r))).showInfoWindow();
+
                                     if (r != iroute) {
                                         map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(r.getPoints()).width(20));
+                                        routeOptionsList.get(routes.indexOf(r)).visible(false);
                                     } else {
                                         chosenRoute = r;
-                                        routeNo = routes.indexOf(r) + 1;
+                                        routeNo = routes.indexOf(r);
+                                        routeOptionsList.get(routes.indexOf(r)).visible(true);
                                     }
                                 }
 
                                 map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
+                                map.addMarker(routeOptionsList.get(routeNo));
                             }
 
                         }
@@ -312,7 +367,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                     }
 
 
-                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + routeNo, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo+1), Toast.LENGTH_LONG).show();
                     Log.e("PolyLine ", routes.toString());
                 }
             }
@@ -386,27 +441,30 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         });
 
         // Floating Action Button
-        FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
+       // FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
 
-        saveRoute.setOnClickListener(new View.OnClickListener() {
-                @Override
-               public void onClick(View view) {
-              Pop.routeListView.invalidateViews();
-                    Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
-                   Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
-            }
-          });
+       // saveRoute.setOnClickListener(new View.OnClickListener() {
+         //       @Override
+        //       public void onClick(View view) {
+         //     Pop.routeListView.invalidateViews();
+          //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
+         //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
+         //   }
+         // });
 
         //       }
         //   })
     }
+
     public void onRadioButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.button_walk:
                 modeTransport = AbstractRouting.TravelMode.WALKING;
+                findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
                 break;
             case R.id.button_cycle:
                 modeTransport = AbstractRouting.TravelMode.BIKING;
+                findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
                 break;
         }
     }
@@ -415,10 +473,15 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         Log.i("MyActivity", "SaveRoute called");
         ServerRequests serverRequests = new ServerRequests(this);
         RouteDetails route = new RouteDetails(start,end,"MyRoute", modeTransport, routeNo);
-        serverRequests.saveRouteInBackground(route);
+       // serverRequests.saveRouteInBackground(route);
     }
 
-
+    public static Bitmap flipBitmap(Bitmap source)
+    {
+        Matrix matrix = new Matrix();
+        matrix.preScale(-1,1);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
 
     //send.setOnClickListener(new View.OnClickListener() {
         //   @Override
@@ -493,34 +556,76 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         map.clear();
         progressDialog.dismiss();
 
-        CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
+        Bitmap bmWalkScaled = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.child_run_blue), 100, 100, true);
+        Bitmap bmCycleScaled = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.child_cycle_blue), 100, 100, true);
+        Bitmap bmStartScaled = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start_blue), 100, 100, true);
+        Bitmap bmEndScaled = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.end_green), 100, 100, true);
+
+        Bitmap bmWalkscaleddisplay;
+        Bitmap bmCyclescaleddisplay;
+
+        CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 200);
         map.moveCamera(center);
 
         routes = route;
 
-        for (int i = 0; i <route.size(); i++) {
+        routeOptionsList = new ArrayList<>();
+
+        for (int i = 0; i < route.size(); i++) {
+            routeDistance = Math.round(((double)route.get(i).getDistanceValue()/1000)*1000.0)/1000.0;
+            double routeDuration = Math.round(((double)route.get(i).getDurationValue()/60)*1000.0)/1000.0;
+            int routeDurationHours = ((int)routeDuration)/60;
+            int routeDurationMins = ((int)routeDuration)%60;
+
+
+            MarkerOptions routeOptions = new MarkerOptions();
+            routeOptionsList.add(i, routeOptions);
+            routeOptionsList.get(i).position(route.get(i).getPoints().get((route.get(i).getPoints().size()) / 2));
+            routeOptionsList.get(i).title("Route " + (i + 1));
+            routeOptionsList.get(i).snippet("Distance: " + routeDistance + "km\nDuration: " + routeDurationHours + "hr " + routeDurationMins + "min");
+
+            if ((start.longitude) > (end.longitude))
+            {
+                bmWalkscaleddisplay = flipBitmap(bmWalkScaled);
+                bmCyclescaleddisplay = flipBitmap(bmCycleScaled);
+            }
+            else{
+                bmWalkscaleddisplay = bmWalkScaled;
+                bmCyclescaleddisplay = bmCycleScaled;
+            }
+
+            if (modeTransport == AbstractRouting.TravelMode.WALKING) {
+                routeOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(bmWalkscaleddisplay));
+            }
+            else{
+                routeOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(bmCyclescaleddisplay));
+            }
+
             if (i != 0) {
                 map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(route.get(i).getPoints()).width(20));
+                routeOptionsList.get(i).visible(false);
             } else {
                 chosenRoute = route.get(i);
-                routeNo = i+1;
+                routeNo = i;
             }
-            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(),Toast.LENGTH_LONG).show();
+
+            map.addMarker(routeOptionsList.get(i));
+            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
         }
 
-        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ routeNo,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ (routeNo +1),Toast.LENGTH_LONG).show();
         map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
 
         // Start marker
         startOptions = new MarkerOptions();
         startOptions.position(start);
-        startOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
+        startOptions.icon(BitmapDescriptorFactory.fromBitmap(bmStartScaled));
         map.addMarker(startOptions);
 
         // End marker
         endOptions = new MarkerOptions();
         endOptions.position(end);
-        endOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
+        endOptions.icon(BitmapDescriptorFactory.fromBitmap(bmEndScaled));
         map.addMarker(endOptions);
 
         findViewById(R.id.fabSaveRoute).setVisibility(View.VISIBLE);
