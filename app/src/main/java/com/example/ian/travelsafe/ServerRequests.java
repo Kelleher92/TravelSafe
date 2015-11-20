@@ -200,6 +200,67 @@ public class ServerRequests {
         }
     }
 
+    public class fetchEventsAsyncTask extends AsyncTask<Void, Void, NotificationDetails> {
+        GetEventCallback eventCallback;
+        int parentid;
+        ChildDetails cd;
+        private Context mContext;
+
+        public fetchEventsAsyncTask(int parentid, ChildDetails cd, Context context, GetEventCallback eventCallback) {
+            this.cd = cd;
+            this.parentid = parentid;
+            this.eventCallback = eventCallback;
+            mContext = context;
+        }
+
+        @Override
+        protected NotificationDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", cd.get_id() + ""));
+            dataToSend.add(new BasicNameValuePair("childid", parentid + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "RegisterChild.php");
+
+            Log.i("FetchEvent", "Sent to server");
+            NotificationDetails returnedNotification = null;
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONObject jObject = new JSONObject(result);
+
+                if (jObject.length() == 0)
+                    Log.i("FetchEvent", "No response");
+                else {
+                    int eventid = jObject.getInt("eventid");
+                    String eventType = jObject.getString("event_type");
+//                    int timeLogged = jObject.getDouble("time_logged");
+
+                    returnedNotification = new NotificationDetails(cd.get_name(), eventType);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return returnedNotification;
+        }
+
+        @Override
+        protected void onPostExecute(NotificationDetails event) {
+            progressDialog.dismiss();
+            eventCallback.done(null);
+            super.onPostExecute(event);
+        }
+    }
+
     public class fetchChildAttachedRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
         GetRouteCallback routeCallback;
         int id;
@@ -232,7 +293,7 @@ public class ServerRequests {
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                Log.i("","")
+                Log.i("","");
                 JSONObject jObject = new JSONObject(result);
 
                 if (jObject.length() == 0)

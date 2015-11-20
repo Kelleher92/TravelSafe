@@ -39,15 +39,15 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         TextView tvRStart = (TextView) customView.findViewById(R.id.route_details_Start);
         TextView tvREnd = (TextView) customView.findViewById(R.id.route_details_End);
 
-        try {
-            Address startLoc = new ChildHome().getAddressForLocation(contextPopUp, rd.getStart());
-            tvRStart.setText(startLoc.getAddressLine(0));
-            Address endLoc = new ChildHome().getAddressForLocation(contextPopUp, rd.getEnd());
-            tvREnd.setText(endLoc.getAddressLine(0));
+//        try {
+//            Address startLoc = new ChildHome().getAddressForLocation(contextPopUp, rd.getStart());
+//            tvRStart.setText(startLoc.getAddressLine(0));
+//            Address endLoc = new ChildHome().getAddressForLocation(contextPopUp, rd.getEnd());
+//            tvREnd.setText(endLoc.getAddressLine(0));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         tvRTitle.setText(rd.getmRouteName());
 
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);

@@ -30,6 +30,7 @@ public class FragmentParentHomeAccount extends Fragment {
     UserLocalStore userLocalStore;
 
     NotificationCompat.Builder notification;
+    NotificationDetails nD = new NotificationDetails("Thomas", "Reached halfway");
     private  static int uniqueID = 1;
 
     public static FragmentParentHomeAccount newInstance() {
@@ -89,7 +90,7 @@ public class FragmentParentHomeAccount extends Fragment {
                             // Test notifications
                             case 3:
 //                                startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
-                                createNotification();
+                                createNotification(nD);
                                 break;
                         }
                     }
@@ -115,12 +116,13 @@ public class FragmentParentHomeAccount extends Fragment {
         return list;
     }
 
-    public void createNotification() {
+
+    public void createNotification(NotificationDetails details) {
         notification.setSmallIcon(R.drawable.child_cycle_blue);
         notification.setTicker("New Route Update");
         notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("New Update");
-        notification.setContentText("Your child is making progress");
+        notification.setContentTitle(details.getChildName());     // Child name
+        notification.setContentText(details.getNote());
 
         Intent intent = new Intent(this.getContext(), ParentHome.class);
         PendingIntent pI = PendingIntent.getActivity(this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

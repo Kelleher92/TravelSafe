@@ -21,6 +21,7 @@ public class UserLocalStore {
         spEditor.putString("emailaddress", user._emailAddress);
         spEditor.putString("password", user._password);
         spEditor.putInt("id", user._id);
+        spEditor.putString("flag", user._flag);
 
         spEditor.commit();
     }
@@ -31,6 +32,7 @@ public class UserLocalStore {
         spEditor.putString("emailaddress", child._name);
         spEditor.putString("password", child._password);
         spEditor.putInt("id", child._id);
+        spEditor.putString("flag", child._flag);
 
         spEditor.commit();
     }
@@ -40,8 +42,9 @@ public class UserLocalStore {
         String username = userLocalDatabase.getString("username", "");
         String emailAddress = userLocalDatabase.getString("emailaddress", "");
         String password = userLocalDatabase.getString("password", "");
+        String flag = userLocalDatabase.getString("flag", "");
 
-        Users storedUser = new Users(id, emailAddress, username, password);
+        Users storedUser = new Users(id, emailAddress, username, password, flag);
         return storedUser;
     }
 

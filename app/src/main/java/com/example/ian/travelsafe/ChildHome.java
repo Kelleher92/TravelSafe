@@ -2,6 +2,7 @@ package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -44,7 +45,6 @@ import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 public class ChildHome extends AppCompatActivity implements RoutingListener, OnConnectionFailedListener, ConnectionCallbacks {
 
     private GoogleApiClient mGoogleApiClient;
-    GetAddress getAdd = new GetAddress();
 
     private GoogleMap map;
 //    protected LatLng start;
@@ -322,4 +322,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     public void onConnectionSuspended(int i) {
     }
 
+    public void SecretLogOut(View view) {
+
+        UserLocalStore userLocalStore = new UserLocalStore(view.getContext());
+        userLocalStore.clearUserData();
+        userLocalStore.setUserLoggedIn(false);
+        Intent intent = new Intent(view.getContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
