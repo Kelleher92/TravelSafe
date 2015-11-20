@@ -185,9 +185,9 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                 startAddress = new Address(loc);
                 endAddress = new Address(loc);
                 try {
-                    myAddress = getAddressForLocation(ChildHome.this, myLocation);
-                    startAddress = getAddressForLocation(ChildHome.this, startLoc);
-                    endAddress = getAddressForLocation(ChildHome.this, endLoc);
+                    myAddress = getAddressForLocation(ChildHome.this, new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
+                    startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
+                    endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
                     currentLocation.setText(myAddress.getAddressLine(0));
                     startLocation.setText(startAddress.getAddressLine(0));
                     endLocation.setText(endAddress.getAddressLine(0));
@@ -225,13 +225,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         }
     }
 
-    public Address getAddressForLocation(Context context, Location location) throws IOException {
+    public Address getAddressForLocation(Context context, LatLng location) throws IOException {
 
         if (location == null) {
             return null;
         }
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        double latitude = location.latitude;
+        double longitude = location.longitude;
         int maxResults = 1;
 
         Geocoder gc = new Geocoder(context, Locale.getDefault());

@@ -237,7 +237,7 @@ public class ServerRequests {
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                Log.i("","")
+                Log.i("","");
                 JSONObject jObject = new JSONObject(result);
 
                 if (jObject.length() == 0)
