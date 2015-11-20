@@ -41,6 +41,11 @@ public class ParentHome extends AppCompatActivity {
         tabLayout.setTabsFromPagerAdapter(pagerAdapter);
         // This method ensures that tab selection events update the ViewPager and page changes update the selected tab.
         tabLayout.setupWithViewPager(viewPager);
+
+        CheckForUpdatesThread checkUpdatesThread = new CheckForUpdatesThread();
+        checkUpdatesThread.setRunning(true);
+        checkUpdatesThread.start(this);
+
     }
 
     private class MyPagerAdapter extends FragmentStatePagerAdapter {

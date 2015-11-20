@@ -3,11 +3,17 @@ package com.example.ian.travelsafe;
 public class ChildDetails {
 
     int _id, _parentid;
-    String _name, _username, _password, _route;
+    String _name, _username, _password, _route, _flag;
+
+    public String get_flag() {
+        return _flag;
+    }
 
     public ChildDetails(String name) {
         this._name = name;
         this._route = null;
+        this._flag = "C";
+
     }
 
     public ChildDetails(int parentid, String name, String username, String password) {
@@ -16,6 +22,7 @@ public class ChildDetails {
         this._username = username;
         this._password = password;
         this._route = null;
+        this._flag = "C";
     }
 
     public ChildDetails(int id, int _parentid, String name, String username, String password) {
@@ -25,6 +32,7 @@ public class ChildDetails {
         this._username = username;
         this._password = password;
         this._route = null;
+        this._flag = "C";
     }
 
     public ChildDetails(String name, String username, String password) {
