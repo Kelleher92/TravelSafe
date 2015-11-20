@@ -6,26 +6,25 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -42,16 +41,14 @@ import java.util.Locale;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 
-public class ChildHome extends AppCompatActivity implements RoutingListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class ChildHome extends AppCompatActivity implements RoutingListener, OnConnectionFailedListener, ConnectionCallbacks {
 
-//    private TextView mLocationView;
-//    private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     GetAddress getAdd = new GetAddress();
 
-    private GoogleMap mMap;
-    protected LatLng start;
-    protected LatLng end;
+    private GoogleMap map;
+//    protected LatLng start;
+//    protected LatLng end;
 
     TextView startLocation;
     TextView childName;
@@ -65,9 +62,10 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
     Address myAddress;
     Address startAddress;
     Address endAddress;
+    AbstractRouting.TravelMode travelMode;
 
     // Information for graphing route.
-    RouteDetails route = new RouteDetails(null, null, null, null, null);
+    RouteDetails route = new RouteDetails(null, null, null, null, 0);
     private int[] colors = new int[]{R.color.colorPrimaryLighter, R.color.primary_dark_material_light};
     private ProgressDialog progressDialog;
     private PlaceAutoCompleteAdapter mAdapter;
@@ -100,23 +98,24 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 
         // Server request for child route information.
         ServerRequests serverRequests = new ServerRequests(this);
-        RouteDetails assignedRoute = serverRequests.fetchChildAttachedRoute(currentUser._id, new GetRouteCallback() {
+        Log.i("FetchChildRoute", "id......" + currentUser.get_id());
+        RouteDetails assignedRoute = serverRequests.fetchChildAttachedRoute(currentUser.get_id(), new GetRouteCallback() {
             @Override
             public void done(RouteDetails returnedRoute) {
                 if (returnedRoute == null) {
-                    Log.i("MyActivity", "No route returned");
+                    Log.i("ChildHome", "No route returned");
                 } else {
+                    Log.i("ChildHome", "!!!!..." + route.getStart().toString());
                     route = returnedRoute;
-                    startExample = route.getStart();
-                    destinationExample = route.getEnd();
+                    startExample = route.getStart();         // Getting actual assigned location start.
+                    destinationExample = route.getEnd();             // Getting actual start location end.
                     routeIndex = route.getIndex();
+                    travelMode = route.getModeTransport();
                 }
             }
         });
-    }
 
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        // Get Map fragment from view and implement.
         MapsInitializer.initialize(this);
         polylines = new ArrayList<>();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -132,36 +131,34 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
             mapFragment = SupportMapFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.childMap, mapFragment).commit();
         }
-        mMap = mapFragment.getMap();
+        map = mapFragment.getMap();
 
-//        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
-//                mGoogleApiClient, BOUNDS_UCD, null);
+        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
+                mGoogleApiClient, BOUNDS_UCD, null);
 
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
 
-        mMap.moveCamera(center);
-        mMap.animateCamera(zoom);
+        map.moveCamera(center);
+        map.animateCamera(zoom);
 
-
-        /*
+                /*
         * Updates the bounds being used by the auto complete adapter based on the position of the
         * map.
         * */
-        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition position) {
-                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+                LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
                 mAdapter.setBounds(bounds);
             }
         });
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
 
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        start =  startExample;
-        end = destinationExample;
+//        start =  startExample;
+//        end = destinationExample;
 
         if(Util.Operations.isOnline(this)) {
             route();
@@ -169,14 +166,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
         else {
             Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
         }
-
         // Swipe Refresh Listener
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_childHome);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                myLocation = mMap.getMyLocation();
+                myLocation = map.getMyLocation();
                 startLoc = new Location("");
                 startLoc.setLatitude(startExample.latitude);//your coords of course
                 startLoc.setLongitude(startExample.longitude);
@@ -209,6 +205,9 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
             }
         });
 
+
+
+
     }
 
     public void route() {
@@ -220,7 +219,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
             Routing routing = new Routing.Builder()
                     .travelMode(AbstractRouting.TravelMode.WALKING)
                     .withListener(this)
-                    .alternativeRoutes(true)
+                    .alternativeRoutes(false)
                     .waypoints(startExample, destinationExample)
                     .build();
             routing.execute();
@@ -277,11 +276,11 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        mMap.clear();
+        map.clear();
         progressDialog.dismiss();
 
         CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
-        mMap.moveCamera(center);
+        map.moveCamera(center);
 
 
         polylines = new ArrayList<>();
@@ -294,7 +293,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
                 polyOptions.color(colors[0]);
                 polyOptions.width(10 + i * 3);
                 polyOptions.addAll(route.get(i).getPoints());
-                Polyline polyline = mMap.addPolyline(polyOptions);
+                Polyline polyline = map.addPolyline(polyOptions);
                 polylines.add(polyline);
 
                 // Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
@@ -303,15 +302,15 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 
         // Start marker
         MarkerOptions options = new MarkerOptions();
-        options.position(start);
+        options.position(startExample);
         options.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
-        mMap.addMarker(options);
+        map.addMarker(options);
 
         // End marker
         options = new MarkerOptions();
-        options.position(end);
+        options.position(destinationExample);
         options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
-        mMap.addMarker(options);
+        map.addMarker(options);
 
     }
 

@@ -214,23 +214,24 @@ public class ServerRequests {
             HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
-            HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchRoute.php");
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchChildRoute.php");
 
             RouteDetails returnedRoute = null;
-            Log.i("MyActivity", "Fetch php");
+            Log.i("FetchChildRoute", "Fetch php");
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
-                Log.i("MyActivity", "Sent id " + id + " to server");
+                Log.i("FetchChildRoute", "Sent id " + id + " to server");
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
+                Log.i("","")
                 JSONObject jObject = new JSONObject(result);
 
                 if (jObject.length() == 0)
-                    Log.i("MyActivity", "No response");
+                    Log.i("FetchChildRoute", "No response");
                 else {
                     LatLng start = new LatLng(jObject.getDouble("start_lat"), jObject.getDouble("start_long"));
                     LatLng end = new LatLng(jObject.getDouble("end_lat"), jObject.getDouble("end_long"));
@@ -255,7 +256,7 @@ public class ServerRequests {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.i("MyActivity", "EXCEPTION");
+                Log.i("MyActivity", "Could not fetch route with server request");
             }
 
             return returnedRoute;
