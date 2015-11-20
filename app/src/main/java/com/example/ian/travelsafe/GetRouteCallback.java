@@ -11,11 +11,3 @@ interface GetRouteCallback {
 
 }
 
-
- * Created by ian on 13/11/2015.
- */
-interface GetRouteCallback {
-
-    public abstract void done(List<RouteDetails> returnedRoutes);
-
-}

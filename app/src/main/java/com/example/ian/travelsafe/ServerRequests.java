@@ -61,9 +61,9 @@ public class ServerRequests {
         new fetchChildDataAsyncTask(id, children, childrenCallback).execute();
     }
 
-    public void fetchRouteDataInBackground(int id, List<RouteDetails> routes, GetRouteCallback routeCallback) {
+    public void fetchRouteDataInBackground(int id, List<RouteDetails> routes, GetRoutesCallback routesCallback) {
         progressDialog.show();
-        new fetchRouteDataAsyncTask(id, routes, routeCallback).execute();
+        new fetchRouteDataAsyncTask(id, routes, routesCallback).execute();
     }
 
     public void removeChildInBackground(ChildDetails child) {
@@ -340,12 +340,12 @@ public class ServerRequests {
 
     public class fetchRouteDataAsyncTask extends AsyncTask<Void, Void, List<RouteDetails>> {
         List<RouteDetails> routes;
-        GetRouteCallback routeCallback;
+        GetRoutesCallback routesCallback;
         int id;
 
-        public fetchRouteDataAsyncTask(int id, List<RouteDetails> routes, GetRouteCallback routeCallback) {
+        public fetchRouteDataAsyncTask(int id, List<RouteDetails> routes, GetRoutesCallback routesCallback) {
             this.routes = routes;
-            this.routeCallback = routeCallback;
+            this.routesCallback = routesCallback;
             this.id = id;
         }
 
@@ -419,7 +419,7 @@ public class ServerRequests {
         @Override
         protected void onPostExecute(List<RouteDetails> routes) {
             progressDialog.dismiss();
-            routeCallback.done(routes);
+            routesCallback.done(routes);
             super.onPostExecute(routes);
         }
     }

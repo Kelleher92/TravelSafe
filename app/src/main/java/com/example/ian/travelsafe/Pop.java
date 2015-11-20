@@ -26,7 +26,6 @@ import java.util.List;
 public class Pop extends Activity {
 
     ListAdapter routeListAdapter;
-    public static List<RouteDetails> routeList = new ArrayList<>();
     public static ListView routeListView;
     public Context context;
 
@@ -44,8 +43,7 @@ public class Pop extends Activity {
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
 
-        routeList = ParentRouteList.getCurrentRouteList(context);
-        routeListAdapter = new RouteListAdapter(this, routeList);
+        routeListAdapter = new RouteListAdapter(this, FragmentParentHomeChildren.routeList);
         routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);
     }
