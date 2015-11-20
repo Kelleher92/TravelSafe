@@ -1,21 +1,21 @@
 <resources>
     <string name="app_name">Travel Safe</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_app_load_screen">AppLoadScreen</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="title_activity_app_load_screen">Travel Safe</string>
     <string name="title_activity_test">Test</string>
     <string name="title_activity_parent_home">Home</string>
-
-    <string name="ParentHomeTabTitleChildren">Children</string>
-    <string name="ParentHomeTabTitleAccount">Account</string>
-    <string name="Logo">Logo</string>
-    <string name="prompt_username">Username</string>
-    <string name="title_activity_register_new_child">RegisterNewChild</string>
-    <string name="action_register_button">Register</string>
     <string name="title_activity_test_button">TestButton</string>
     <string name="title_activity_gps__location">gps_Location</string>
     <string name="title_activity_child_home">ChildHome</string>
     <string name="title_activity_assign_route_pop">assign_route_pop</string>
+    <string name="title_activity_register_new_child">RegisterNewChild</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="ParentHomeTabTitleChildren">Children</string>
+    <string name="ParentHomeTabTitleAccount">Account</string>
+    <string name="Logo">Logo</string>
+    <string name="prompt_username">Username</string>
+    <string name="action_register_button">Register</string>
+
 </resources>
