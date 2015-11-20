@@ -56,16 +56,16 @@ public class CheckForUpdatesThread extends Thread {
 
             for (ChildDetails cd : lcd) {
                 sreq = new ServerRequests(ctext);
-                NotificationDetails noteDetails = sreq.fetchEventsAsyncTask(currentUser.get_id(), cd, ctext, new GetEventCallback() {
-                    @Override
-                    public void done(NotificationDetails returnedNotification) {
-                        if (returnedNotification == null) {
-                            Log.i("ChildHome", "No route returned");
-                        } else {
-                            notificationDetails = returnedNotification;
-                        }
-                    }
-                });
+//                NotificationDetails noteDetails = sreq.fetchEventsAsyncTask(currentUser.get_id(), cd, ctext, new GetEventCallback() {
+//                    @Override
+//                    public void done(NotificationDetails returnedNotification) {
+//                        if (returnedNotification == null) {
+//                            Log.i("ChildHome", "No route returned");
+//                        } else {
+//                            notificationDetails = returnedNotification;
+//                        }
+//                    }
+//                });
 
                 if(notificationDetails != null) {
                     // Send Notification
