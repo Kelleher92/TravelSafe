@@ -2,6 +2,7 @@ package com.example.ian.travelsafe;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,20 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                     selected_position = -1;
                 }
                 notifyDataSetChanged();
+                UserLocalStore current = new UserLocalStore(contextPopUp);
+                Users currentUser = current.getLoggedInUser();
+
+                ServerRequests serverRequests = new ServerRequests(contextPopUp);
+                serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), rd.getRouteID(), new GetRouteCallback() {
+                    @Override
+                    public void done(RouteDetails returnedRoute) {
+                        if (returnedRoute == null) {
+                            Log.i("MyActivity", "No route assigned");
+                        } else {
+                            Log.i("MyActivity", "Route assigned");
+                        }
+                    }
+                });
                 ((Activity)contextPopUp).finish();
 
             }

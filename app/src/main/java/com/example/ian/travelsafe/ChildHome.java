@@ -65,7 +65,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     AbstractRouting.TravelMode travelMode;
 
     // Information for graphing route.
-    RouteDetails route = new RouteDetails(null, null, null, null, 0);
+    RouteDetails route = new RouteDetails(null, null, null, null, 0, 0);
     private int[] colors = new int[]{R.color.colorPrimaryLighter, R.color.primary_dark_material_light};
     private ProgressDialog progressDialog;
     private PlaceAutoCompleteAdapter mAdapter;
@@ -99,13 +99,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         // Server request for child route information.
         ServerRequests serverRequests = new ServerRequests(this);
         Log.i("FetchChildRoute", "id......" + currentUser.get_id());
-        RouteDetails assignedRoute = serverRequests.fetchChildAttachedRoute(currentUser.get_id(), new GetRouteCallback() {
+        serverRequests.fetchChildAttachedRoute(currentUser.get_id(), new GetRouteCallback() {
             @Override
             public void done(RouteDetails returnedRoute) {
                 if (returnedRoute == null) {
                     Log.i("ChildHome", "No route returned");
                 } else {
-                    Log.i("ChildHome", "!!!!..." + route.getStart().toString());
+//                    Log.i("ChildHome", "!!!!..." + route.getStart().toString());
                     route = returnedRoute;
                     startExample = route.getStart();         // Getting actual assigned location start.
                     destinationExample = route.getEnd();             // Getting actual start location end.
@@ -133,14 +133,14 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         }
         map = mapFragment.getMap();
 
-        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
-                mGoogleApiClient, BOUNDS_UCD, null);
+//        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
+//                mGoogleApiClient, BOUNDS_UCD, null);
 
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
+//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
 
-        map.moveCamera(center);
-        map.animateCamera(zoom);
+//        map.moveCamera(center);
+//        map.animateCamera(zoom);
 
                 /*
         * Updates the bounds being used by the auto complete adapter based on the position of the
@@ -162,6 +162,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         if(Util.Operations.isOnline(this)) {
             route();
+
         }
         else {
             Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
@@ -186,9 +187,9 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                 startAddress = new Address(loc);
                 endAddress = new Address(loc);
                 try {
-                    myAddress = getAddressForLocation(ChildHome.this, myLocation);
-                    startAddress = getAddressForLocation(ChildHome.this, startLoc);
-                    endAddress = getAddressForLocation(ChildHome.this, endLoc);
+                    myAddress = getAddressForLocation(ChildHome.this, new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
+                    startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
+                    endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
                     currentLocation.setText(myAddress.getAddressLine(0));
                     startLocation.setText(startAddress.getAddressLine(0));
                     endLocation.setText(endAddress.getAddressLine(0));
@@ -226,13 +227,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         }
     }
 
-    public Address getAddressForLocation(Context context, Location location) throws IOException {
+    public Address getAddressForLocation(Context context, LatLng location) throws IOException {
 
         if (location == null) {
             return null;
         }
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+        double latitude = location.latitude;
+        double longitude = location.longitude;
         int maxResults = 1;
 
         Geocoder gc = new Geocoder(context, Locale.getDefault());

@@ -18,14 +18,10 @@ public class RegisterNewChild extends AppCompatActivity {
     }
 
 
-    public void RegisterNewChild() {
-//        Toast.makeText(RegisterNewChild.this, "New Child Registered", Toast.LENGTH_SHORT).show();
-    }
-
     public void ReturnToParentHome(View view) {
-
         Intent i = new Intent(this, ParentHome.class);
         startActivity(i);
+        finish();
         Toast.makeText(this, "Return To ParentHome", Toast.LENGTH_SHORT);
     }
 
