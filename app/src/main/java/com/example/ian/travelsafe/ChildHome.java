@@ -161,6 +161,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         if(Util.Operations.isOnline(this)) {
             route();
+
         }
         else {
             Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
