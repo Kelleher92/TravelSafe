@@ -17,10 +17,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,16 +41,14 @@ import java.util.Locale;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 
-public class ChildHome extends AppCompatActivity implements RoutingListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class ChildHome extends AppCompatActivity implements RoutingListener, OnConnectionFailedListener, ConnectionCallbacks {
 
-//    private TextView mLocationView;
-//    private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     GetAddress getAdd = new GetAddress();
 
-    private GoogleMap mMap;
-    protected LatLng start;
-    protected LatLng end;
+    private GoogleMap map;
+//    protected LatLng start;
+//    protected LatLng end;
 
     TextView startLocation;
     TextView childName;
@@ -57,6 +62,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
     Address myAddress;
     Address startAddress;
     Address endAddress;
+    AbstractRouting.TravelMode travelMode;
 
     // Information for graphing route.
     RouteDetails route = new RouteDetails(null, null, null, null, 0);
@@ -92,116 +98,117 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 
         // Server request for child route information.
         ServerRequests serverRequests = new ServerRequests(this);
-        RouteDetails assignedRoute = serverRequests.fetchChildAttachedRoute(currentUser._id, new GetRouteCallback() {
+        Log.i("FetchChildRoute", "id......" + currentUser.get_id());
+        RouteDetails assignedRoute = serverRequests.fetchChildAttachedRoute(currentUser.get_id(), new GetRouteCallback() {
             @Override
             public void done(RouteDetails returnedRoute) {
                 if (returnedRoute == null) {
-                    Log.i("MyActivity", "No route returned");
+                    Log.i("ChildHome", "No route returned");
                 } else {
+                    Log.i("ChildHome", "!!!!..." + route.getStart().toString());
                     route = returnedRoute;
-                    startExample = route.getStart();
-                    destinationExample = route.getEnd();
+                    startExample = route.getStart();         // Getting actual assigned location start.
+                    destinationExample = route.getEnd();             // Getting actual start location end.
                     routeIndex = route.getIndex();
+                    travelMode = route.getModeTransport();
                 }
             }
         });
-    }
 
+        // Get Map fragment from view and implement.
+        MapsInitializer.initialize(this);
+        polylines = new ArrayList<>();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        MapsInitializer.initialize(this);
-//        polylines = new ArrayList<>();
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addApi(Places.GEO_DATA_API)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .build();
-//        mGoogleApiClient.connect();
-//
-//        // Get map fragment from view and place one there if it does not exist.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.childMap);
-//        if (mapFragment == null) {
-//            mapFragment = SupportMapFragment.newInstance();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.childMap, mapFragment).commit();
-//        }
-//        mMap = mapFragment.getMap();
+        // Get map fragment from view and place one there if it does not exist.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.childMap);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.childMap, mapFragment).commit();
+        }
+        map = mapFragment.getMap();
 
-//        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
-//                mGoogleApiClient, BOUNDS_UCD, null);
-//
-//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
-//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
+                mGoogleApiClient, BOUNDS_UCD, null);
 
-//        mMap.moveCamera(center);
-//        mMap.animateCamera(zoom);
-//
-//
-//        /*
-//        * Updates the bounds being used by the auto complete adapter based on the position of the
-//        * map.
-//        * */
-//        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-//            @Override
-//            public void onCameraChange(CameraPosition position) {
-//                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-//                mAdapter.setBounds(bounds);
-//            }
-//        });
-//
-//        mMap.setMyLocationEnabled(true);
-//        mMap.getUiSettings().setCompassEnabled(true);
-//        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+
+        map.moveCamera(center);
+        map.animateCamera(zoom);
+
+                /*
+        * Updates the bounds being used by the auto complete adapter based on the position of the
+        * map.
+        * */
+        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition position) {
+                LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+                mAdapter.setBounds(bounds);
+            }
+        });
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+
 //        start =  startExample;
 //        end = destinationExample;
-//
-//        if(Util.Operations.isOnline(this)) {
-//            route();
-//        }
-//        else {
-//            Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
-//        }
-//
-//        // Swipe Refresh Listener
-//        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_childHome);
-//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//
-//                myLocation = mMap.getMyLocation();
-//                startLoc = new Location("");
-//                startLoc.setLatitude(startExample.latitude);//your coords of course
-//                startLoc.setLongitude(startExample.longitude);
-//
-//                endLoc = new Location("");
-//                endLoc.setLatitude(destinationExample.latitude);//your coords of course
-//                endLoc.setLongitude(destinationExample.longitude);
-//
-//                Locale loc = null;
-//                myAddress = new Address(loc);
-//                startAddress = new Address(loc);
-//                endAddress = new Address(loc);
-//                try {
-//                    myAddress = getAddressForLocation(ChildHome.this, myLocation);
-//                    startAddress = getAddressForLocation(ChildHome.this, startLoc);
-//                    endAddress = getAddressForLocation(ChildHome.this, endLoc);
-//                    currentLocation.setText(myAddress.getAddressLine(0));
-//                    startLocation.setText(startAddress.getAddressLine(0));
-//                    endLocation.setText(endAddress.getAddressLine(0));
-//                    // Focusing camera on current location.
-//                    CameraUpdate center = CameraUpdateFactory.newLatLng(
-//                            new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-////                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
-////                    mMap.moveCamera(center);
-////                    mMap.animateCamera(zoom);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                swipeContainer.setRefreshing(false);
-//            }
-//        });
-//
-//    }
+
+        if(Util.Operations.isOnline(this)) {
+            route();
+        }
+        else {
+            Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
+        }
+        // Swipe Refresh Listener
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_childHome);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                myLocation = map.getMyLocation();
+                startLoc = new Location("");
+                startLoc.setLatitude(startExample.latitude);//your coords of course
+                startLoc.setLongitude(startExample.longitude);
+
+                endLoc = new Location("");
+                endLoc.setLatitude(destinationExample.latitude);//your coords of course
+                endLoc.setLongitude(destinationExample.longitude);
+
+                Locale loc = null;
+                myAddress = new Address(loc);
+                startAddress = new Address(loc);
+                endAddress = new Address(loc);
+                try {
+                    myAddress = getAddressForLocation(ChildHome.this, myLocation);
+                    startAddress = getAddressForLocation(ChildHome.this, startLoc);
+                    endAddress = getAddressForLocation(ChildHome.this, endLoc);
+                    currentLocation.setText(myAddress.getAddressLine(0));
+                    startLocation.setText(startAddress.getAddressLine(0));
+                    endLocation.setText(endAddress.getAddressLine(0));
+                    // Focusing camera on current location.
+                    CameraUpdate center = CameraUpdateFactory.newLatLng(
+                            new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+//                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+//                    mMap.moveCamera(center);
+//                    mMap.animateCamera(zoom);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+
+
+
+    }
 
     public void route() {
         if(startExample==null || destinationExample==null){
@@ -212,20 +219,20 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
             Routing routing = new Routing.Builder()
                     .travelMode(AbstractRouting.TravelMode.WALKING)
                     .withListener(this)
-                    .alternativeRoutes(true)
+                    .alternativeRoutes(false)
                     .waypoints(startExample, destinationExample)
                     .build();
             routing.execute();
         }
     }
 
-    public Address getAddressForLocation(Context context, LatLng location) throws IOException {
+    public Address getAddressForLocation(Context context, Location location) throws IOException {
 
         if (location == null) {
             return null;
         }
-        double latitude = location.latitude;
-        double longitude = location.longitude;
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
         int maxResults = 1;
 
         Geocoder gc = new Geocoder(context, Locale.getDefault());
@@ -269,11 +276,11 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        mMap.clear();
+        map.clear();
         progressDialog.dismiss();
 
         CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
-        mMap.moveCamera(center);
+        map.moveCamera(center);
 
 
         polylines = new ArrayList<>();
@@ -286,7 +293,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
                 polyOptions.color(colors[0]);
                 polyOptions.width(10 + i * 3);
                 polyOptions.addAll(route.get(i).getPoints());
-                Polyline polyline = mMap.addPolyline(polyOptions);
+                Polyline polyline = map.addPolyline(polyOptions);
                 polylines.add(polyline);
 
                 // Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
@@ -295,15 +302,15 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
 
         // Start marker
         MarkerOptions options = new MarkerOptions();
-        options.position(start);
+        options.position(startExample);
         options.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
-        mMap.addMarker(options);
+        map.addMarker(options);
 
         // End marker
         options = new MarkerOptions();
-        options.position(end);
+        options.position(destinationExample);
         options.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
-        mMap.addMarker(options);
+        map.addMarker(options);
 
     }
 
