@@ -19,6 +19,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -55,13 +56,17 @@ public class ServerRequests {
         new fetchUserDataAsyncTask(user, userCallback).execute();
     }
 
-    public void fetchChildDataInBackground(int id, ChildDetails child, GetChildCallback childCallback) {
+    public void fetchChildDataInBackground(int id, List<ChildDetails> children, GetChildrenCallback childrenCallback) {
         progressDialog.show();
-        new fetchChildDataAsyncTask(id, child, childCallback).execute();
+        new fetchChildDataAsyncTask(id, children, childrenCallback).execute();
     }
 
     public void removeChildInBackground(ChildDetails child) {
         new removeChildAsyncTask(child).execute();
+    }
+
+    public void saveRouteInBackground(int userid, RouteDetails route) {
+        new saveRouteAsyncTask(userid, route).execute();
     }
 
     public RouteDetails fetchChildAttachedRoute(int childID, GetRouteCallback routeCallback) {
@@ -328,19 +333,19 @@ public class ServerRequests {
         }
     }
 
-    public class fetchChildDataAsyncTask extends AsyncTask<Void, Void, ChildDetails> {
-        ChildDetails child;
-        GetChildCallback childCallback;
+    public class fetchChildDataAsyncTask extends AsyncTask<Void, Void, List<ChildDetails>> {
+        List<ChildDetails> children;
+        GetChildrenCallback childrenCallback;
         int id;
 
-        public fetchChildDataAsyncTask(int id, ChildDetails child, GetChildCallback childCallback) {
-            this.child = child;
-            this.childCallback = childCallback;
+        public fetchChildDataAsyncTask(int id, List<ChildDetails> children, GetChildrenCallback childrenCallback) {
+            this.children = children;
+            this.childrenCallback = childrenCallback;
             this.id = id;
         }
 
         @Override
-        protected ChildDetails doInBackground(Void... params) {
+        protected List<ChildDetails> doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("parentid", id + ""));
 
@@ -351,7 +356,7 @@ public class ServerRequests {
             HttpClient client = new DefaultHttpClient(httpRequestParams);
             HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchChildData.php");
 
-            ChildDetails returnedChild = null;
+            List<ChildDetails> returnedChildren = new ArrayList<ChildDetails>();
             Log.i("MyActivity", "Fetch php");
 
             try {
@@ -362,19 +367,28 @@ public class ServerRequests {
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                JSONObject jObject = new JSONObject(result);
+                JSONArray jArray = new JSONArray(result);
 
-                if (jObject.length() == 0)
-                    Log.i("MyActivity", "No response");
+                if (jArray.length() == 0)
+                    Log.i("MyActivity", "No response from FetchChildData");
                 else {
-                    int id = jObject.getInt("id");
-                    int parentid = jObject.getInt("parentid");
-                    String name = jObject.getString("name");
-                    String username = jObject.getString("username");
-                    String password = jObject.getString("password");
-                    String flag = jObject.getString("flag");
+                    Log.i("MyActivity", "jObject length = " + jArray.length());
 
-                    returnedChild = new ChildDetails(id, parentid, name, username, password);
+                    for (int x = 0; x < jArray.length(); x++) {
+                        int id = jArray.getJSONObject(x).getInt("id");
+                        int parentid = jArray.getJSONObject(x).getInt("parentid");
+                        String name = jArray.getJSONObject(x).getString("name");
+                        String username = jArray.getJSONObject(x).getString("username");
+                        String password = jArray.getJSONObject(x).getString("password");
+                        String flag = jArray.getJSONObject(x).getString("flag");
+
+                        Log.i("MyActivity", "Child " + x + " = " + id + parentid + name + username + password + flag);
+
+                        returnedChildren.add(new ChildDetails(id, parentid, name, username, password));
+
+                    }
+                    Log.i("MyActivity", "returnedChildren size = " + returnedChildren.size());
+
                 }
 
             } catch (Exception e) {
@@ -382,14 +396,14 @@ public class ServerRequests {
                 Log.i("MyActivity", "EXCEPTION");
             }
 
-            return returnedChild;
+            return returnedChildren;
         }
 
         @Override
-        protected void onPostExecute(ChildDetails child) {
+        protected void onPostExecute(List<ChildDetails> children) {
             progressDialog.dismiss();
-            childCallback.done(child);
-            super.onPostExecute(child);
+            childrenCallback.done(children);
+            super.onPostExecute(children);
         }
     }
 
@@ -431,4 +445,57 @@ public class ServerRequests {
             super.onPostExecute(child);
         }
     }
+
+    public class saveRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
+        int userid;
+        RouteDetails route;
+
+        public saveRouteAsyncTask(int userid, RouteDetails route) {
+            this.userid = userid;
+            this.route = route;
+        }
+
+        @Override
+        protected RouteDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", userid + ""));
+            dataToSend.add(new BasicNameValuePair("childid", 0 + ""));
+            dataToSend.add(new BasicNameValuePair("route_name", route.getmRouteName() + ""));
+            dataToSend.add(new BasicNameValuePair("start_lat", route.getStart().latitude + ""));
+            dataToSend.add(new BasicNameValuePair("start_long", route.getStart().longitude + ""));
+            dataToSend.add(new BasicNameValuePair("end_lat", route.getEnd().latitude + ""));
+            dataToSend.add(new BasicNameValuePair("end_long", route.getEnd().longitude + ""));
+            dataToSend.add(new BasicNameValuePair("travel_mode", route.getModeTransport() + ""));
+            dataToSend.add(new BasicNameValuePair("index", route.getIndex() + ""));
+            dataToSend.add(new BasicNameValuePair("flag", 0 + ""));
+
+            Log.i("MyActivity", "dataToSend (1) = " + dataToSend);
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "StoreRoute.php");
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+                Log.i("MyActivity", "dataToSend (2) = " + dataToSend);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(RouteDetails route) {
+            progressDialog.dismiss();
+            super.onPostExecute(route);
+        }
+    }
+
 }

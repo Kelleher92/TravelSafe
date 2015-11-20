@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * Created by ian on 13/11/2015.
  */
-interface GetChildCallback {
+interface GetChildrenCallback {
 
-    public abstract void done(ChildDetails returnedChild);
+    public abstract void done(List<ChildDetails> returnedChildren);
 
 }
