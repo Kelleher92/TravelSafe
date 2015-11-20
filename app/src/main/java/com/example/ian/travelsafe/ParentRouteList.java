@@ -1,6 +1,8 @@
 package com.example.ian.travelsafe;
 
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +17,24 @@ public class ParentRouteList extends ArrayList<RouteDetails> {
 
     }
 
-    public static List<RouteDetails> getCurrentRouteList(){
-        Log.i("MyActivity", "returning list");
+    public static List<RouteDetails> getCurrentRouteList(Context context){
+        Log.i("MyActivity", "retrieving list");
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(context);
+        final Users returnedUser = userLocalStore.getLoggedInUser();
+        ServerRequests serverRequests = new ServerRequests(context);
+        Log.i("MyActivity", "user id is = " + returnedUser.get_id());
+        serverRequests.fetchRouteDataInBackground(returnedUser.get_id(), routeList, new GetRouteCallback() {
+            @Override
+            public void done(List<RouteDetails> returnedRoutes) {
+                if (returnedRoutes == null) {
+                    Log.i("MyActivity", "No child returned");
+                    routeList = null;
+                } else {
+                    routeList = returnedRoutes;
+                }
+            }
+        });
         return routeList;
     }
 

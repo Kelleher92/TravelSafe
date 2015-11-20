@@ -1,6 +1,7 @@
 package com.example.ian.travelsafe;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,11 +28,13 @@ public class Pop extends Activity {
     ListAdapter routeListAdapter;
     public static List<RouteDetails> routeList = new ArrayList<>();
     public static ListView routeListView;
+    public Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_choose_popup);
+        context = this;
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -41,7 +44,7 @@ public class Pop extends Activity {
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
 
-        routeList = ParentRouteList.getCurrentRouteList();
+        routeList = ParentRouteList.getCurrentRouteList(context);
         routeListAdapter = new RouteListAdapter(this, routeList);
         routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -57,6 +59,11 @@ public class ServerRequests {
     public void fetchChildDataInBackground(int id, List<ChildDetails> children, GetChildrenCallback childrenCallback) {
         progressDialog.show();
         new fetchChildDataAsyncTask(id, children, childrenCallback).execute();
+    }
+
+    public void fetchRouteDataInBackground(int id, List<RouteDetails> routes, GetRouteCallback routeCallback) {
+        progressDialog.show();
+        new fetchRouteDataAsyncTask(id, routes, routeCallback).execute();
     }
 
     public void removeChildInBackground(ChildDetails child) {
@@ -249,6 +256,92 @@ public class ServerRequests {
             progressDialog.dismiss();
             userCallback.done(user);
             super.onPostExecute(user);
+        }
+    }
+
+    public class fetchRouteDataAsyncTask extends AsyncTask<Void, Void, List<RouteDetails>> {
+        List<RouteDetails> routes;
+        GetRouteCallback routeCallback;
+        int id;
+
+        public fetchRouteDataAsyncTask(int id, List<RouteDetails> routes, GetRouteCallback routeCallback) {
+            this.routes = routes;
+            this.routeCallback = routeCallback;
+            this.id = id;
+        }
+
+        @Override
+        protected List<RouteDetails> doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("parentid", id + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchRoutes.php");
+
+            List<RouteDetails> returnedRoutes = new ArrayList<RouteDetails>();
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                Log.i("MyActivity", "Sent id " + id + " to server");
+
+                HttpEntity entity = httpResponse.getEntity();
+                String result = EntityUtils.toString(entity);
+                JSONArray jArray = new JSONArray(result);
+
+                if (jArray.length() == 0)
+                    Log.i("MyActivity", "No response from FetchRoutes");
+                else {
+                    Log.i("MyActivity", "jObject length = " + jArray.length());
+
+                    for (int x = 0; x < jArray.length(); x++) {
+                        int routeid = jArray.getJSONObject(x).getInt("routeid");
+                        int parentid = jArray.getJSONObject(x).getInt("parentid");
+                        int childid = jArray.getJSONObject(x).getInt("childid");
+                        int index = jArray.getJSONObject(x).getInt("route_index");
+                        int push = jArray.getJSONObject(x).getInt("pushtochild");
+                        String route_name = jArray.getJSONObject(x).getString("route_name");
+                        String travel_mode = jArray.getJSONObject(x).getString("travel_mode");
+                        LatLng start = new LatLng(jArray.getJSONObject(x).getDouble("start_lat"), jArray.getJSONObject(x).getDouble("start_long"));
+                        LatLng end = new LatLng(jArray.getJSONObject(x).getDouble("end_lat"), jArray.getJSONObject(x).getDouble("end_long"));
+                        AbstractRouting.TravelMode mode;
+
+                        switch (travel_mode){
+                            case "BIKING" : mode = AbstractRouting.TravelMode.BIKING;
+                                break;
+                            case "WALKING" : mode = AbstractRouting.TravelMode.WALKING;
+                                break;
+                            default: mode = AbstractRouting.TravelMode.WALKING;
+
+                        }
+
+                        Log.i("MyActivity", "Returned route " + x + " = " + routeid + parentid + childid + index + push + route_name + travel_mode + start + end);
+
+                        returnedRoutes.add(new RouteDetails(start, end, route_name, mode, index));
+
+                    }
+                    Log.i("MyActivity", "returnedRoutes size = " + returnedRoutes.size());
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+
+            return returnedRoutes;
+        }
+
+        @Override
+        protected void onPostExecute(List<RouteDetails> routes) {
+            progressDialog.dismiss();
+            routeCallback.done(routes);
+            super.onPostExecute(routes);
         }
     }
 
