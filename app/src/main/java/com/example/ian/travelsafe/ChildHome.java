@@ -143,6 +143,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, Goo
         mMap.moveCamera(center);
         mMap.animateCamera(zoom);
 
+
         /*
         * Updates the bounds being used by the auto complete adapter based on the position of the
         * map.
