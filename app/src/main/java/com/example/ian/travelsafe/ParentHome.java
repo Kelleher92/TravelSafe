@@ -19,6 +19,8 @@ import java.util.Locale;
 
 public class ParentHome extends AppCompatActivity {
 
+    public static CheckForUpdatesThread checkUpdatesThread;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class ParentHome extends AppCompatActivity {
         // This method ensures that tab selection events update the ViewPager and page changes update the selected tab.
         tabLayout.setupWithViewPager(viewPager);
 
-        CheckForUpdatesThread checkUpdatesThread = new CheckForUpdatesThread();
+        checkUpdatesThread = new CheckForUpdatesThread();
         checkUpdatesThread.setRunning(true);
         checkUpdatesThread.start(this);
 
