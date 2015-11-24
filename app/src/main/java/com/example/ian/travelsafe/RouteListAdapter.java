@@ -2,6 +2,7 @@ package com.example.ian.travelsafe;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,13 +13,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import android.location.Address;
-
-import com.google.android.gms.maps.model.LatLng;
 
 
 /**
@@ -27,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
     Integer selected_position = -1;
     Context contextPopUp;
+
     public RouteListAdapter(Context context, List<RouteDetails> listSettings) {
 
         super(context, R.layout.custom_route_row, listSettings);
@@ -58,10 +58,9 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
 
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);
 
-        if(position==selected_position) {
+        if (position == selected_position) {
             chkbox.setChecked(true);
-        }
-        else {
+        } else {
             chkbox.setChecked(false);
         }
 
@@ -89,7 +88,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                         }
                     }
                 });
-                ((Activity)contextPopUp).finish();
+                ((Activity) contextPopUp).finish();
 
             }
         });

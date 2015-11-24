@@ -1,5 +1,6 @@
 package com.example.ian.travelsafe;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ public class RegisterNewChild extends AppCompatActivity {
 
     }
 
+    ChildDetails registeredChild = new ChildDetails(null, null);
 
     public void ReturnToParentHome(View view) {
         Intent i = new Intent(this, ParentHome.class);
@@ -45,16 +47,15 @@ public class RegisterNewChild extends AppCompatActivity {
             Log.i("MyActivity", "1. user id = " + currentUserId);
             Log.i("MyActivity", "1. user email = " + currentUserEmail);
 
-            // Add to user list
-            ParentChildList.addToChildList(child);
-            //////////////////////////
             registerChild(child);
-            // Load parent home again.
-            Intent i = new Intent(this, ParentHome.class);
-            startActivity(i);
-            finish();
-
         }
+    }
+
+    private void showErrorMessage() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterNewChild.this);
+        dialogBuilder.setMessage("Register was unsuccessful, try another username");
+        dialogBuilder.setPositiveButton("OK", null);
+        dialogBuilder.show();
     }
 
     private boolean registerChild(ChildDetails child) {
@@ -62,9 +63,16 @@ public class RegisterNewChild extends AppCompatActivity {
         serverRequests.storeChildDataInBackground(child, new GetChildCallback() {
             @Override
             public void done(ChildDetails returnedChild) {
+                if (returnedChild.get_id()==0){
+                    showErrorMessage();
+                }
+                else {
+                    Intent i = new Intent(RegisterNewChild.this, ParentHome.class);
+                    startActivity(i);
+                    finish();
+                }
             }
-
-        }, this);
+        });
         return true;
     }
 

@@ -3,12 +3,12 @@ package com.example.ian.travelsafe;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -22,10 +22,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.security.Timestamp;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +38,7 @@ public class CheckForUpdatesThread extends Thread {
     final static String ACTION = "NotifyServiceAction";
     NotificationManager notificationManager;
     NotificationCompat.Builder notification;
-    private  static int uniqueID = 1;
+    private static int uniqueID = 1;
     NotificationDetails notificationDetails;
     private final String myBlog = "http://android-er.blogspot.com/";
     private static final int MY_NOTIFICATION_ID = 1;
@@ -107,7 +104,7 @@ public class CheckForUpdatesThread extends Thread {
         Intent intent = new Intent(ctext, ParentHome.class);
         PendingIntent pI = PendingIntent.getActivity(ctext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.setContentIntent(pI);
-        notification.setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_LIGHTS|Notification.DEFAULT_VIBRATE);
+        notification.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
 
         // Build notification and issue it.
         notificationManager.notify(uniqueID, notification.build());
@@ -152,16 +149,15 @@ public class CheckForUpdatesThread extends Thread {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
-//                HttpEntity entity = httpResponse.getEntity();
-//                String result = EntityUtils.toString(entity);
-//                JSONObject jObject = new JSONObject(result);
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                JSONArray jArray = new JSONArray(result);
+                Log.i("FetchEvent", "result = " + result);
+                JSONArray jObject = new JSONArray(result);
 
-                if (jArray==null)
+                if (jObject.length() == 0)
                     Log.i("FetchEvent", "No response");
                 else {
+                    JSONArray jArray = new JSONArray(result);
                     int eventid = jArray.getJSONObject(0).getInt("eventid");
                     String eventType = jArray.getJSONObject(0).getString("event_type");
                     String timeLogged = jArray.getJSONObject(0).getString("time_logged");
