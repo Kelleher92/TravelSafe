@@ -466,6 +466,9 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                 modeTransport = AbstractRouting.TravelMode.BIKING;
                 findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
                 break;
+            default:
+                modeTransport = AbstractRouting.TravelMode.WALKING;
+                findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
         }
     }
 
@@ -580,7 +583,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
             MarkerOptions routeOptions = new MarkerOptions();
             routeOptionsList.add(i, routeOptions);
-            routeOptionsList.get(i).position(route.get(i).getPoints().get((route.get(i).getPoints().size()) / 2));
+            routeOptionsList.get(i).position(route.get(i).getPoints().get((route.get(i).getPoints().size()) / 5));
             routeOptionsList.get(i).title("Route " + (i + 1));
             routeOptionsList.get(i).snippet("Distance: " + routeDistance + "km\nDuration: " + routeDurationHours + "hr " + routeDurationMins + "min");
 
