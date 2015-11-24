@@ -276,6 +276,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                         Log.i("StartJourney", "On Path = " + onpath);
                     }
                 }
+
             }
         });
     }
