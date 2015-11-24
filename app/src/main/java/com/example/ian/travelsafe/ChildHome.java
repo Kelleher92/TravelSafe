@@ -8,6 +8,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,12 +72,11 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     private ProgressDialog progressDialog;
     private PlaceAutoCompleteAdapter mAdapter;
     private ArrayList<Polyline> polylines;
-    private static final LatLngBounds BOUNDS_UCD= new LatLngBounds(
-            new LatLng(53.298158, -6.246800),
-            new LatLng(53.316057, -6.205602));
+    private List<LatLng> polyList;
     LatLng startExample =  new LatLng(53.316057, -6.205602);         // UCD
     LatLng destinationExample =  new LatLng( 53.323842, -6.26519);   // Rathmines
     int routeIndex = 0;
+    boolean running = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +112,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                     destinationExample = route.getEnd();             // Getting actual start location end.
                     routeIndex = route.getIndex();
                     travelMode = route.getModeTransport();
+
+                    if (Util.Operations.isOnline(ChildHome.this)) {
+                        route();
+
+                    } else {
+                        Toast.makeText(ChildHome.this, "No internet connectivity", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -133,14 +141,16 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         }
         map = mapFragment.getMap();
 
-//        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
-//                mGoogleApiClient, BOUNDS_UCD, null);
+        LatLngBounds Bounds_Route= new LatLngBounds(startExample,destinationExample);
 
-//        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
-//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+        mAdapter = new PlaceAutoCompleteAdapter(this, android.R.layout.simple_list_item_1,
+                mGoogleApiClient, Bounds_Route, null);
 
-//        map.moveCamera(center);
-//        map.animateCamera(zoom);
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(53.306647, -6.221427));
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+
+        map.moveCamera(center);
+        map.animateCamera(zoom);
 
                 /*
         * Updates the bounds being used by the auto complete adapter based on the position of the
@@ -160,51 +170,52 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 //        start =  startExample;
 //        end = destinationExample;
 
-        if(Util.Operations.isOnline(this)) {
-            route();
+//        if(Util.Operations.isOnline(this)) {
+//            route();
+//
+//        }
+//        else {
+//            Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
+//        }
 
-        }
-        else {
-            Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
-        }
         // Swipe Refresh Listener
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_childHome);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                myLocation = map.getMyLocation();
-                startLoc = new Location("");
-                startLoc.setLatitude(startExample.latitude);//your coords of course
-                startLoc.setLongitude(startExample.longitude);
-
-                endLoc = new Location("");
-                endLoc.setLatitude(destinationExample.latitude);//your coords of course
-                endLoc.setLongitude(destinationExample.longitude);
-
-                Locale loc = null;
-                myAddress = new Address(loc);
-                startAddress = new Address(loc);
-                endAddress = new Address(loc);
-                try {
-                    myAddress = getAddressForLocation(ChildHome.this, new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
-                    startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
-                    endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
-                    currentLocation.setText(myAddress.getAddressLine(0));
-                    startLocation.setText(startAddress.getAddressLine(0));
-                    endLocation.setText(endAddress.getAddressLine(0));
-                    // Focusing camera on current location.
-                    CameraUpdate center = CameraUpdateFactory.newLatLng(
-                            new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
-//                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
-//                    mMap.moveCamera(center);
-//                    mMap.animateCamera(zoom);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                swipeContainer.setRefreshing(false);
-            }
-        });
+//        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_childHome);
+//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//
+//                myLocation = map.getMyLocation();
+//                startLoc = new Location("");
+//                startLoc.setLatitude(startExample.latitude);//your coords of course
+//                startLoc.setLongitude(startExample.longitude);
+//
+//                endLoc = new Location("");
+//                endLoc.setLatitude(destinationExample.latitude);//your coords of course
+//                endLoc.setLongitude(destinationExample.longitude);
+//
+//                Locale loc = null;
+//                myAddress = new Address(loc);
+//                startAddress = new Address(loc);
+//                endAddress = new Address(loc);
+//                try {
+//                    myAddress = getAddressForLocation(ChildHome.this, new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
+//                    startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
+//                    endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
+//                    currentLocation.setText(myAddress.getAddressLine(0));
+//                    startLocation.setText(startAddress.getAddressLine(0));
+//                    endLocation.setText(endAddress.getAddressLine(0));
+//                    // Focusing camera on current location.
+//                    CameraUpdate center = CameraUpdateFactory.newLatLng(
+//                            new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+////                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+////                    mMap.moveCamera(center);
+////                    mMap.animateCamera(zoom);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                swipeContainer.setRefreshing(false);
+//            }
+//        });
 
 
 
@@ -247,10 +258,27 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     }
 
     public void StartJourney(View view) {
-        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+//        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        running = true;
+        // Start logging and checking cuurent position against assigned route.
+        runOnUiThread(new Runnable() {
+            public void run() {
+                while (running) {
+                    try {
+                        Thread.sleep(10000);           //Check every 10 seconds.
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    // Check if still on path
+                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
+                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
+                    if(!onpath) {
+                        Log.i("StartJourney", "On Path = " + onpath);
+                    }
+                }
 
-        // New thread that logs location.
-
+            }
+        });
     }
 
 
@@ -282,13 +310,13 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
         map.moveCamera(center);
-
+        Log.i("Route","adding polylines");
 
         polylines = new ArrayList<>();
         //add route(s) to the map.
         for(int i = 0; i <route.size(); i++) {
 
-            if(i == routeIndex) {
+//            if(i == routeIndex) {
 
                 PolylineOptions polyOptions = new PolylineOptions();
                 polyOptions.color(colors[0]);
@@ -296,8 +324,40 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                 polyOptions.addAll(route.get(i).getPoints());
                 Polyline polyline = map.addPolyline(polyOptions);
                 polylines.add(polyline);
+                polyList = route.get(i).getPoints();
 
                 // Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
+//            }
+
+            // Update fields
+            myLocation = map.getMyLocation();
+            startLoc = new Location("");
+            startLoc.setLatitude(startExample.latitude);//your coords of course
+            startLoc.setLongitude(startExample.longitude);
+
+            endLoc = new Location("");
+            endLoc.setLatitude(destinationExample.latitude);//your coords of course
+            endLoc.setLongitude(destinationExample.longitude);
+
+            Locale loc = null;
+            myAddress = new Address(loc);
+            startAddress = new Address(loc);
+            endAddress = new Address(loc);
+            try {
+                myAddress = getAddressForLocation(ChildHome.this, new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
+                startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
+                endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
+                currentLocation.setText(myAddress.getAddressLine(0));
+                startLocation.setText(startAddress.getAddressLine(0));
+                endLocation.setText(endAddress.getAddressLine(0));
+                // Focusing camera on current location.
+//            CameraUpdate center = CameraUpdateFactory.newLatLng(
+//                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+//                    CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+//                    mMap.moveCamera(center);
+//                    mMap.animateCamera(zoom);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

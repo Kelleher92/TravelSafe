@@ -77,6 +77,7 @@ public class FragmentParentHomeAccount extends Fragment {
                                 break;
                             // Log Out
                             case 1:
+                                ParentHome.checkUpdatesThread.setRunning(false);
                                 userLocalStore.clearUserData();
                                 userLocalStore.setUserLoggedIn(false);
                                 ParentChildList.clearChildList();

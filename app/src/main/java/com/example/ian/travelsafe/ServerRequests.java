@@ -84,6 +84,8 @@ public class ServerRequests {
         return null;
     }
 
+
+
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         GetUserCallback userCallback;
@@ -205,66 +207,68 @@ public class ServerRequests {
         }
     }
 
-    public class fetchEventsAsyncTask extends AsyncTask<Void, Void, NotificationDetails> {
-        GetEventCallback eventCallback;
-        int parentid;
-        ChildDetails cd;
+    public class LogEventAsyncTask extends AsyncTask<Void, Void, Void> {
+        Users user;
+        String event_type;
+        int parentID;
+        GetUserCallback userCallback;
         private Context mContext;
 
-        public fetchEventsAsyncTask(int parentid, ChildDetails cd, Context context, GetEventCallback eventCallback) {
-            this.cd = cd;
-            this.parentid = parentid;
-            this.eventCallback = eventCallback;
+        public LogEventAsyncTask(Users user, String event_type, int parentID, GetUserCallback userCallback, Context context) {
             mContext = context;
+            this.user = user;
+            this.event_type = event_type;
+            this.parentID = parentID;
+            this.userCallback = userCallback;
         }
 
         @Override
-        protected NotificationDetails doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair("parentid", cd.get_id() + ""));
-            dataToSend.add(new BasicNameValuePair("childid", parentid + ""));
+            dataToSend.add(new BasicNameValuePair("parentid", parentID + ""));
+            dataToSend.add(new BasicNameValuePair("childid", user.get_id() + ""));
+            dataToSend.add(new BasicNameValuePair("event_type", event_type));
 
             HttpParams httpRequestParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
             HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
-            HttpPost post = new HttpPost(SERVER_ADDRESS + "RegisterChild.php");
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "LogEvent.php");
 
-            Log.i("FetchEvent", "Sent to server");
-            NotificationDetails returnedNotification = null;
+            Log.i("LogEvent", "Sent to server 1");
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
+
+                Log.i("LogEvent", "Sent to server 2");
 
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
                 JSONObject jObject = new JSONObject(result);
 
                 if (jObject.length() == 0)
-                    Log.i("FetchEvent", "No response");
+                    Log.i("LogEvent", "No response");
                 else {
-                    int eventid = jObject.getInt("eventid");
-                    String eventType = jObject.getString("event_type");
-//                    int timeLogged = jObject.getDouble("time_logged");
-
-                    returnedNotification = new NotificationDetails(cd.get_name(), eventType);
+                    Log.i("LogEvent", "Response successful");
+                    // Check what should be returned from LogEvent.php
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return returnedNotification;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(NotificationDetails event) {
+        protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            eventCallback.done(null);
-            super.onPostExecute(event);
+            userCallback.done(null);
+            super.onPostExecute(aVoid);
         }
     }
+
 
     public class fetchChildAttachedRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
         GetRouteCallback routeCallback;
