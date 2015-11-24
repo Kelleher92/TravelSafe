@@ -24,6 +24,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.security.Timestamp;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,37 +76,21 @@ public class CheckForUpdatesThread extends Thread {
             Users currentUser = current.getLoggedInUser();
 
             for (ChildDetails cd : lcd) {
-                NotificationDetails noteDetails = fetchEvents(currentUser.get_id(), cd, ctext, new GetEventCallback() {
+                fetchEvents(currentUser.get_id(), cd, ctext, new GetEventCallback() {
                     @Override
                     public void done(NotificationDetails returnedNotification) {
                         if (returnedNotification == null) {
                             Log.i("CheckForUpdates", "No notification");
                         } else {
                             Log.i("CheckForUpdates", "New notification ");
-//                            notificationDetails = returnedNotification;
-                            notificationDetails = new NotificationDetails("Child Name"," This is a notification.");
-
+                            notificationDetails = returnedNotification;
+//                            notificationDetails = new NotificationDetails("Child Name"," This is a notification.");
+                            notification = new NotificationCompat.Builder(ctext);
+                            notification.setAutoCancel(true);
+                            createNotification(notificationDetails);
                         }
                     }
                 });
-
-
-                if(notificationDetails != null) {
-                    // Send Notification
-                    createNotification(notificationDetails);
-//                    myNotification = new Notification(R.drawable.icon, "Notification!", System.currentTimeMillis());
-//                    Context context = getApplicationContext();
-//                    String notificationTitle = "Exercise of Notification!";
-//                    String notificationText = "http://android-er.blogspot.com/";
-//                    Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(myBlog));
-//                    PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, myIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    myNotification.setLatestEventInfo(context,
-//                            notificationTitle,
-//                            notificationText,
-//                            pendingIntent);
-//                    notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
-
-                }
 
             }
         }
@@ -149,37 +135,39 @@ public class CheckForUpdatesThread extends Thread {
         @Override
         protected NotificationDetails doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair("parentid", cd.get_id() + ""));
-            dataToSend.add(new BasicNameValuePair("childid", parentid + ""));
+            dataToSend.add(new BasicNameValuePair("parentid", parentid + ""));
+            dataToSend.add(new BasicNameValuePair("childid", cd.get_id() + ""));
 
             HttpParams httpRequestParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
             HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
-            HttpPost post = new HttpPost(SERVER_ADDRESS + "RegisterChild.php");
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "FetchEvents.php");
 
-            Log.i("FetchEvent", "Sent to server");
+            Log.i("FetchEvent", "Sent to server " + dataToSend);
             NotificationDetails returnedNotification = null;
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
+//                HttpEntity entity = httpResponse.getEntity();
+//                String result = EntityUtils.toString(entity);
+//                JSONObject jObject = new JSONObject(result);
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                if (result != null) {
-                    JSONObject jObject = new JSONObject(result);
+                JSONArray jArray = new JSONArray(result);
 
-                    if (jObject.length() == 0)
-                        Log.i("FetchEvent", "No response");
-                    else {
-                        int eventid = jObject.getInt("eventid");
-                        String eventType = jObject.getString("event_type");
-                        //                    int timeLogged = jObject.getDouble("time_logged");
+                if (jArray==null)
+                    Log.i("FetchEvent", "No response");
+                else {
+                    int eventid = jArray.getJSONObject(0).getInt("eventid");
+                    String eventType = jArray.getJSONObject(0).getString("event_type");
+                    String timeLogged = jArray.getJSONObject(0).getString("time_logged");
+                    Log.i("FetchEvent", "Received from server " + eventid + eventType + timeLogged);
 
-                        returnedNotification = new NotificationDetails(cd.get_name(), eventType);
-                    }
+                    returnedNotification = new NotificationDetails(cd.get_name(), eventType);
                 }
 
             } catch (Exception e) {
@@ -190,9 +178,9 @@ public class CheckForUpdatesThread extends Thread {
         }
 
         @Override
-        protected void onPostExecute(NotificationDetails event) {
-            eventCallback.done(null);
-            super.onPostExecute(event);
+        protected void onPostExecute(NotificationDetails note) {
+            eventCallback.done(note);
+            super.onPostExecute(note);
         }
     }
 }

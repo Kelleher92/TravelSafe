@@ -8,6 +8,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,9 +72,11 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     private ProgressDialog progressDialog;
     private PlaceAutoCompleteAdapter mAdapter;
     private ArrayList<Polyline> polylines;
+    private List<LatLng> polyList;
     LatLng startExample =  new LatLng(53.316057, -6.205602);         // UCD
     LatLng destinationExample =  new LatLng( 53.323842, -6.26519);   // Rathmines
     int routeIndex = 0;
+    boolean running = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,12 +113,11 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                     routeIndex = route.getIndex();
                     travelMode = route.getModeTransport();
 
-                    if(Util.Operations.isOnline(ChildHome.this)) {
+                    if (Util.Operations.isOnline(ChildHome.this)) {
                         route();
 
-                    }
-                    else {
-                        Toast.makeText(ChildHome.this,"No internet connectivity",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ChildHome.this, "No internet connectivity", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -255,10 +258,26 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     }
 
     public void StartJourney(View view) {
-        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-        // New thread that logs location.
-
+//        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        running = true;
+        // Start logging and checking cuurent position against assigned route.
+        runOnUiThread(new Runnable() {
+            public void run() {
+                while (running) {
+                    try {
+                        Thread.sleep(10000);           //Check every 10 seconds.
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    // Check if still on path
+                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
+                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
+                    if(!onpath) {
+                        Log.i("StartJourney", "On Path = " + onpath);
+                    }
+                }
+            }
+        });
     }
 
 
@@ -304,6 +323,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
                 polyOptions.addAll(route.get(i).getPoints());
                 Polyline polyline = map.addPolyline(polyOptions);
                 polylines.add(polyline);
+                polyList = route.get(i).getPoints();
 
                 // Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
 //            }
