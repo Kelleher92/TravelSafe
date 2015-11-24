@@ -13,7 +13,7 @@ public class ChildDetails {
         this._name = name;
         this._route = null;
         this._flag = "C";
-
+        this._id = 0;
     }
 
     public ChildDetails(int parentid, String name, String username, String password) {
@@ -23,6 +23,7 @@ public class ChildDetails {
         this._password = password;
         this._route = null;
         this._flag = "C";
+        this._id = 0;
     }
 
     public ChildDetails(int id, int _parentid, String name, String username, String password) {
@@ -33,6 +34,7 @@ public class ChildDetails {
         this._password = password;
         this._route = null;
         this._flag = "C";
+        this._id = 0;
     }
 
     public ChildDetails(String name, String username, String password) {
@@ -40,12 +42,14 @@ public class ChildDetails {
         this._username = username;
         this._password = password;
         this._route = null;
+        this._id = 0;
     }
 
     public ChildDetails(String username, String password) {
         this._username = username;
         this._password = password;
         this._route = null;
+        this._id = 0;
     }
 
     public void set_name(String _name) {

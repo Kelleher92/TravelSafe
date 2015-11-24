@@ -46,9 +46,9 @@ public class ServerRequests {
         new StoreUserDataAsyncTask(user, userCallback, context).execute();
     }
 
-    public void storeChildDataInBackground(ChildDetails child, GetChildCallback childCallback, Context context) {
+    public void storeChildDataInBackground(ChildDetails child, GetChildCallback childCallback) {
         progressDialog.show();
-        new StoreChildDataAsyncTask(child, childCallback, context).execute();
+        new StoreChildDataAsyncTask(child, childCallback).execute();
     }
 
     public void fetchUserDataInBackground(Users user, GetUserCallback userCallback) {
@@ -83,7 +83,6 @@ public class ServerRequests {
         new attachRouteAsyncTask(childid, routeID, routeCallback).execute();
         return null;
     }
-
 
 
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -147,19 +146,17 @@ public class ServerRequests {
         }
     }
 
-    public class StoreChildDataAsyncTask extends AsyncTask<Void, Void, Void> {
+    public class StoreChildDataAsyncTask extends AsyncTask<Void, Void, ChildDetails> {
         ChildDetails child;
         GetChildCallback childCallback;
-        private Context mContext;
 
-        public StoreChildDataAsyncTask(ChildDetails child, GetChildCallback childCallback, Context context) {
-            this.child = child;
+        public StoreChildDataAsyncTask(ChildDetails childin, GetChildCallback childCallback) {
+            this.child = childin;
             this.childCallback = childCallback;
-            mContext = context;
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected ChildDetails doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("parentid", child._parentid + ""));
             dataToSend.add(new BasicNameValuePair("name", child._name));
@@ -187,23 +184,19 @@ public class ServerRequests {
                     Log.i("MyActivity", "No response");
                 else {
                     int childId = jObject.getInt("id");
-                    Log.i("MyActivity", "parent id = " + childId);
                     child.set_id(childId);
-                    UserLocalStore userLocalStore = new UserLocalStore(mContext);
-                    userLocalStore.storeUserData(child);
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return child;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(ChildDetails child){
             progressDialog.dismiss();
-            childCallback.done(null);
-            super.onPostExecute(aVoid);
+            childCallback.done(child);
+            super.onPostExecute(child);
         }
     }
 
@@ -303,14 +296,14 @@ public class ServerRequests {
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
 //                JSONArray jArray = new JSONArray(result);
-                Log.i("","");
+                Log.i("", "");
                 JSONObject jObject = new JSONObject(result);
 
                 if (jObject.length() == 0)
                     Log.i("FetchChildRoute", "No response");
                 else {
 //                    JSONObject jObject = jArray.getJSONObject(0);
-                    Log.i("FetchChildRoute","inside");
+                    Log.i("FetchChildRoute", "inside");
                     LatLng start = new LatLng(jObject.getDouble("start_lat"), jObject.getDouble("start_long"));
                     LatLng end = new LatLng(jObject.getDouble("end_lat"), jObject.getDouble("end_long"));
                     String routeName = jObject.getString("route_name");
@@ -318,12 +311,15 @@ public class ServerRequests {
                     int index = jObject.getInt("index");
                     String mod = jObject.getString("mode");
                     AbstractRouting.TravelMode mode;
-                    switch(mod){
-                        case "BIKING": mode = AbstractRouting.TravelMode.BIKING;
+                    switch (mod) {
+                        case "BIKING":
+                            mode = AbstractRouting.TravelMode.BIKING;
                             break;
-                        case "WALKING": mode = AbstractRouting.TravelMode.WALKING;
+                        case "WALKING":
+                            mode = AbstractRouting.TravelMode.WALKING;
                             break;
-                        default: mode = AbstractRouting.TravelMode.WALKING;
+                        default:
+                            mode = AbstractRouting.TravelMode.WALKING;
                             break;
                     }
 
@@ -508,12 +504,15 @@ public class ServerRequests {
                         LatLng end = new LatLng(jArray.getJSONObject(x).getDouble("end_lat"), jArray.getJSONObject(x).getDouble("end_long"));
                         AbstractRouting.TravelMode mode;
 
-                        switch (travel_mode){
-                            case "BIKING" : mode = AbstractRouting.TravelMode.BIKING;
+                        switch (travel_mode) {
+                            case "BIKING":
+                                mode = AbstractRouting.TravelMode.BIKING;
                                 break;
-                            case "WALKING" : mode = AbstractRouting.TravelMode.WALKING;
+                            case "WALKING":
+                                mode = AbstractRouting.TravelMode.WALKING;
                                 break;
-                            default: mode = AbstractRouting.TravelMode.WALKING;
+                            default:
+                                mode = AbstractRouting.TravelMode.WALKING;
 
                         }
 
@@ -594,7 +593,6 @@ public class ServerRequests {
                         Log.i("MyActivity", "Child " + x + " = " + id + parentid + name + username + password + flag);
 
                         returnedChildren.add(new ChildDetails(id, parentid, name, username, password));
-
                     }
                     Log.i("MyActivity", "returnedChildren size = " + returnedChildren.size());
 
@@ -686,7 +684,7 @@ public class ServerRequests {
 
             HttpClient client = new DefaultHttpClient(httpRequestParams);
             HttpPost post = new HttpPost(SERVER_ADDRESS + "StoreRoute.php");
-            RouteDetails returnedRoute = new RouteDetails(null, null, null, null, 0 ,0);
+            RouteDetails returnedRoute = new RouteDetails(null, null, null, null, 0, 0);
 
             try {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
@@ -702,7 +700,7 @@ public class ServerRequests {
                     int routeid = jObject.getInt("routeid");
                     route.setRouteID(routeid);
                     Log.i("MyActivity", "Route ID = " + routeid);
-                    returnedRoute = new RouteDetails(route.getStart(),route.getEnd(),route.getmRouteName(), route.getModeTransport(), route.getIndex(), routeid);
+                    returnedRoute = new RouteDetails(route.getStart(), route.getEnd(), route.getmRouteName(), route.getModeTransport(), route.getIndex(), routeid);
                 }
 
             } catch (Exception e) {
