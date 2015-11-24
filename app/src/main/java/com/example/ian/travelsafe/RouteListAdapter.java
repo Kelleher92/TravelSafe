@@ -2,6 +2,7 @@ package com.example.ian.travelsafe;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Geocoder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,11 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+
 import android.location.Address;
+
+import com.google.android.gms.maps.model.LatLng;
 
 
 /**
@@ -40,15 +45,15 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         TextView tvRStart = (TextView) customView.findViewById(R.id.route_details_Start);
         TextView tvREnd = (TextView) customView.findViewById(R.id.route_details_End);
 
-//        try {
-//            Address startLoc = new ChildHome().getAddressForLocation(contextPopUp, rd.getStart());
-//            tvRStart.setText(startLoc.getAddressLine(0));
-//            Address endLoc = new ChildHome().getAddressForLocation(contextPopUp, rd.getEnd());
-//            tvREnd.setText(endLoc.getAddressLine(0));
+        try {
+            Address startLoc = getAddressForLocation(contextPopUp, rd.getStart());
+            tvRStart.setText(startLoc.getAddressLine(0));
+            Address endLoc = getAddressForLocation(contextPopUp, rd.getEnd());
+            tvREnd.setText(endLoc.getAddressLine(0));
 
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         tvRTitle.setText(rd.getmRouteName());
 
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);
@@ -90,5 +95,24 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         });
 
         return customView;
+    }
+
+    public Address getAddressForLocation(Context context, LatLng location) throws IOException {
+
+        if (location == null) {
+            return null;
+        }
+        double latitude = location.latitude;
+        double longitude = location.longitude;
+        int maxResults = 1;
+
+        Geocoder gc = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = gc.getFromLocation(latitude, longitude, maxResults);
+
+        if (addresses.size() == 1) {
+            return addresses.get(0);
+        } else {
+            return null;
+        }
     }
 }
