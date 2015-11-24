@@ -47,6 +47,7 @@ import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 public class ChildHome extends AppCompatActivity implements RoutingListener, OnConnectionFailedListener, ConnectionCallbacks {
 
     private GoogleApiClient mGoogleApiClient;
+    private LogChildJourneyInfoThread logChildJourneyInfo;
 
     private GoogleMap map;
 //    protected LatLng start;
@@ -261,6 +262,11 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 //        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         running = true;
         // Start logging and checking cuurent position against assigned route.
+
+        //logChildJourneyInfo = new LogChildJourneyInfoThread();
+        //logChildJourneyInfo.setRunning(true, polyList);
+        //logChildJourneyInfo.start(this);
+
         runOnUiThread(new Runnable() {
             public void run() {
                 while (running) {
@@ -310,7 +316,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
         map.moveCamera(center);
-        Log.i("Route","adding polylines");
+        Log.i("Route", "adding polylines");
 
         polylines = new ArrayList<>();
         //add route(s) to the map.

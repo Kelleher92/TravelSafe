@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -74,21 +75,30 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                     selected_position = -1;
                 }
                 notifyDataSetChanged();
-                UserLocalStore current = new UserLocalStore(contextPopUp);
-                Users currentUser = current.getLoggedInUser();
+                if(Pop.callingActivity == Pop.callingActivityAssign) {
+                    UserLocalStore current = new UserLocalStore(contextPopUp);
+                    Users currentUser = current.getLoggedInUser();
 
-                ServerRequests serverRequests = new ServerRequests(contextPopUp);
-                serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), rd.getRouteID(), new GetRouteCallback() {
-                    @Override
-                    public void done(RouteDetails returnedRoute) {
-                        if (returnedRoute == null) {
-                            Log.i("MyActivity", "No route assigned");
-                        } else {
-                            Log.i("MyActivity", "Route assigned");
+                    ServerRequests serverRequests = new ServerRequests(contextPopUp);
+                    serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), rd.getRouteID(), new GetRouteCallback() {
+                        @Override
+                        public void done(RouteDetails returnedRoute) {
+                            if (returnedRoute == null) {
+                                Log.i("MyActivity", "No route assigned");
+                            } else {
+                                Log.i("MyActivity", "Route assigned");
+                            }
                         }
-                    }
-                });
-                ((Activity) contextPopUp).finish();
+                    });
+                    ((Activity) contextPopUp).finish();
+                }
+                else if(Pop.callingActivity == Pop.callingActivityDelete) {
+                    // Delete Route
+                    Log.i("Delete Route", "....." + rd.getmRouteName());
+                    ((Activity) contextPopUp).finish();
+                    Toast.makeText(contextPopUp, rd.getmRouteName() + " has been deleted.", Toast.LENGTH_SHORT).show();
+
+                }
 
             }
         });

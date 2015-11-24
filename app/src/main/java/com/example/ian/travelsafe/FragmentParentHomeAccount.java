@@ -85,13 +85,13 @@ public class FragmentParentHomeAccount extends Fragment {
                                 break;
                             // Test child home
                             case 2:
-                                Intent in = new Intent(view.getContext(), ChildHome.class);
-                                startActivity(in);
-                                break;
-                            // Test notifications
-                            case 3:
-//                                startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
-                                createNotification(nD);
+                                if(FragmentParentHomeChildren.routeList.isEmpty()) {
+                                    Toast.makeText(view.getContext(), "No routes have been created.", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Pop.callingActivity = Pop.callingActivityDelete;
+                                    startActivity(new Intent(view.getContext(), Pop.class));
+                                }
                                 break;
                         }
                     }
@@ -111,8 +111,8 @@ public class FragmentParentHomeAccount extends Fragment {
         List<SettingDetails> list= new ArrayList<>();
         list.add(new SettingDetails("Create new route", R.drawable.ic_place_black_24dp));
         list.add(new SettingDetails("Log Out", R.drawable.ic_power_settings_new_black_24dp));
-        list.add(new SettingDetails("View ChildHome", R.drawable.child_placeholder));
-        list.add(new SettingDetails("Test notifications", R.drawable.ic_notifications_black_24dp));
+        list.add(new SettingDetails("Delete Route", R.drawable.ic_delete_black_24dp));
+        //list.add(new SettingDetails("Test notifications", R.drawable.ic_notifications_black_24dp));
 
         return list;
     }

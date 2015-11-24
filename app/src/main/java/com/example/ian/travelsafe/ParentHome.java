@@ -99,6 +99,7 @@ public class ParentHome extends AppCompatActivity {
             Toast.makeText(view.getContext(), "No routes have been created.", Toast.LENGTH_SHORT).show();
         }
         else {
+            Pop.callingActivity = Pop.callingActivityAssign;
             startActivity(new Intent(ParentHome.this, Pop.class));
         }
     }
