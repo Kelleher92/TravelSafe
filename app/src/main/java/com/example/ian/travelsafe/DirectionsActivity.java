@@ -1,33 +1,22 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LevelListDrawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.view.View.OnClickListener;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -39,28 +28,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.internal.IMapFragmentDelegate;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static com.google.android.gms.maps.CameraUpdateFactory.*;
+import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 
 public class DirectionsActivity extends AppCompatActivity implements RoutingListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     protected GoogleMap map;
@@ -97,7 +79,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     // ArrayList<PolylineOptions> polylineOptionsList;
     private Marker lastOpened = null;
 
-    private static final LatLngBounds BOUNDS_UCD= new LatLngBounds(new LatLng(53.298158, -6.246800),
+    private static final LatLngBounds BOUNDS_UCD = new LatLngBounds(new LatLng(53.298158, -6.246800),
             new LatLng(53.316057, -6.205602));
 
     /**
@@ -335,13 +317,13 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                             Location.distanceBetween(latLng.latitude, latLng.longitude,
                                     routeCoords.latitude, routeCoords.longitude, results);
 
-                            if (results[0] < (routeDistance*50)) {
+                            if (results[0] < (routeDistance * 50)) {
                                 map.clear();
                                 map.addMarker(startOptions);
                                 map.addMarker(endOptions);
                                 //routeOptions.position(iroute.getPoints().get(iroute.getPoints().size()/ 2));
                                 //routeOptions.title("Route " + routes.indexOf(iroute));
-                               // map.addMarker(routeOptions).showInfoWindow();
+                                // map.addMarker(routeOptions).showInfoWindow();
 
 
                                 for (Route r : routes) {
@@ -370,7 +352,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                     }
 
 
-                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo+1), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo + 1), Toast.LENGTH_SHORT).show();
                     Log.e("PolyLine ", routes.toString());
                 }
             }
@@ -444,16 +426,16 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         });
 
         // Floating Action Button
-       // FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
+        // FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
 
-       // saveRoute.setOnClickListener(new View.OnClickListener() {
-         //       @Override
+        // saveRoute.setOnClickListener(new View.OnClickListener() {
+        //       @Override
         //       public void onClick(View view) {
-         //     Pop.routeListView.invalidateViews();
-          //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
-         //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
-         //   }
-         // });
+        //     Pop.routeListView.invalidateViews();
+        //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
+        //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
+        //   }
+        // });
 
         //       }
         //   })
@@ -475,37 +457,32 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         }
     }
 
-    public void SaveRoute(View view){
+    public void SaveRoute(View view) {
         Log.i("MyActivity", "SaveRoute called");
         ServerRequests serverRequests = new ServerRequests(this);
-        RouteDetails route = new RouteDetails(start,end,"MyRoute", modeTransport, routeNo);
-       // serverRequests.saveRouteInBackground(route);
+        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo, 0);
+        // serverRequests.saveRouteInBackground(route);
     }
 
-    public static Bitmap flipBitmap(Bitmap source)
-    {
+    public static Bitmap flipBitmap(Bitmap source) {
         Matrix matrix = new Matrix();
         matrix.preScale(-1, 1);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
     //send.setOnClickListener(new View.OnClickListener() {
-        //   @Override
-        //    public void onClick(View view) {
-        //   Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
-        //      Pop.routeListView.invalidateViews();
+    //   @Override
+    //    public void onClick(View view) {
+    //   Pop.routeList.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
+    //      Pop.routeListView.invalidateViews();
 //                Toast.makeText(DirectionsActivity.this,"Save Route to Parent",Toast.LENGTH_SHORT).show();
 
     @OnClick(R.id.send)
-    public void sendRequest()
-    {
-        if(Util.Operations.isOnline(this))
-        {
+    public void sendRequest() {
+        if (Util.Operations.isOnline(this)) {
             route();
-        }
-        else
-        {
-            Toast.makeText(this,"No internet connectivity",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -527,27 +504,28 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             }
             if (modeTransport == null) {
                 Toast.makeText(this, "Please choose a mode of transport.", Toast.LENGTH_SHORT).show();
-            }} else {
-                progressDialog = ProgressDialog.show(this, "Please wait.",
-                        "Fetching route information.", true);
-
-                Log.e("Route ", routes.toString());
-                Routing routing = new Routing.Builder()
-                        .travelMode(modeTransport)
-                        .withListener(this)
-                        .alternativeRoutes(true)
-                        .waypoints(start, end)
-                        .build();
-                routing.execute();
             }
+        } else {
+            progressDialog = ProgressDialog.show(this, "Please wait.",
+                    "Fetching route information.", true);
+
+            Log.e("Route ", routes.toString());
+            Routing routing = new Routing.Builder()
+                    .travelMode(modeTransport)
+                    .withListener(this)
+                    .alternativeRoutes(true)
+                    .waypoints(start, end)
+                    .build();
+            routing.execute();
         }
+    }
 
 
     @Override
     public void onRoutingFailure() {
         // The Routing request failed
         progressDialog.dismiss();
-        Toast.makeText(this,"Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
         findViewById(R.id.fabSaveRoute).setVisibility(View.GONE);
     }
 
@@ -557,8 +535,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     }
 
     @Override
-    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex)
-    {
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
         map.clear();
         progressDialog.dismiss();
 
@@ -578,10 +555,10 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         routeOptionsList = new ArrayList<>();
 
         for (int i = 0; i < route.size(); i++) {
-            routeDistance = Math.round(((double)route.get(i).getDistanceValue()/1000)*1000.0)/1000.0;
-            double routeDuration = Math.round(((double)route.get(i).getDurationValue()/60)*1000.0)/1000.0;
-            int routeDurationHours = ((int)routeDuration)/60;
-            int routeDurationMins = ((int)routeDuration)%60;
+            routeDistance = Math.round(((double) route.get(i).getDistanceValue() / 1000) * 1000.0) / 1000.0;
+            double routeDuration = Math.round(((double) route.get(i).getDurationValue() / 60) * 1000.0) / 1000.0;
+            int routeDurationHours = ((int) routeDuration) / 60;
+            int routeDurationMins = ((int) routeDuration) % 60;
 
 
             MarkerOptions routeOptions = new MarkerOptions();
@@ -590,20 +567,17 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             routeOptionsList.get(i).title("Route " + (i + 1));
             routeOptionsList.get(i).snippet("Distance: " + routeDistance + "km\nDuration: " + routeDurationHours + "hr " + routeDurationMins + "min");
 
-            if ((start.longitude) > (end.longitude))
-            {
+            if ((start.longitude) > (end.longitude)) {
                 bmWalkscaleddisplay = flipBitmap(bmWalkScaled);
                 bmCyclescaleddisplay = flipBitmap(bmCycleScaled);
-            }
-            else{
+            } else {
                 bmWalkscaleddisplay = bmWalkScaled;
                 bmCyclescaleddisplay = bmCycleScaled;
             }
 
             if (modeTransport == AbstractRouting.TravelMode.WALKING) {
                 routeOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(bmWalkscaleddisplay));
-            }
-            else{
+            } else {
                 routeOptionsList.get(i).icon(BitmapDescriptorFactory.fromBitmap(bmCyclescaleddisplay));
             }
 
@@ -621,7 +595,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             //Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
         }
 
-        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ (routeNo +1),Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo + 1), Toast.LENGTH_SHORT).show();
         map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(route.get(routeNo).getPoints()).width(20));
         lastOpened = map.addMarker(routeOptionsList.get(routeNo));
         lastOpened.showInfoWindow();
@@ -650,7 +624,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-        Log.v(LOG_TAG,connectionResult.toString());
+        Log.v(LOG_TAG, connectionResult.toString());
     }
 
     @Override
