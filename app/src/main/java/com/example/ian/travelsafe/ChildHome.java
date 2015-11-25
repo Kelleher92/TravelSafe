@@ -267,24 +267,24 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         //logChildJourneyInfo.setRunning(true, polyList);
         //logChildJourneyInfo.start(this);
 
-        runOnUiThread(new Runnable() {
-            public void run() {
-                while (running) {
-                    try {
-                        Thread.sleep(10000);           //Check every 10 seconds.
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    // Check if still on path
-                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
-                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
-                    if(!onpath) {
-                        Log.i("StartJourney", "On Path = " + onpath);
-                    }
-                }
-
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//            public void run() {
+//                while (running) {
+//                    try {
+//                        Thread.sleep(10000);           //Check every 10 seconds.
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    // Check if still on path
+//                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
+//                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
+//                    if(!onpath) {
+//                        Log.i("StartJourney", "On Path = " + onpath);
+//                    }
+//                }
+//
+//            }
+//        });
     }
 
 
