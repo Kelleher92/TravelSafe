@@ -47,6 +47,7 @@ import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngBounds;
 public class ChildHome extends AppCompatActivity implements RoutingListener, OnConnectionFailedListener, ConnectionCallbacks {
 
     private GoogleApiClient mGoogleApiClient;
+    private LogChildJourneyInfoThread logChildJourneyInfo;
 
     private GoogleMap map;
 //    protected LatLng start;
@@ -260,25 +261,31 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     public void StartJourney(View view) {
 //        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         running = true;
-        // Start logging and checking cuurent position against assigned route.
-        runOnUiThread(new Runnable() {
-            public void run() {
-                while (running) {
-                    try {
-                        Thread.sleep(10000);           //Check every 10 seconds.
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    // Check if still on path
-                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
-                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
-                    if(!onpath) {
-                        Log.i("StartJourney", "On Path = " + onpath);
-                    }
-                }
 
-            }
-        });
+        // Start logging and checking cuurent position against assigned route.
+
+        //logChildJourneyInfo = new LogChildJourneyInfoThread();
+        //logChildJourneyInfo.setRunning(true, polyList);
+        //logChildJourneyInfo.start(this);
+
+//        runOnUiThread(new Runnable() {
+//            public void run() {
+//                while (running) {
+//                    try {
+//                        Thread.sleep(10000);           //Check every 10 seconds.
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    // Check if still on path
+//                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
+//                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
+//                    if(!onpath) {
+//                        Log.i("StartJourney", "On Path = " + onpath);
+//                    }
+//                }
+//
+//            }
+//        });
     }
 
 
@@ -310,7 +317,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         CameraUpdate center = newLatLngBounds(route.get(0).getLatLgnBounds(), 100);
         map.moveCamera(center);
-        Log.i("Route","adding polylines");
+        Log.i("Route", "adding polylines");
 
         polylines = new ArrayList<>();
         //add route(s) to the map.

@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/route_details_arrow"
-            android:text="  to  "
+            android:text=" to "
             android:textSize="12sp"
             android:textColor="#535353"
             android:layout_toRightOf="@+id/space_route"

@@ -1,16 +1,26 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -66,6 +76,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     private PlaceAutoCompleteAdapter mAdapter;
     private ProgressDialog progressDialog;
     private ArrayList<Route> routes;
+    private String newRouteName = "";
 
     private static final LatLngBounds BOUNDS_UCD = new LatLngBounds(new LatLng(53.298158, -6.246800),
             new LatLng(53.316057, -6.205602));
@@ -405,21 +416,55 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     public void SaveRoute(View view) {
         Log.i("MyActivity", "SaveRoute called");
-        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo, 0);
-        UserLocalStore userLocalStore;
-        userLocalStore = new UserLocalStore(this);
-        Users returnedUser = userLocalStore.getLoggedInUser();
-        Log.i("MyActivity", "User id = " + returnedUser.get_id());
-        Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
-        ServerRequests serverRequests = new ServerRequests(this);
 
-        serverRequests.saveRouteInBackground(returnedUser.get_id(), route, new GetRouteCallback() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Name:");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setHeight(100);
+        input.setWidth(240);
+        input.setGravity(Gravity.CENTER);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setMaxLines(1);
+        int maxLength = 10;
+        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
+        input.setHint("New Route") ;
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
-            public void done(RouteDetails returnedRoute) {
-                FragmentParentHomeChildren.routeList.add(returnedRoute);
-                Log.i("MyActivity", "************* route ID = " + returnedRoute.getRouteID());
+            public void onClick(DialogInterface dialog, int which) {
+                newRouteName = input.getText().toString();
+                RouteDetails route = new RouteDetails(start, end, newRouteName, modeTransport, routeNo, 0);
+                UserLocalStore userLocalStore;
+                userLocalStore = new UserLocalStore(DirectionsActivity.this);
+                Users returnedUser = userLocalStore.getLoggedInUser();
+                Log.i("MyActivity", "User id = " + returnedUser.get_id());
+                Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
+                ServerRequests serverRequests = new ServerRequests(DirectionsActivity.this);
+                serverRequests.saveRouteInBackground(returnedUser.get_id(), route, new GetRouteCallback() {
+                    @Override
+                    public void done(RouteDetails returnedRoute) {
+                        FragmentParentHomeChildren.routeList.add(returnedRoute);
+                        Log.i("MyActivity", "************* route ID = " + returnedRoute.getRouteID());
+                    }
+                });
+                Intent intent = new Intent(DirectionsActivity.this, FragmentParentHomeChildren.class);
+                startActivity(intent);
+                finish();
             }
         });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+
     }
 
     //send.setOnClickListener(new View.OnClickListener() {
@@ -433,6 +478,11 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     public void sendRequest() {
         if (Util.Operations.isOnline(this)) {
             route();
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         } else {
             Toast.makeText(this, "No internet connectivity", Toast.LENGTH_SHORT).show();
         }
