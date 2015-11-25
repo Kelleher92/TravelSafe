@@ -94,7 +94,7 @@ public class ServerRequests {
     }
 
 
-    public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
+    public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Users> {
         Users user;
         GetUserCallback userCallback;
         private Context mContext;
@@ -106,7 +106,7 @@ public class ServerRequests {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Users doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("username", user._username));
             dataToSend.add(new BasicNameValuePair("emailaddress", user._emailAddress));
@@ -144,14 +144,14 @@ public class ServerRequests {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return user;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Users user) {
             progressDialog.dismiss();
-            userCallback.done(null);
-            super.onPostExecute(aVoid);
+            userCallback.done(user);
+            super.onPostExecute(user);
         }
     }
 

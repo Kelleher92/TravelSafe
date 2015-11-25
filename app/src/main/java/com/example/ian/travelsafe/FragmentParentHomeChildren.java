@@ -21,7 +21,7 @@ import java.util.List;
 public class FragmentParentHomeChildren extends Fragment {
 
     List<ChildDetails> children = new ArrayList<>();
-    public List<ChildDetails> childList = new ArrayList<>();
+    public static List<ChildDetails> childList = new ArrayList<>();
     static ListView childrenListView;
     private View view;
     public static Context context;

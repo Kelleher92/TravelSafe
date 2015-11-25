@@ -61,11 +61,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     protected MarkerOptions endOptions = new MarkerOptions();
     protected double routeDistance;
     private String newRouteName = "";
-    //protected MarkerOptions routeOptions = new MarkerOptions();
-    //protected MarkerOptions routeOptions;
-    //protected Marker routeMarker[];
-
-    //protected Route chosenRoute;
     protected int routeNo;
 
     @InjectView(R.id.start)
@@ -74,10 +69,6 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     AutoCompleteTextView destination;
     @InjectView(R.id.send)
     ImageView send;
-
-    //protected AutoCompleteTextView starting; //= new AutoCompleteTextView();
-    //protected AutoCompleteTextView destination;// = new AutoCompleteTextView();
-    // ImageView send;// = new ImageView();
 
     private String LOG_TAG = "DirectionsActivity";
     protected GoogleApiClient mGoogleApiClient;

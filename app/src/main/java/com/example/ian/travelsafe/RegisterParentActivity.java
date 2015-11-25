@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -79,16 +80,8 @@ public class RegisterParentActivity extends AppCompatActivity {
         stale.clearUserData();
         Users user = new Users(user_email, user_username, user_password);
 
-        if (registerUser(user)){
-            if(user.get_id()!=0){
-                logUserIn(user);
-                return true;
-            }
-            else
-                return false;
-        }
-        else
-            return false;
+        registerUser(user);
+        return true;
     }
 
     private void logUserIn(Users returnedUser) {
@@ -100,19 +93,22 @@ public class RegisterParentActivity extends AppCompatActivity {
         finish();
     }
 
-    private boolean registerUser(Users user) {
-        ServerRequests serverRequests = new ServerRequests(this);
-        serverRequests.storeUserDataInBackground(user, new GetUserCallback() {
+    private void registerUser(Users user) {
+        final ServerRequests[] serverRequests = {new ServerRequests(this)};
+        serverRequests[0].storeUserDataInBackground(user, new GetUserCallback() {
             @Override
             public void done(Users returnedUser) {
+                int id = returnedUser.get_id();
+                if (id != 0) {
+                    showRegisteredMessage(returnedUser);
+                } else {
+                    showErrorMessage();
+                }
             }
-
         }, this);
-        return true;
     }
 
-    public static String computeMD5Hash(String password)
-    {
+    public static String computeMD5Hash(String password) {
         try {
             // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
@@ -120,28 +116,26 @@ public class RegisterParentActivity extends AppCompatActivity {
             byte messageDigest[] = digest.digest();
 
             StringBuffer MD5Hash = new StringBuffer();
-            for (int i = 0; i < messageDigest.length; i++)
-            {
+            for (int i = 0; i < messageDigest.length; i++) {
                 String h = Integer.toHexString(0xFF & messageDigest[i]);
                 while (h.length() < 2)
                     h = "0" + h;
                 MD5Hash.append(h);
             }
             return MD5Hash.toString();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private void showRegisteredMessage() {
+    private void showRegisteredMessage(final Users user) {
 
         new android.support.v7.app.AlertDialog.Builder(RegisterParentActivity.this)
                 .setMessage("You have successfully registered")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        logUserIn(user);
                         Intent i = new Intent(RegisterParentActivity.this, ParentHome.class);
                         startActivity(i);
                         finish();
@@ -159,11 +153,7 @@ public class RegisterParentActivity extends AppCompatActivity {
 
     public void SubmitNewRegisteredUser(View view) {
         // Load next activity
-        if (verifyDetails()) {
-            showRegisteredMessage();
-        } else {
-            showErrorMessage();
-        }
+        verifyDetails();
     }
 
 }
