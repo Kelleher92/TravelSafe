@@ -460,7 +460,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     public void SaveRoute(View view) {
         Log.i("MyActivity", "SaveRoute called");
         ServerRequests serverRequests = new ServerRequests(this);
-        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo);
+        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo, 0);
         // serverRequests.saveRouteInBackground(route);
     }
 
