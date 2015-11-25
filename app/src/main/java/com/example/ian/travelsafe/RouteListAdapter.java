@@ -2,6 +2,7 @@ package com.example.ian.travelsafe;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,14 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                     selected_position = -1;
                 }
                 notifyDataSetChanged();
+
+                ServerRequests serverRequests = new ServerRequests(contextPopUp);
+                serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), FragmentParentHomeChildren.routeList.get(position).getRouteID(), new GetRouteCallback() {
+                    @Override
+                    public void done(RouteDetails returnedRoute) {
+
+                    }
+                });
                 ((Activity)contextPopUp).finish();
 
             }

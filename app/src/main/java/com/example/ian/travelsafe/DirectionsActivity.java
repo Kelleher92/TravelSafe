@@ -1,18 +1,26 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -52,6 +60,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     protected MarkerOptions startOptions = new MarkerOptions();
     protected MarkerOptions endOptions = new MarkerOptions();
     protected double routeDistance;
+    private String newRouteName = "";
     //protected MarkerOptions routeOptions = new MarkerOptions();
     //protected MarkerOptions routeOptions;
     //protected Marker routeMarker[];
@@ -426,20 +435,19 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         });
 
         // Floating Action Button
-        // FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
+        FloatingActionButton saveRoute = (FloatingActionButton) findViewById(R.id.fabSaveRoute);
 
-        // saveRoute.setOnClickListener(new View.OnClickListener() {
-        //       @Override
-        //       public void onClick(View view) {
-        //     Pop.routeListView.invalidateViews();
-        //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " saved to Parent", Toast.LENGTH_SHORT).show();
-        //          Toast.makeText(DirectionsActivity.this, "Route " + routeNo + " details: ", Toast.LENGTH_SHORT).show();
-        //   }
-        // });
+        saveRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Pop.routeListView.invalidateViews();
+                SaveRoute(view);
+            }
+        });
 
-        //       }
-        //   })
     }
+//           })
+//    }
 
     public void onRadioButtonClicked(View view) {
         switch (view.getId()) {
@@ -459,9 +467,53 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
     public void SaveRoute(View view) {
         Log.i("MyActivity", "SaveRoute called");
-        ServerRequests serverRequests = new ServerRequests(this);
-        RouteDetails route = new RouteDetails(start, end, "MyRoute", modeTransport, routeNo, 0);
-        // serverRequests.saveRouteInBackground(route);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Name:");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setHeight(100);
+        input.setWidth(240);
+        input.setGravity(Gravity.CENTER);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setMaxLines(1);
+        int maxLength = 10;
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+        input.setHint("New Route");
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                newRouteName = input.getText().toString();
+                RouteDetails route = new RouteDetails(start, end, newRouteName, modeTransport, routeNo, 0);
+                UserLocalStore userLocalStore;
+                userLocalStore = new UserLocalStore(DirectionsActivity.this);
+                Users returnedUser = userLocalStore.getLoggedInUser();
+                Log.i("MyActivity", "User id = " + returnedUser.get_id());
+                Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
+                ServerRequests serverRequests = new ServerRequests(DirectionsActivity.this);
+                serverRequests.saveRouteInBackground(returnedUser.get_id(), route, new GetRouteCallback() {
+                    @Override
+                    public void done(RouteDetails returnedRoute) {
+                        FragmentParentHomeChildren.routeList.add(returnedRoute);
+                        Log.i("MyActivity", "************* route ID = " + returnedRoute.getRouteID());
+                    }
+                });
+                Intent intent = new Intent(DirectionsActivity.this, ParentHome.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
     }
 
     public static Bitmap flipBitmap(Bitmap source) {

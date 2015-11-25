@@ -29,7 +29,7 @@ public class ChildListAdapter extends ArrayAdapter<ChildDetails> {
         ImageView childImage = (ImageView) customView.findViewById(R.id.child_photo);
 
         childName.setText(cd._name);
-        childRoute.setText("Name of route attached to child");
+        childRoute.setText("");
         childImage.setImageResource(R.drawable.child_placeholder);
 
         return customView;
