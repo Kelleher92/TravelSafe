@@ -97,7 +97,7 @@ public class  Routing extends AbstractRouting {
         private String language;
 
         public Builder () {
-            this.travelMode = TravelMode.DRIVING;
+            this.travelMode = TravelMode.BIKING;
             this.alternativeRoutes = false;
             this.waypoints = new ArrayList<>();
             this.avoidKinds = 0;
