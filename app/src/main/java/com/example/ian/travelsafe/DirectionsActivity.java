@@ -74,7 +74,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     //protected MarkerOptions routeOptions;
     //protected Marker routeMarker[];
 
-    protected Route chosenRoute;
+    //protected Route chosenRoute;
     protected int routeNo;
 
     @InjectView(R.id.start)
@@ -94,6 +94,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     private ProgressDialog progressDialog;
     private ArrayList<Route> routes;
     private ArrayList<MarkerOptions> routeOptionsList;
+    // ArrayList<PolylineOptions> polylineOptionsList;
     private Marker lastOpened = null;
 
     private static final LatLngBounds BOUNDS_UCD= new LatLngBounds(new LatLng(53.298158, -6.246800),
@@ -350,16 +351,18 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
 
                                     if (r != iroute) {
                                         map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(r.getPoints()).width(20));
-                                        routeOptionsList.get(routes.indexOf(r)).visible(false);
+                                        //routeOptionsList.get(routes.indexOf(r)).visible(false);
                                     } else {
-                                        chosenRoute = r;
+                                        //chosenRoute = r;
                                         routeNo = routes.indexOf(r);
-                                        routeOptionsList.get(routes.indexOf(r)).visible(true);
+                                        //routeOptionsList.get(routes.indexOf(r)).visible(true);
                                     }
                                 }
 
-                                map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
-                                map.addMarker(routeOptionsList.get(routeNo));
+                                map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(routes.get(routeNo).getPoints()).width(20));
+                                //map.addMarker(routeOptionsList.get(routeNo)).showInfoWindow();
+                                lastOpened = map.addMarker(routeOptionsList.get(routeNo));
+                                lastOpened.showInfoWindow();
                             }
 
                         }
@@ -367,7 +370,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                     }
 
 
-                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo+1), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo+1), Toast.LENGTH_SHORT).show();
                     Log.e("PolyLine ", routes.toString());
                 }
             }
@@ -482,7 +485,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
     public static Bitmap flipBitmap(Bitmap source)
     {
         Matrix matrix = new Matrix();
-        matrix.preScale(-1,1);
+        matrix.preScale(-1, 1);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
@@ -605,19 +608,23 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             }
 
             if (i != 0) {
+                //polylineOptionsList.get(i).color(getResources().getColor(R.color.colorInactiveRoute)).addAll(route.get(i).getPoints()).width(20);
                 map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorInactiveRoute)).addAll(route.get(i).getPoints()).width(20));
-                routeOptionsList.get(i).visible(false);
+                //routeOptionsList.get(i).visible(false);
             } else {
-                chosenRoute = route.get(i);
+                //polylineOptionsList.get(i).color(getResources().getColor(R.color.colorPrimary)).addAll(route.get(i).getPoints()).width(20);
+                //chosenPoly = route.get(i);
                 routeNo = i;
+
             }
 
-            map.addMarker(routeOptionsList.get(i));
-            Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
         }
 
-        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ (routeNo +1),Toast.LENGTH_LONG).show();
-        map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(chosenRoute.getPoints()).width(20));
+        Toast.makeText(getApplicationContext(),"Chosen route set to Route: "+ (routeNo +1),Toast.LENGTH_SHORT).show();
+        map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(route.get(routeNo).getPoints()).width(20));
+        lastOpened = map.addMarker(routeOptionsList.get(routeNo));
+        lastOpened.showInfoWindow();
 
         // Start marker
         startOptions = new MarkerOptions();
