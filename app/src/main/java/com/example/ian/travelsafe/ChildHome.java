@@ -1,15 +1,22 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -50,8 +57,8 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     private LogChildJourneyInfoThread logChildJourneyInfo;
 
     private GoogleMap map;
-//    protected LatLng start;
-//    protected LatLng end;
+    Intent locatorService = null;
+    AlertDialog alertDialog = null;
 
     TextView startLocation;
     TextView childName;
@@ -78,6 +85,9 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     LatLng destinationExample =  new LatLng( 53.323842, -6.26519);   // Rathmines
     int routeIndex = 0;
     boolean running = false;
+    private LocationManager locationManager = null;
+    private LocationListener locationListener = null;
+    Users currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +105,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
         // Get login in Child so there name can be displayed.
         UserLocalStore current = new UserLocalStore(this);
-        Users currentUser = current.getLoggedInUser();
+        currentUser = current.getLoggedInUser();
         childName.setText(currentUser.get_emailAddress());
 
         // Server request for child route information.
@@ -260,32 +270,29 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
     public void StartJourney(View view) {
 //        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        running = true;
+//        if(start) {
+            running = displayGpsStatus();
+            if (running) {
+                Log.i("Please!!", " move your device to" + " see the changes in coordinates." + "\nWait..");
+                locationListener = new MyLocationListener();
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, locationListener);
+                // Send notification to server.
+                ServerRequests serverRequests = new ServerRequests(ChildHome.this);
+                serverRequests.LogNotification(currentUser, "Child started journey", ChildHome.this, new GetUserCallback() {
+                    @Override
+                    public void done(Users returnedUser) {
+                        Log.i("LogNotification", " SENT ");
+                    }
+                });
 
-        // Start logging and checking cuurent position against assigned route.
-
-        //logChildJourneyInfo = new LogChildJourneyInfoThread();
-        //logChildJourneyInfo.setRunning(true, polyList);
-        //logChildJourneyInfo.start(this);
-
-//        runOnUiThread(new Runnable() {
-//            public void run() {
-//                while (running) {
-//                    try {
-//                        Thread.sleep(10000);           //Check every 10 seconds.
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    // Check if still on path
-//                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
-//                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
-//                    if(!onpath) {
-//                        Log.i("StartJourney", "On Path = " + onpath);
-//                    }
-//                }
-//
-//            }
-//        });
+            } else {
+                Toast.makeText(getBaseContext(), "Gps Status!! Your GPS is: OFF", Toast.LENGTH_SHORT).show();
+            }
+//        }
+//        else{
+////            locationManager.fin
+//        }
     }
 
 
@@ -352,11 +359,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
             endAddress = new Address(loc);
             try {
                 myAddress = getAddressForLocation(ChildHome.this, new LatLng(myLocation.getLatitude(),myLocation.getLongitude()));
-                startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
-                endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
                 currentLocation.setText(myAddress.getAddressLine(0));
-                startLocation.setText(startAddress.getAddressLine(0));
-                endLocation.setText(endAddress.getAddressLine(0));
                 // Focusing camera on current location.
 //            CameraUpdate center = CameraUpdateFactory.newLatLng(
 //                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
@@ -364,6 +367,15 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 //                    mMap.moveCamera(center);
 //                    mMap.animateCamera(zoom);
             } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                startAddress = getAddressForLocation(ChildHome.this, new LatLng(startLoc.getLatitude(),startLoc.getLongitude()));
+                endAddress = getAddressForLocation(ChildHome.this, new LatLng(endLoc.getLatitude(),endLoc.getLongitude()));
+                startLocation.setText(startAddress.getAddressLine(0));
+                endLocation.setText(endAddress.getAddressLine(0));
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -398,5 +410,62 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         Intent intent = new Intent(view.getContext(), LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    /*----Method to Check GPS is enable or disable ----- */
+    private Boolean displayGpsStatus() {
+        ContentResolver contentResolver = getBaseContext().getContentResolver();
+        boolean gpsStatus = Settings.Secure.isLocationProviderEnabled(contentResolver, LocationManager.GPS_PROVIDER);
+        if (gpsStatus) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    /*----------Listener class to get coordinates ------------- */
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location loc) {
+
+//            Toast.makeText(getBaseContext(),"Location changed : Lat: " + loc.getLatitude()+ " Lng: " + loc.getLongitude(), Toast.LENGTH_SHORT).show();
+            String longitude = "Longitude: " +loc.getLongitude();
+            Log.v("!!!!!!", longitude);
+            String latitude = "Latitude: " +loc.getLatitude();
+            Log.v("!!!!!!", latitude);
+
+            LatLng myLoc = new LatLng(loc.getLatitude(),loc.getLongitude());
+            boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
+            if(!onpath) {
+                Log.i("StartJourney", "On Path = " + onpath);
+
+                // Send notification to server.
+                ServerRequests serverRequests = new ServerRequests(ChildHome.this);
+                serverRequests.LogNotification(currentUser, "Child has gone off path", ChildHome.this, new GetUserCallback() {
+                    @Override
+                    public void done(Users returnedUser) {
+                        Log.i("LogNotification", " SENT ");
+                    }
+                });
+            }
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void onStatusChanged(String provider,
+                                    int status, Bundle extras) {
+            // TODO Auto-generated method stub
+        }
     }
 }

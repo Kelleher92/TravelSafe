@@ -34,7 +34,6 @@ public class ChildDetails {
         this._password = password;
         this._route = null;
         this._flag = "C";
-        this._id = 0;
     }
 
     public ChildDetails(String name, String username, String password) {

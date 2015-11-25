@@ -5,9 +5,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -49,6 +55,9 @@ public class LogChildJourneyInfoThread extends Thread {
     NotificationDetails notificationDetails;
     private List<LatLng> polyList;
     private GoogleMap map;
+    LatLng myLoc2;
+    double lati = 0.0;
+    double longi = 0.0;
 
     void setRunning(boolean b, List<LatLng> inPolyList) {
         running = b;
@@ -73,13 +82,74 @@ public class LogChildJourneyInfoThread extends Thread {
                         e.printStackTrace();
                     }
                     // Check if still on path
-                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
-                    boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
-                    if(!onpath) {
-                        Log.i("StartJourney", "On Path = " + onpath);
+//                    LatLng myLoc = new LatLng(map.getMyLocation().getLatitude(), map.getMyLocation().getLongitude());
+                    LatLng myLoc = FetchLocation();
+                    if(myLoc != null) {
+                        boolean onpath = PolyUtil.isLocationOnEdge(myLoc, polyList, true, 50);
+                        if (!onpath) {
+                            Log.i("StartJourney", "LATITUDE :" + myLoc.latitude + " LONGITUDE :" + myLoc.longitude);
+                            //Log.i("StartJourney", "LATITUDE2 :" + myLoc2.latitude + " LONGITUDE2 :" + myLoc2.longitude);
+                            Log.i("StartJourney", "On Path = " + onpath);
+                        }
                     }
         }
     }
+
+    private LatLng FetchLocation() {
+        LatLng myLoc;
+//        LocationManager mLocationManager;
+//        CustomLocationListener mLocationListener;
+//        mLocationListener = new CustomLocationListener();
+//        mLocationManager = (LocationManager) ctext.getSystemService(Context.LOCATION_SERVICE);
+//        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+        Location location = new Location(LocationManager.NETWORK_PROVIDER);
+        myLoc = new LatLng(location.getLatitude(), location.getLongitude());
+        return myLoc;
+    }
+    public class CustomLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+
+            int lat = (int) location.getLatitude(); // * 1E6);
+            int log = (int) location.getLongitude(); // * 1E6);
+            int acc = (int) (location.getAccuracy());
+
+            String info = location.getProvider();
+            try {
+                // LocatorService.myLatitude=location.getLatitude();
+                // LocatorService.myLongitude=location.getLongitude();
+                lati = location.getLatitude();
+                longi = location.getLongitude();
+                myLoc2 = new LatLng(lati, longi);
+
+            } catch (Exception e) {
+                // progDailog.dismiss();
+                // Toast.makeText(getApplicationContext(),"Unable to get Location"
+                // , Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.i("OnProviderDisabled", "OnProviderDisabled");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.i("onProviderEnabled", "onProviderEnabled");
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status,
+                                    Bundle extras) {
+            Log.i("onStatusChanged", "onStatusChanged");
+
+        }
+
+    }
+
+
 
 
     // Logging information.
