@@ -84,6 +84,11 @@ public class ServerRequests {
         return null;
     }
 
+    public RouteDetails deleteRoute(int childid, int routeID, GetRouteCallback routeCallback) {
+        new deleteRouteAsyncTask(childid, routeID, routeCallback).execute();
+        return null;
+    }
+
     public void LogNotification(Users user, String eventType, Context context, GetUserCallback userCallback) {
         new LogEventAsyncTask(user, eventType, userCallback, context).execute();
     }
@@ -373,7 +378,54 @@ public class ServerRequests {
                 post.setEntity(new UrlEncodedFormEntity(dataToSend));
                 HttpResponse httpResponse = client.execute(post);
 
-                Log.i("MyActivity", "Sent " + childid + " " + routeID + " to server");
+                Log.i("MyActivity", "*************Sent " + childid + " " + routeID + " to server");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MyActivity", "EXCEPTION");
+            }
+
+            return returnedRoute;
+        }
+
+        @Override
+        protected void onPostExecute(RouteDetails route) {
+            progressDialog.dismiss();
+            routeCallback.done(route);
+            super.onPostExecute(route);
+        }
+    }
+
+    public class deleteRouteAsyncTask extends AsyncTask<Void, Void, RouteDetails> {
+        GetRouteCallback routeCallback;
+        int childid;
+        int routeID;
+
+        public deleteRouteAsyncTask(int childid, int routeID, GetRouteCallback routeCallback) {
+            this.routeCallback = routeCallback;
+            this.childid = childid;
+            this.routeID = routeID;
+        }
+
+        @Override
+        protected RouteDetails doInBackground(Void... params) {
+            ArrayList<NameValuePair> dataToSend = new ArrayList<>();
+            dataToSend.add(new BasicNameValuePair("routeid", routeID + ""));
+
+            HttpParams httpRequestParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(httpRequestParams, CONNECTION_TIMEOUT);
+
+            HttpClient client = new DefaultHttpClient(httpRequestParams);
+            HttpPost post = new HttpPost(SERVER_ADDRESS + "RemoveRoute.php");
+
+            RouteDetails returnedRoute = null;
+
+            try {
+                post.setEntity(new UrlEncodedFormEntity(dataToSend));
+                HttpResponse httpResponse = client.execute(post);
+
+                Log.i("MyActivity", "*************Sent " + routeID + " to server");
 
             } catch (Exception e) {
                 e.printStackTrace();

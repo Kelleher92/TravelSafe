@@ -2,7 +2,6 @@ package com.example.ian.travelsafe;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
 import java.util.List;
 
 /**
@@ -18,10 +18,12 @@ import java.util.List;
 public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
     Integer selected_position = -1;
     Context contextPopUp;
-    public RouteListAdapter(Context context, List<RouteDetails> listSettings) {
+    String activity;
 
+    public RouteListAdapter(String callingActivity, Context context, List<RouteDetails> listSettings) {
         super(context, R.layout.custom_route_row, listSettings);
         contextPopUp = context;
+        activity = callingActivity;
     }
 
     @Override
@@ -36,16 +38,11 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         TextView tvRStart = (TextView) customView.findViewById(R.id.route_details_Start);
         TextView tvREnd = (TextView) customView.findViewById(R.id.route_details_End);
 
-       // tvRTitle.setText(rd.mRouteTitle);
-        //tvRStart.setText(rd.mRouteStart);
-       // tvREnd.setText(rd.mRouteEnd);
-
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);
 
-        if(position==selected_position) {
+        if (position == selected_position) {
             chkbox.setChecked(true);
-        }
-        else {
+        } else {
             chkbox.setChecked(false);
         }
 
@@ -61,17 +58,29 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                 notifyDataSetChanged();
 
                 ServerRequests serverRequests = new ServerRequests(contextPopUp);
-                serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), FragmentParentHomeChildren.routeList.get(position).getRouteID(), new GetRouteCallback() {
-                    @Override
-                    public void done(RouteDetails returnedRoute) {
+                if (activity.equals(Pop.callingActivityAssign)) {
+                    serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), FragmentParentHomeChildren.routeList.get(position).getRouteID(), new GetRouteCallback() {
+                        @Override
+                        public void done(RouteDetails returnedRoute) {
+
+                        }
+                    });
+                    ((Activity) contextPopUp).finish();
+
+                } else {
+                    if (activity.equals(Pop.callingActivityDelete)) {
+                        serverRequests.deleteRoute(FragmentParentHomeChildren.childClicked.get_id(), FragmentParentHomeChildren.routeList.get(position).getRouteID(), new GetRouteCallback() {
+                            @Override
+                            public void done(RouteDetails returnedRoute) {
+
+                            }
+                        });
+                        ((Activity) contextPopUp).finish();
 
                     }
-                });
-                ((Activity)contextPopUp).finish();
-
+                }
             }
         });
-
         return customView;
     }
 }

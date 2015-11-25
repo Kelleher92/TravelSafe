@@ -18,6 +18,7 @@ public class Pop extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FragmentParentHomeChildren.getCurrentRouteList();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_choose_popup);
         context = this;
@@ -30,25 +31,9 @@ public class Pop extends Activity {
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
 
-        routeListAdapter = new RouteListAdapter(this, FragmentParentHomeChildren.routeList);
+        routeListAdapter = new RouteListAdapter(callingActivity, this, FragmentParentHomeChildren.routeList);
         routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);
     }
-
-
-//    private List<RouteDetails> getRouteDetails() {
-//
-//        List<RouteDetails> list = new ArrayList<>();
-//        list.add(new RouteDetails("Route 1", "UCD", "Rathmines"));
-//        list.add(new RouteDetails("Route 2", "UCD", "Rathmines"));
-//        list.add(new RouteDetails("Route 3", "UCD", "Rathmines"));
-//        list.add(new RouteDetails("Route 4", "UCD", "Rathmines"));
-//        list.add(new RouteDetails("Route 5", "UCD", "Rathmines"));
-//        list.add(new RouteDetails("Route 6", "UCD", "Rathmines"));
-//        list.add(new RouteDetails("Route 7", "UCD", "Rathmines"));
-//
-//        return list;
-//    }
-
 
 }

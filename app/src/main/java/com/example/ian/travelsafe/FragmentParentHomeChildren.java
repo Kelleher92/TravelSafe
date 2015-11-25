@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,16 +21,12 @@ import java.util.List;
 public class FragmentParentHomeChildren extends Fragment {
 
     List<ChildDetails> children = new ArrayList<>();
-    private TextView mText;
-    private TextView mRoute;
-    private ImageView mProfileImage;
     public List<ChildDetails> childList = new ArrayList<>();
     static ListView childrenListView;
     private View view;
-    List<RouteDetails> routes = new ArrayList<>();
+    public static Context context;
+    public static List<RouteDetails> routes = new ArrayList<>();
     public static List<RouteDetails> routeList = new ArrayList<>();
-
-
     public static ChildDetails childClicked = new ChildDetails(null);
 
     public static FragmentParentHomeChildren newInstance() {
@@ -50,7 +45,7 @@ public class FragmentParentHomeChildren extends Fragment {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-
+        context = this.getContext();
         UserLocalStore userLocalStore;
         userLocalStore = new UserLocalStore(this.getContext());
         final Users returnedUser = userLocalStore.getLoggedInUser();
@@ -58,9 +53,8 @@ public class FragmentParentHomeChildren extends Fragment {
         Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id() + " email is " + returnedUser.get_emailAddress());
 
         getChildren(returnedUser);
-        getCurrentRouteList(this.getContext());
+        getCurrentRouteList();
         Log.i("MyActivity", "***** returned list is = " + routeList);
-
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_parent_home_children, container, false);
@@ -108,16 +102,6 @@ public class FragmentParentHomeChildren extends Fragment {
         );
 
         TextView tv = (TextView) view.findViewById(R.id.changeRoute);
-
-        // Setup refresh listener which triggers new data loading
-//        final SwipeRefreshLayout swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_parent_children);
-//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                getChildren(returnedUser);
-////                swipeContainer.setRefreshing(false);
-//            }
-//        });
 
         return view;
     }
@@ -167,7 +151,7 @@ public class FragmentParentHomeChildren extends Fragment {
         serverRequests.removeChildInBackground(child);
     }
 
-    public void getCurrentRouteList(Context context) {
+    public static void getCurrentRouteList() {
         routeList.clear();
         Log.i("MyActivity", "retrieving list");
         UserLocalStore userLocalStore;
