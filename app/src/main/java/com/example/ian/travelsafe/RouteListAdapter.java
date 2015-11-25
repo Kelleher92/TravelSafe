@@ -2,9 +2,6 @@ package com.example.ian.travelsafe;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
-
 
 /**
  * Created by Thomas on 29/10/2015.
@@ -27,7 +17,6 @@ import java.util.Locale;
 public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
     Integer selected_position = -1;
     Context contextPopUp;
-
     public RouteListAdapter(Context context, List<RouteDetails> listSettings) {
 
         super(context, R.layout.custom_route_row, listSettings);
@@ -46,22 +35,16 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         TextView tvRStart = (TextView) customView.findViewById(R.id.route_details_Start);
         TextView tvREnd = (TextView) customView.findViewById(R.id.route_details_End);
 
-        try {
-            Address startLoc = getAddressForLocation(contextPopUp, rd.getStart());
-            tvRStart.setText(startLoc.getAddressLine(0));
-            Address endLoc = getAddressForLocation(contextPopUp, rd.getEnd());
-            tvREnd.setText(endLoc.getAddressLine(0));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        tvRTitle.setText(rd.getmRouteName());
+       // tvRTitle.setText(rd.mRouteTitle);
+        //tvRStart.setText(rd.mRouteStart);
+       // tvREnd.setText(rd.mRouteEnd);
 
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);
 
-        if (position == selected_position) {
+        if(position==selected_position) {
             chkbox.setChecked(true);
-        } else {
+        }
+        else {
             chkbox.setChecked(false);
         }
 
@@ -75,53 +58,11 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
                     selected_position = -1;
                 }
                 notifyDataSetChanged();
-                if(Pop.callingActivity == Pop.callingActivityAssign) {
-                    UserLocalStore current = new UserLocalStore(contextPopUp);
-                    Users currentUser = current.getLoggedInUser();
-
-                    ServerRequests serverRequests = new ServerRequests(contextPopUp);
-                    serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), rd.getRouteID(), new GetRouteCallback() {
-                        @Override
-                        public void done(RouteDetails returnedRoute) {
-                            if (returnedRoute == null) {
-                                Log.i("MyActivity", "No route assigned");
-                            } else {
-                                Log.i("MyActivity", "Route assigned");
-                            }
-                        }
-                    });
-                    ((Activity) contextPopUp).finish();
-                }
-                else if(Pop.callingActivity == Pop.callingActivityDelete) {
-                    // Delete Route
-                    Log.i("Delete Route", "....." + rd.getmRouteName());
-                    ((Activity) contextPopUp).finish();
-                    Toast.makeText(contextPopUp, rd.getmRouteName() + " has been deleted.", Toast.LENGTH_SHORT).show();
-
-                }
+                ((Activity)contextPopUp).finish();
 
             }
         });
 
         return customView;
-    }
-
-    public Address getAddressForLocation(Context context, LatLng location) throws IOException {
-
-        if (location == null) {
-            return null;
-        }
-        double latitude = location.latitude;
-        double longitude = location.longitude;
-        int maxResults = 1;
-
-        Geocoder gc = new Geocoder(context, Locale.getDefault());
-        List<Address> addresses = gc.getFromLocation(latitude, longitude, maxResults);
-
-        if (addresses.size() == 1) {
-            return addresses.get(0);
-        } else {
-            return null;
-        }
     }
 }
