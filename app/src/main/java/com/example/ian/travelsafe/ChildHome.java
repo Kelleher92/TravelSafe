@@ -261,6 +261,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     public void StartJourney(View view) {
 //        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         running = true;
+
         // Start logging and checking cuurent position against assigned route.
 
         //logChildJourneyInfo = new LogChildJourneyInfoThread();
