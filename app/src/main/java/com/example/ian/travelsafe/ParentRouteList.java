@@ -1,6 +1,8 @@
 package com.example.ian.travelsafe;
 
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,6 @@ public class ParentRouteList extends ArrayList<RouteDetails> {
 
     }
 
-    public static List<RouteDetails> getCurrentRouteList(){
-        Log.i("MyActivity", "returning list");
-        return routeList;
-    }
 
     public static void clearRouteList(){
         routeList.clear();

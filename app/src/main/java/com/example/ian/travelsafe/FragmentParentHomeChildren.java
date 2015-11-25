@@ -2,12 +2,9 @@ package com.example.ian.travelsafe;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,25 +15,22 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class FragmentParentHomeChildren extends Fragment {
 
-    ChildDetails child = new ChildDetails(null, null);
+    List<ChildDetails> children = new ArrayList<>();
     private TextView mText;
     private TextView mRoute;
     private ImageView mProfileImage;
     public List<ChildDetails> childList = new ArrayList<>();
     static ListView childrenListView;
     private View view;
+    List<RouteDetails> routes = new ArrayList<>();
+    public static List<RouteDetails> routeList = new ArrayList<>();
+
 
     public static ChildDetails childClicked = new ChildDetails(null);
 
@@ -64,6 +58,9 @@ public class FragmentParentHomeChildren extends Fragment {
         Log.i("MyActivity", "returnedUser id is = " + returnedUser.get_id() + " email is " + returnedUser.get_emailAddress());
 
         getChildren(returnedUser);
+        getCurrentRouteList(this.getContext());
+        Log.i("MyActivity", "***** returned list is = " + routeList);
+
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_parent_home_children, container, false);
@@ -74,6 +71,7 @@ public class FragmentParentHomeChildren extends Fragment {
         fabAddNewChild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                childList.clear();
                 Intent i = new Intent(context, RegisterNewChild.class);
                 startActivity(i);
             }
@@ -125,30 +123,31 @@ public class FragmentParentHomeChildren extends Fragment {
     }
 
     private void IsChildListEmpty() {
-        if(childList.isEmpty()) {
+        if (childList.isEmpty()) {
             view.findViewById(R.id.listOfChildren).setVisibility(View.GONE);
             view.findViewById(R.id.addChildMessage).setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             view.findViewById(R.id.listOfChildren).setVisibility(View.VISIBLE);
             view.findViewById(R.id.addChildMessage).setVisibility(View.GONE);
         }
     }
 
     private void getChildren(Users user) {
+        childList.clear();
         ServerRequests serverRequests = new ServerRequests(this.getContext());
         Log.i("MyActivity", "user id is = " + user.get_id());
-        serverRequests.fetchChildDataInBackground(user.get_id(), child, new GetChildCallback() {
+        serverRequests.fetchChildDataInBackground(user.get_id(), children, new GetChildrenCallback() {
             @Override
-            public void done(ChildDetails returnedChild) {
-                if (returnedChild == null) {
+            public void done(List<ChildDetails> returnedChildren) {
+                if (returnedChildren == null) {
                     showErrorMessage();
                     Log.i("MyActivity", "No child returned");
                 } else {
-                    child = returnedChild;
-                    Log.i("MyActivity", "child returned = " + child.get_id() + child.get_name() + child.get_username());
+                    children = returnedChildren;
 
-                    ParentChildList.addToChildList(child);
+                    for (int x = 0; x < returnedChildren.size(); x++) {
+                        ParentChildList.addToChildList(returnedChildren.get(x));
+                    }
                     FragmentParentHomeChildren.childrenListView.invalidateViews();
                     IsChildListEmpty();
                 }
@@ -166,5 +165,29 @@ public class FragmentParentHomeChildren extends Fragment {
     public static void deRegisterChild(ChildDetails child) {
         ServerRequests serverRequests = new ServerRequests(FragmentParentHomeChildren.childrenListView.getContext());
         serverRequests.removeChildInBackground(child);
+    }
+
+    public void getCurrentRouteList(Context context) {
+        routeList.clear();
+        Log.i("MyActivity", "retrieving list");
+        UserLocalStore userLocalStore;
+        userLocalStore = new UserLocalStore(context);
+        final Users returnedUser = userLocalStore.getLoggedInUser();
+        ServerRequests serverRequests = new ServerRequests(context);
+        Log.i("MyActivity", "user id is = " + returnedUser.get_id());
+        serverRequests.fetchRouteDataInBackground(returnedUser.get_id(), routes, new GetRoutesCallback() {
+            @Override
+            public void done(List<RouteDetails> returnedRoutes) {
+                if (returnedRoutes == null) {
+                    Log.i("MyActivity", "No child returned");
+                    routes = null;
+                } else {
+                    routes = returnedRoutes;
+                    for (int x = 0; x < returnedRoutes.size(); x++) {
+                        routeList.add(returnedRoutes.get(x));
+                    }
+                }
+            }
+        });
     }
 }

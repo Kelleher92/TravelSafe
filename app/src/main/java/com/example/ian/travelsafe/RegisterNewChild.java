@@ -1,15 +1,12 @@
 package com.example.ian.travelsafe;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterNewChild extends AppCompatActivity {
@@ -21,15 +18,12 @@ public class RegisterNewChild extends AppCompatActivity {
 
     }
 
-
-    public void RegisterNewChild() {
-//        Toast.makeText(RegisterNewChild.this, "New Child Registered", Toast.LENGTH_SHORT).show();
-    }
+    ChildDetails registeredChild = new ChildDetails(null, null);
 
     public void ReturnToParentHome(View view) {
-
         Intent i = new Intent(this, ParentHome.class);
         startActivity(i);
+        finish();
         Toast.makeText(this, "Return To ParentHome", Toast.LENGTH_SHORT);
     }
 
@@ -45,24 +39,23 @@ public class RegisterNewChild extends AppCompatActivity {
         String newChildPassword = RegisterParentActivity.computeMD5Hash(pass);
 
 
-        if(verifyDetails()){
+        if (verifyDetails()) {
             int currentUserId = new UserLocalStore(this).getLoggedInUser().get_id();
             String currentUserEmail = new UserLocalStore(this).getLoggedInUser().get_emailAddress();
-            ChildDetails child = new ChildDetails(currentUserId, newChildName,newChildUsername,newChildPassword);
+            ChildDetails child = new ChildDetails(currentUserId, newChildName, newChildUsername, newChildPassword);
 
             Log.i("MyActivity", "1. user id = " + currentUserId);
             Log.i("MyActivity", "1. user email = " + currentUserEmail);
 
-            // Add to user list
-            ParentChildList.addToChildList(child);
-            //////////////////////////
             registerChild(child);
-            // Load parent home again.
-            Intent i = new Intent(this, ParentHome.class);
-            startActivity(i);
-            finish();
-
         }
+    }
+
+    private void showErrorMessage() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterNewChild.this);
+        dialogBuilder.setMessage("Register was unsuccessful, try another username");
+        dialogBuilder.setPositiveButton("OK", null);
+        dialogBuilder.show();
     }
 
     private boolean registerChild(ChildDetails child) {
@@ -70,9 +63,16 @@ public class RegisterNewChild extends AppCompatActivity {
         serverRequests.storeChildDataInBackground(child, new GetChildCallback() {
             @Override
             public void done(ChildDetails returnedChild) {
+                if (returnedChild.get_id()==0){
+                    showErrorMessage();
+                }
+                else {
+                    Intent i = new Intent(RegisterNewChild.this, ParentHome.class);
+                    startActivity(i);
+                    finish();
+                }
             }
-
-        }, this);
+        });
         return true;
     }
 

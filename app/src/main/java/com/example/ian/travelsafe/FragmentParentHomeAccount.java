@@ -30,6 +30,7 @@ public class FragmentParentHomeAccount extends Fragment {
     UserLocalStore userLocalStore;
 
     NotificationCompat.Builder notification;
+    NotificationDetails nD = new NotificationDetails("Thomas", "Reached halfway");
     private  static int uniqueID = 1;
 
     public static FragmentParentHomeAccount newInstance() {
@@ -76,6 +77,7 @@ public class FragmentParentHomeAccount extends Fragment {
                                 break;
                             // Log Out
                             case 1:
+                                ParentHome.checkUpdatesThread.setRunning(false);
                                 userLocalStore.clearUserData();
                                 userLocalStore.setUserLoggedIn(false);
                                 ParentChildList.clearChildList();
@@ -83,13 +85,13 @@ public class FragmentParentHomeAccount extends Fragment {
                                 break;
                             // Test child home
                             case 2:
-                                Intent in = new Intent(view.getContext(), ChildHome.class);
-                                startActivity(in);
-                                break;
-                            // Test notifications
-                            case 3:
-//                                startActivity(new Intent(FragmentParentHomeAccount.this.getContext(), Pop.class));
-                                createNotification();
+                                if(FragmentParentHomeChildren.routeList.isEmpty()) {
+                                    Toast.makeText(view.getContext(), "No routes have been created.", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    Pop.callingActivity = Pop.callingActivityDelete;
+                                    startActivity(new Intent(view.getContext(), Pop.class));
+                                }
                                 break;
                         }
                     }
@@ -109,18 +111,19 @@ public class FragmentParentHomeAccount extends Fragment {
         List<SettingDetails> list= new ArrayList<>();
         list.add(new SettingDetails("Create new route", R.drawable.ic_place_black_24dp));
         list.add(new SettingDetails("Log Out", R.drawable.ic_power_settings_new_black_24dp));
-        list.add(new SettingDetails("View ChildHome", R.drawable.child_placeholder));
-        list.add(new SettingDetails("Test notifications", R.drawable.ic_notifications_black_24dp));
+        list.add(new SettingDetails("Delete Route", R.drawable.ic_delete_black_24dp));
+        //list.add(new SettingDetails("Test notifications", R.drawable.ic_notifications_black_24dp));
 
         return list;
     }
 
-    public void createNotification() {
+
+    public void createNotification(NotificationDetails details) {
         notification.setSmallIcon(R.drawable.child_cycle_blue);
         notification.setTicker("New Route Update");
         notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("New Update");
-        notification.setContentText("Your child is making progress");
+        notification.setContentTitle(details.getChildName());     // Child name
+        notification.setContentText(details.getNote());
 
         Intent intent = new Intent(this.getContext(), ParentHome.class);
         PendingIntent pI = PendingIntent.getActivity(this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

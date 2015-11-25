@@ -40,6 +40,10 @@
         <activity
             android:name=".AppSplashScreen"
             android:label="@string/title_activity_app_load_screen" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -67,9 +71,6 @@
             android:label="@string/title_activity_child_home" >
         </activity>
         <activity
-            android:name=".Notifications" >
-        </activity>
-        <activity
             android:name=".Pop"
             android:theme="@style/AppTheme.CustomTheme"
             android:label="@string/title_activity_assign_route_pop" >
@@ -78,10 +79,6 @@
 
         <activity
             android:name=".DirectionsActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

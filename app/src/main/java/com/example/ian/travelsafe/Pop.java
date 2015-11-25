@@ -1,37 +1,26 @@
 package com.example.ian.travelsafe;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Pop extends Activity {
 
     ListAdapter routeListAdapter;
-    public static List<RouteDetails> routeList = new ArrayList<>();
     public static ListView routeListView;
+    public Context context;
+    public static String callingActivity = "AssignRoute";
+    public static String callingActivityAssign = "AssignRoute";
+    public static String callingActivityDelete = "DeleteRoute";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_choose_popup);
+        context = this;
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -41,8 +30,7 @@ public class Pop extends Activity {
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
 
-        routeList = ParentRouteList.getCurrentRouteList();
-        routeListAdapter = new RouteListAdapter(this, routeList);
+        routeListAdapter = new RouteListAdapter(this, FragmentParentHomeChildren.routeList);
         routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);
     }

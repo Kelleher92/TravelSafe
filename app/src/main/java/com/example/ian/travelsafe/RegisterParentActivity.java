@@ -39,7 +39,7 @@ public class RegisterParentActivity extends AppCompatActivity {
         if (s == null)
             return false;
 
-        if (s.length() < 7)
+        if (s.length() < 6)
             return false;
 
         int counter = 0;
@@ -70,7 +70,7 @@ public class RegisterParentActivity extends AppCompatActivity {
         EditText password = (EditText) this.findViewById(R.id.password);
         String pass = password.getText().toString();
         if (!isValidPassword(pass)) {
-            password.setError("password must contain at least 6 characters and 1 number");
+            password.setError("password must contain at least 6 total characters and at least 1 number");
             return false;
         }
         String user_password = computeMD5Hash(pass);
@@ -80,8 +80,12 @@ public class RegisterParentActivity extends AppCompatActivity {
         Users user = new Users(user_email, user_username, user_password);
 
         if (registerUser(user)){
-            logUserIn(user);
-            return true;
+            if(user.get_id()!=0){
+                logUserIn(user);
+                return true;
+            }
+            else
+                return false;
         }
         else
             return false;
@@ -148,7 +152,7 @@ public class RegisterParentActivity extends AppCompatActivity {
 
     private void showErrorMessage() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(RegisterParentActivity.this);
-        dialogBuilder.setMessage("Register was unsuccessful");
+        dialogBuilder.setMessage("Register was unsuccessful, try another username/email");
         dialogBuilder.setPositiveButton("OK", null);
         dialogBuilder.show();
     }
