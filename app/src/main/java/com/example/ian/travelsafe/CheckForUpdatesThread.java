@@ -54,6 +54,7 @@ public class CheckForUpdatesThread extends Thread {
         ctext = context;
         notificationManager = (NotificationManager) ctext.getSystemService(Context.NOTIFICATION_SERVICE);
         lcd = ParentChildList.getCurrentChildList();
+        Log.i("CheckForUpdates", "1. current child list = " + lcd);
     }
 
     @Override
@@ -71,9 +72,10 @@ public class CheckForUpdatesThread extends Thread {
             // Server request to check for notifications from child.
             UserLocalStore current = new UserLocalStore(ctext);
             Users currentUser = current.getLoggedInUser();
+            Log.i("CheckForUpdates", "2. current child list = " + lcd);
 
             for (ChildDetails cd : lcd) {
-                fetchEvents(currentUser.get_id(), cd, ctext, new GetEventCallback() {
+                fetchEvents(currentUser.get_id(), cd.get_id(), cd.get_name(), ctext, new GetEventCallback() {
                     @Override
                     public void done(NotificationDetails returnedNotification) {
                         if (returnedNotification == null) {
@@ -111,20 +113,23 @@ public class CheckForUpdatesThread extends Thread {
         uniqueID++;
     }
 
-    public static NotificationDetails fetchEvents(int parentid, ChildDetails cd, Context context, GetEventCallback eventCallback) {
-        new fetchEventsAsyncTask(parentid, cd, context, eventCallback).execute();
+    public static NotificationDetails fetchEvents(int parentid, int childid, String name, Context context, GetEventCallback eventCallback) {
+        new fetchEventsAsyncTask(parentid, childid, name, context, eventCallback).execute();
+        Log.i("FetchEvent", "************** " + parentid + childid + name);
         return null;
     }
 
     public static class fetchEventsAsyncTask extends AsyncTask<Void, Void, NotificationDetails> {
         GetEventCallback eventCallback;
         int parentid;
-        ChildDetails cd;
+        int childid;
+        String name;
         private Context mContext;
 
-        public fetchEventsAsyncTask(int parentid, ChildDetails cd, Context context, GetEventCallback eventCallback) {
-            this.cd = cd;
+        public fetchEventsAsyncTask(int parentid, int cid, String cname, Context context, GetEventCallback eventCallback) {
+            this.childid = cid;
             this.parentid = parentid;
+            this.name = cname;
             this.eventCallback = eventCallback;
             mContext = context;
         }
@@ -133,7 +138,7 @@ public class CheckForUpdatesThread extends Thread {
         protected NotificationDetails doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
             dataToSend.add(new BasicNameValuePair("parentid", parentid + ""));
-            dataToSend.add(new BasicNameValuePair("childid", cd.get_id() + ""));
+            dataToSend.add(new BasicNameValuePair("childid", childid + ""));
 
             HttpParams httpRequestParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);
@@ -163,7 +168,7 @@ public class CheckForUpdatesThread extends Thread {
                     String timeLogged = jArray.getJSONObject(0).getString("time_logged");
                     Log.i("FetchEvent", "Received from server " + eventid + eventType + timeLogged);
 
-                    returnedNotification = new NotificationDetails(cd.get_name(), eventType);
+                    returnedNotification = new NotificationDetails(name, eventType);
                 }
 
             } catch (Exception e) {

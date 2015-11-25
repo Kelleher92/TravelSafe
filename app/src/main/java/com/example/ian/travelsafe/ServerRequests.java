@@ -84,6 +84,10 @@ public class ServerRequests {
         return null;
     }
 
+    public void LogNotification(Users user, String eventType, Context context, GetUserCallback userCallback) {
+        new LogEventAsyncTask(user, eventType, userCallback, context).execute();
+    }
+
 
     public class StoreUserDataAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
@@ -203,22 +207,19 @@ public class ServerRequests {
     public class LogEventAsyncTask extends AsyncTask<Void, Void, Void> {
         Users user;
         String event_type;
-        int parentID;
         GetUserCallback userCallback;
         private Context mContext;
 
-        public LogEventAsyncTask(Users user, String event_type, int parentID, GetUserCallback userCallback, Context context) {
+        public LogEventAsyncTask(Users user, String event_type, GetUserCallback userCallback, Context context) {
             mContext = context;
             this.user = user;
             this.event_type = event_type;
-            this.parentID = parentID;
             this.userCallback = userCallback;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             ArrayList<NameValuePair> dataToSend = new ArrayList<>();
-            dataToSend.add(new BasicNameValuePair("parentid", parentID + ""));
             dataToSend.add(new BasicNameValuePair("childid", user.get_id() + ""));
             dataToSend.add(new BasicNameValuePair("event_type", event_type));
 
