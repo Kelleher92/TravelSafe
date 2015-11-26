@@ -73,6 +73,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     Address startAddress;
     Address endAddress;
     AbstractRouting.TravelMode travelMode;
+    Button btnstartstop;
 
     // Information for graphing route.
     RouteDetails route = new RouteDetails(null, null, null, null, 0, 0);
@@ -88,6 +89,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
     private LocationManager locationManager = null;
     private LocationListener locationListener = null;
     Users currentUser;
+    boolean isLocationEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         currentLocation = (TextView) findViewById(R.id.currentLocation);
         btnShowLoc = (Button) findViewById(R.id.ButtonStartJourney);
         childName = (TextView) findViewById(R.id.ChildFirstName);
+        btnstartstop = (Button) findViewById(R.id.ButtonStartJourney);
 
         // Get login in Child so there name can be displayed.
         UserLocalStore current = new UserLocalStore(this);
@@ -249,7 +252,7 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
         }
     }
 
-    public Address getAddressForLocation(Context context, LatLng location) throws IOException {
+    public static Address getAddressForLocation(Context context, LatLng location) throws IOException {
 
         if (location == null) {
             return null;
@@ -270,14 +273,18 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
 
     public void StartJourney(View view) {
 //        Snackbar.make(view, "Button Click", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-//        if(start) {
+        if(!isLocationEnabled) {
             running = displayGpsStatus();
             if (running) {
+
+                Log.i("Track Journey", " START ");
+                isLocationEnabled = true;
                 Log.i("Please!!", " move your device to" + " see the changes in coordinates." + "\nWait..");
                 locationListener = new MyLocationListener();
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, locationListener);
                 // Send notification to server.
+                btnstartstop.setText("STOP JOURNEY");
                 ServerRequests serverRequests = new ServerRequests(ChildHome.this);
                 serverRequests.LogNotification(currentUser, "Child started journey", ChildHome.this, new GetUserCallback() {
                     @Override
@@ -289,10 +296,14 @@ public class ChildHome extends AppCompatActivity implements RoutingListener, OnC
             } else {
                 Toast.makeText(getBaseContext(), "Gps Status!! Your GPS is: OFF", Toast.LENGTH_SHORT).show();
             }
-//        }
-//        else{
-////            locationManager.fin
-//        }
+        }
+        else{
+            locationManager.removeUpdates(locationListener);
+            locationManager = null;
+            isLocationEnabled = false;
+            Log.i("Track Journey", " STOP ");
+            btnstartstop.setText("START JOURNEY");
+        }
     }
 
 

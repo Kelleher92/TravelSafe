@@ -10,6 +10,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,6 +41,14 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
         TextView tvRStart = (TextView) customView.findViewById(R.id.route_details_Start);
         TextView tvREnd = (TextView) customView.findViewById(R.id.route_details_End);
 
+        tvRTitle.setText(rd.getmRouteName());
+        try {
+            tvRStart.setText(ChildHome.getAddressForLocation(contextPopUp, new LatLng(rd.getStart().latitude, rd.getStart().longitude)).getAddressLine(0));
+            tvREnd.setText(ChildHome.getAddressForLocation(contextPopUp, new LatLng(rd.getEnd().latitude, rd.getEnd().longitude)).getAddressLine(0));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         CheckBox chkbox = (CheckBox) customView.findViewById(R.id.checkboxSelectRoute);
 
         if (position == selected_position) {
@@ -59,7 +70,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
 
                 ServerRequests serverRequests = new ServerRequests(contextPopUp);
                 if (activity.equals(Pop.callingActivityAssign)) {
-                    serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), FragmentParentHomeChildren.routeList.get(position).getRouteID(), new GetRouteCallback() {
+                    serverRequests.attachRoute(FragmentParentHomeChildren.childClicked.get_id(), ParentRouteList.getCurrentRouteList().get(position).getRouteID(), new GetRouteCallback() {
                         @Override
                         public void done(RouteDetails returnedRoute) {
 
@@ -69,7 +80,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
 
                 } else {
                     if (activity.equals(Pop.callingActivityDelete)) {
-                        serverRequests.deleteRoute(FragmentParentHomeChildren.childClicked.get_id(), FragmentParentHomeChildren.routeList.get(position).getRouteID(), new GetRouteCallback() {
+                        serverRequests.deleteRoute(FragmentParentHomeChildren.childClicked.get_id(), ParentRouteList.getCurrentRouteList().get(position).getRouteID(), new GetRouteCallback() {
                             @Override
                             public void done(RouteDetails returnedRoute) {
 

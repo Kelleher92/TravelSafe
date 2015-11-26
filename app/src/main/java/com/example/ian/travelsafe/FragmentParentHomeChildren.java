@@ -54,7 +54,7 @@ public class FragmentParentHomeChildren extends Fragment {
 
         getChildren(returnedUser);
         getCurrentRouteList();
-        Log.i("MyActivity", "***** returned list is = " + routeList);
+        Log.i("MyActivity", "***** returned list is = " + ParentRouteList.getCurrentRouteList());
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_parent_home_children, container, false);
@@ -158,17 +158,19 @@ public class FragmentParentHomeChildren extends Fragment {
         userLocalStore = new UserLocalStore(context);
         final Users returnedUser = userLocalStore.getLoggedInUser();
         ServerRequests serverRequests = new ServerRequests(context);
-        Log.i("MyActivity", "user id is = " + returnedUser.get_id());
+        Log.i("GetRoutes", "user id is = " + returnedUser.get_id());
         serverRequests.fetchRouteDataInBackground(returnedUser.get_id(), routes, new GetRoutesCallback() {
             @Override
             public void done(List<RouteDetails> returnedRoutes) {
                 if (returnedRoutes == null) {
-                    Log.i("MyActivity", "No child returned");
+                    Log.i("GetRoutes", "No routes returned");
                     routes = null;
                 } else {
                     routes = returnedRoutes;
+                    ParentRouteList.clearRouteList();
                     for (int x = 0; x < returnedRoutes.size(); x++) {
-                        routeList.add(returnedRoutes.get(x));
+//                        routeList.add(returnedRoutes.get(x));
+                        ParentRouteList.addToRouteList(returnedRoutes.get(x));
                     }
                 }
             }

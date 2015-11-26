@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -30,8 +31,7 @@ public class Pop extends Activity {
         int height = dm.heightPixels;
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.6));
-
-        routeListAdapter = new RouteListAdapter(callingActivity, this, FragmentParentHomeChildren.routeList);
+        routeListAdapter = new RouteListAdapter(callingActivity, this, ParentRouteList.getCurrentRouteList());
         routeListView = (ListView) findViewById(R.id.listViewRoutes);
         routeListView.setAdapter(routeListAdapter);
     }
