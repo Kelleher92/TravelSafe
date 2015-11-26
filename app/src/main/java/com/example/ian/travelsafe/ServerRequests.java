@@ -65,6 +65,7 @@ public class ServerRequests {
         ParentRouteList.routeList.clear();
         progressDialog.show();
         new fetchRouteDataAsyncTask(id, routes, routesCallback).execute();
+
     }
 
     public void removeChildInBackground(ChildDetails child) {
