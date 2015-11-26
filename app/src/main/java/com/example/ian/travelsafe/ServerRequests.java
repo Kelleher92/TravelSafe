@@ -62,8 +62,10 @@ public class ServerRequests {
     }
 
     public void fetchRouteDataInBackground(int id, List<RouteDetails> routes, GetRoutesCallback routesCallback) {
+        ParentRouteList.routeList.clear();
         progressDialog.show();
         new fetchRouteDataAsyncTask(id, routes, routesCallback).execute();
+
     }
 
     public void removeChildInBackground(ChildDetails child) {
@@ -729,7 +731,7 @@ public class ServerRequests {
             dataToSend.add(new BasicNameValuePair("travel_mode", route.getModeTransport() + ""));
             dataToSend.add(new BasicNameValuePair("index", route.getIndex() + ""));
 
-            Log.i("MyActivity", "dataToSend (1) = " + dataToSend);
+            Log.i("Save Route", "dataToSend (1) = " + dataToSend);
 
             HttpParams httpRequestParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpRequestParams, CONNECTION_TIMEOUT);

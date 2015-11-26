@@ -85,7 +85,7 @@ public class FragmentParentHomeAccount extends Fragment {
                                 break;
                             // Test child home
                             case 2:
-                                if(FragmentParentHomeChildren.routeList.isEmpty()) {
+                                if(ParentRouteList.routeList.isEmpty()) {
                                     Toast.makeText(view.getContext(), "No routes have been created.", Toast.LENGTH_SHORT).show();
                                 }
                                 else {

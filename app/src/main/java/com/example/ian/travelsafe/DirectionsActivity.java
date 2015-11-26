@@ -1,6 +1,7 @@
 package com.example.ian.travelsafe;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -352,7 +354,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                     }
 
 
-                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo + 1), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo + 1), Toast.LENGTH_SHORT).show();
                     Log.e("PolyLine ", routes.toString());
                 }
             }
@@ -483,13 +485,14 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
                 UserLocalStore userLocalStore;
                 userLocalStore = new UserLocalStore(DirectionsActivity.this);
                 Users returnedUser = userLocalStore.getLoggedInUser();
-                Log.i("MyActivity", "User id = " + returnedUser.get_id());
-                Log.i("MyActivity", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
+                Log.i("Save route", "User id = " + returnedUser.get_id());
+                Log.i("Save route", "Route co-ordinates = " + route.getStart().latitude + " + " + route.getStart().longitude);
                 ServerRequests serverRequests = new ServerRequests(DirectionsActivity.this);
                 serverRequests.saveRouteInBackground(returnedUser.get_id(), route, new GetRouteCallback() {
                     @Override
                     public void done(RouteDetails returnedRoute) {
-                        FragmentParentHomeChildren.routeList.add(returnedRoute);
+//                        FragmentParentHomeChildren.routeList.add(returnedRoute);
+//                        ParentRouteList.addToRouteList(returnedRoute);
                         Log.i("MyActivity", "************* route ID = " + returnedRoute.getRouteID());
                     }
                 });
@@ -638,7 +641,7 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
             //Toast.makeText(getApplicationContext(), "Route " + (i + 1) + ": distance - " + route.get(i).getDistanceValue() + ": duration - " + route.get(i).getDurationValue(), Toast.LENGTH_LONG).show();
         }
 
-        Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo + 1), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Chosen route set to Route: " + (routeNo + 1), Toast.LENGTH_SHORT).show();
         map.addPolyline(new PolylineOptions().color(getResources().getColor(R.color.colorPrimary)).addAll(route.get(routeNo).getPoints()).width(20));
         lastOpened = map.addMarker(routeOptionsList.get(routeNo));
         lastOpened.showInfoWindow();
@@ -656,6 +659,11 @@ public class DirectionsActivity extends AppCompatActivity implements RoutingList
         map.addMarker(endOptions);
 
         findViewById(R.id.fabSaveRoute).setVisibility(View.VISIBLE);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
     }
 

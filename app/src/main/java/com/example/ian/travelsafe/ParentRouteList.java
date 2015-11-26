@@ -17,6 +17,10 @@ public class ParentRouteList extends ArrayList<RouteDetails> {
 
     }
 
+    public static List<RouteDetails> getCurrentRouteList() {
+        return routeList;
+    }
+
 
     public static void clearRouteList(){
         routeList.clear();
