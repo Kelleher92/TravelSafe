@@ -170,6 +170,7 @@ public class FragmentParentHomeChildren extends Fragment {
                     ParentRouteList.clearRouteList();
                     for (int x = 0; x < returnedRoutes.size(); x++) {
 //                        routeList.add(returnedRoutes.get(x));
+                        Log.i("!!!Routes","2 " + returnedRoutes.get(x).getmRouteName());
                         ParentRouteList.addToRouteList(returnedRoutes.get(x));
                     }
                 }

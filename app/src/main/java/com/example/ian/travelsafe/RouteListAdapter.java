@@ -86,6 +86,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteDetails> {
 
                             }
                         });
+                        ParentRouteList.removeFromRouteList(ParentRouteList.getCurrentRouteList().get(position));
                         ((Activity) contextPopUp).finish();
 
                     }

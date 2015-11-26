@@ -25,6 +25,7 @@ public class ParentHome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FragmentParentHomeChildren.childList.clear();
+        ParentRouteList.clearRouteList();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_home);
 
@@ -97,9 +98,11 @@ public class ParentHome extends AppCompatActivity {
     public void AssignRoute(View view) {
 //        Snackbar.make(view, "Assign Route" , Snackbar.LENGTH_LONG).setAction("Action", null).show();
         if(ParentRouteList.routeList.isEmpty()) {
+            Log.i("!!!Routes","3");
             Toast.makeText(view.getContext(), "No routes have been created.", Toast.LENGTH_SHORT).show();
         }
         else {
+            Log.i("!!!Routes","4 " + ParentRouteList.getCurrentRouteList().get(0).getmRouteName());
             Pop.callingActivity = Pop.callingActivityAssign;
             startActivity(new Intent(ParentHome.this, Pop.class));
         }

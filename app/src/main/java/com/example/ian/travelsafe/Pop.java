@@ -19,7 +19,8 @@ public class Pop extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FragmentParentHomeChildren.getCurrentRouteList();
+//        FragmentParentHomeChildren.getCurrentRouteList();
+        Log.i("!!!Routes","5 " + ParentRouteList.getCurrentRouteList().get(0).mRouteName);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_choose_popup);
         context = this;

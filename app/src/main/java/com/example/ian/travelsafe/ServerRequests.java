@@ -62,6 +62,7 @@ public class ServerRequests {
     }
 
     public void fetchRouteDataInBackground(int id, List<RouteDetails> routes, GetRoutesCallback routesCallback) {
+        Log.i("!!!Routes","1");
         ParentRouteList.routeList.clear();
         progressDialog.show();
         new fetchRouteDataAsyncTask(id, routes, routesCallback).execute();
